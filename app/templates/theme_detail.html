@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/pagination_videos.css' %}" />
+{% endblock %}
+
+{% block title %}
+  Détails du Thème
+{% endblock %}
+
+{% block contenu %}
+  <h1>Thème : {{ theme.name }}</h1>
+
+  <!-- Sections des interviews -->
+  <h2>Interviews en lien</h2>
+  <div class="carousel-container">
+    <!-- Flèche gauche -->
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="carousel-arrow left-arrow">&#10094;</a>
+    {% endif %}
+
+    <!-- Conteneur des vidéos -->
+    <div class="carousel-wrapper">
+      {% for video in page_obj %}
+        <div class="card">
+          <img class="card-img-top" src="{{ video.get_thumbnail }}" alt="{{ video.get_title }}" />
+          <div class="card-body">
+            <h5 class="card-title">{{ video.get_title }}</h5>
+            <p>{{ video.get_readable_duration }}</p>
+            <p>
+              <em>Auteur: {{ video.get_author.name }}</em>
+            </p>
+            {% if video.is_popular %}
+            <p>
+              <em> {{ video.count_views }} vues</em>
+            </p>
+            {%else%}
+            <p>
+              <em>Nouvelle vidéo</em>
+            </p>
+            {% endif %}
+          </div>
+          <div class="card-body d-flex justify-content-between align-items-end">
+            <a href="{% url 'lecteur' video.element_id_property %}" class="btn btn-success"><i class="fa-solid fa-play"></i> Regarder</a>
+            <a href="#" class="btn btn-success"><i class="fa-solid fa-list"></i> Lire ensuite</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Flèche droite -->
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="carousel-arrow right-arrow">&#10095;</a>
+    {% endif %}
+  </div>
+{% endblock %}

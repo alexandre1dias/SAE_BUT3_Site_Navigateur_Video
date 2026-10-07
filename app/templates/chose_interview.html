@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block scripts %}
+<script src="{% static 'js/chose_interview.js' %}"></script>
+{% endblock %}
+{% block title %}
+  Choix de l'interview
+{% endblock %}
+{% block contenu %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Choisissez ou créez une interview</h2>
+  <form method="post" action="{% url 'chose_interview'  %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="interview" class="form-label">Interview :</label>
+      <div class="d-flex align-items-center gap-2">
+        <select id="interview" name="interview" class="form-select" required>
+          {% for interview in interviews %}
+          <option value="{{ interview.element_id_property }}">
+            {{ interview.title }}
+          </option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+
+       
+        <button type="submit" class="btn btn-primary">Suivant</button>
+        
+        
+      </div>
+    </div> 
+  </form>
+</div>
+
+<!-- Modale pour ajouter une interview -->
+<div id="addInterviewModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter une nouvelle interview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_interview' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="title" class="form-label">Titre :</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="author" class="form-label">Auteur :</label>
+            <div class="d-flex align-items-center gap-2">
+              <select name="author" id="author" class="form-select" required>
+                {% for author in authors %}
+                <option value="{{ author.element_id_property }}">
+                  {{ author.name }}
+                </option>
+                {% endfor %}
+              </select>
+              <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAuthorModal">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Visibilité :</label>
+            <div class="form-check">
+              <input type="radio" id="visibility-true" name="visibility" value="0" class="form-check-input" checked>
+              <label for="visibility-true" class="form-check-label">Publique</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" id="visibility-false" name="visibility" value="1" class="form-check-input">
+              <label for="visibility-false" class="form-check-label">Privé</label>
+            </div>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale pour ajouter un auteur -->
+<div id="addAuthorModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter un auteur</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_author' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Nom :</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

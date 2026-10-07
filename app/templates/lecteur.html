@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/lecteur.css' %}" />
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+    const video_id = '{{ id }}'
+    const video_youtube_id = '{{ youtube_id }}'
+  </script>
+  <script src="{% static 'js/lecteur.js' %}"></script>
+{% endblock %}
+{% block title %}
+  {{ video.title }}
+{% endblock %}
+{% block contenu %}
+  <h1 class="text-center mb-4">{{ title }}</h1>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="ratio ratio-16x9 mb-4">
+        <div class="d-flex justify-content-center align-items-center" id="loader-container">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <iframe id="lecteur" title="lecteur" height="450" width="800"></iframe>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div id="questionsTab" class="border p-3 rounded">
+        <div id="currentQuestionInfos">
+          <h2>Retranscription</h2>
+          <hr />
+          <div class="question">
+            <h4 class="title">{{ question }}</h4>
+            <p>
+              <span class="artist">{{ artist }}</span><span class="answer">{{ answer }}</span>
+            </p>
+          </div>
+          <div id="similarQuestions">
+            <hr />
+            <h4>Questions similaires</h4>
+            <ul class="list-group"></ul>
+          </div>
+        </div>
+        {% if user.is_superuser %}
+          <a class="btn btn-primary my-3" href="{% url 'update_video' video_id=id %}">Modifier la vidéo</a>
+          <a class="btn btn-primary my-3" href="{% url 'update_interview' interview_id=interview %}">Modifier l'interview</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div id="nextQuestion" class="col-md-8 offset-md-2">
+        <h2 class="text-center mb-4">Prochaines questions</h2>
+        <hr />
+        <ul class="list-group">
+          {% for video in request.session.playlist.list %}
+            <li class="list-group-item d-flex align-items-center">
+              <img class="rounded me-3" height="80" src="{{ video.thumbnail }}" alt="{{ video.title }}" />
+              <div class="flex-grow-1">
+                <h5 class="mb-1">{{ video.title }}</h5>
+                <small class="text-muted">{{ video.duration }}</small>
+              </div>
+              <a href="{% url 'lecteur' video_id=video.id %}" class="btn btn-primary btn-sm">Regarder</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Déconnexion
+{% endblock %}
+
+{% block contenu %}
+  <h1>Logout</h1>
+  <p>Are you sure you want to logout?</p>
+  <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <input type="submit" value="Logout" />
+  </form>
+{% endblock %}

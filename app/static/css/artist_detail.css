@@ -1,0 +1,9 @@
+.carousel-wrapper .card-title {
+    width: 13em;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.carousel-wrapper .card-title::-webkit-scrollbar {
+    display: none;
+}

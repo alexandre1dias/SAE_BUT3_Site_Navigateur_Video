@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block scripts %}
+<script src="{% static 'js/create_video.js' %}"></script>
+{% endblock %}
+{% block title %}
+  Ajouter une vidéo
+{% endblock %}
+{% block contenu %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Création de la vidéo</h2>
+  <form method="post" action="{% url 'create_video' interview_id=interview_id %}">
+
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      <label for="question" class="form-label">Question :</label>
+      <div class="d-flex align-items-center gap-2">
+        <select id="question" name="question" class="form-select" required>
+          {% for question in questions %}
+          <option value="{{ question.element_id_property }}">
+            {{ question.titled }}
+          </option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="artist" class="form-label">Artiste :</label>
+      <div class="d-flex align-items-center gap-2">
+        <select id="artist" name="artist" class="form-select" required>
+          {% for artist in artists %}
+          <option value="{{ artist.element_id_property }}">
+            {{ artist.name }}
+          </option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addArtistModal">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  
+    <div class="mb-3">
+      <label for="link" class="form-label">Lien :</label>
+      <input name="link" id="link" type="text" class="form-control">
+    </div>
+
+  
+    <div class="mb-3">
+      <label for="transcription" class="form-label">Transcription :</label>
+      <textarea name="transcription" id="transcription" class="form-control" rows="4"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ajouter la vidéo</button>
+  </form>
+  <button type="button" class="btn btn-danger" style="margin: 10px 0;" onclick="window.history.back();">
+    Retour
+</button>
+</div>
+
+<!-- Modale pour ajouter une question -->
+<div id="addQuestionModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter une nouvelle question</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_question' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="titled" class="form-label">Intitulé :</label>
+            <input type="text" id="titled" name="titled" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="themes" class="form-label">Thèmes :</label>
+            <div class="d-flex align-items-center gap-2">
+              <select name="themes" id="themes" class="form-select" required multiple>
+                {% for theme in themes %}
+                <option value="{{ theme.element_id_property }}">
+                  {{ theme.name }}
+                </option>
+                {% endfor %}
+              </select>
+              <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addThemeModal">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              
+            </div>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale pour ajouter un theme -->
+<div id="addThemeModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter un thème de question</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_theme' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Nom :</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modale pour ajouter un artiste -->
+<div id="addArtistModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter un nouvel artiste</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_artist' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Nom :</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="style" class="form-label">Style :</label>
+            <div class="d-flex align-items-center gap-2">
+              <select name="style" id="style" class="form-select" required>
+                {% for style in styles %}
+                <option value="{{ style.element_id_property }}">
+                  {{ style.name }}
+                </option>
+                {% endfor %}
+              </select>
+              <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addStyleModal">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="website" class="form-label">Lien :</label>
+            <input name="website" id="website" class="form-control" ></input>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale pour ajouter un style -->
+<div id="addStyleModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter un style musical</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_style' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Nom :</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

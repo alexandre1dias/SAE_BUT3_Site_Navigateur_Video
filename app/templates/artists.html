@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/list_artists.css' %}" />
+{% endblock %}
+
+{% block title %}
+  Artistes
+{% endblock %}
+{% block contenu %}
+  <h1 id="h1">Les Artistes</h1>
+  <ul id="carte-container">
+    {% for artist in artists %}
+      <li class="carte">
+        <a class="artist-name" href="{% url 'artist_detail' node_id=artist.element_id_property %}">{{ artist.name }}</a>
+        <a href="{{ artist.website }}" class="artist-link" target="_blank">lien externe de {{ artist.name }}</a>
+        <ul>
+          {% for style in artist.styles %}
+            <li>{{ style.name }}</li>
+          {% empty %}
+            <li>Aucun style.</li>
+          {% endfor %}
+        </ul>
+        <p>Nombre de vidéos : va être une route</p>
+        {% with prefered_theme=artist.get_prefered_theme %}
+          {% if prefered_theme != 'Pas encore de theme' %}
+            <a class="theme_detail" href="{% url 'theme_detail' node_id=prefered_theme.element_id_property %}">Thème le plus répondu :  {{ prefered_theme.name }}</a>
+          {% else %}
+            <p>Il n'y a pas de theme</p>
+          {% endif %}
+        {% endwith %}
+        {% empty %}
+        <p>Il n'y a pas d'artistes.</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,53 @@
+.carousel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 50px auto;
+    max-width: 900px;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.carousel-arrow[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.carousel-arrow:hover {
+    background-color: #f0f0f0;
+}
+
+.left-arrow {
+    left: -50px;
+}
+
+.right-arrow {
+    right: -50px;
+}
+
+/* Conteneur des vidéos */
+.carousel-wrapper {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    overflow: hidden;
+}

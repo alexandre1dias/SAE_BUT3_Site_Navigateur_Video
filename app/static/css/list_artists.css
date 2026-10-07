@@ -1,0 +1,98 @@
+#carte-container {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.carte {
+    border: 2px solid #ddd;
+    padding: 1.5rem;
+    width: calc(50% - 1rem);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.carte:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#h1 {
+    text-align: center;
+    margin: 2rem 0;
+    color: #333;
+    font-size: 2.5rem;
+}
+
+.carte p {
+    margin: 0.8rem 0;
+    line-height: 1.4;
+}
+
+/* Artist name link styling - maintenant en display block */
+.artist-name {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 1rem;
+    transition: color 0.2s ease;
+    width: 100vw;
+}
+
+.artist-name:hover {
+    color: #3498db;
+}
+
+/* External link styling - maintenant en display block */
+.artist-link {
+    color: #3498db;
+    text-decoration: none;
+    display: block;
+    margin: 0.5rem 0 1rem 0;
+    font-size: 0.95rem;
+}
+
+.artist-link:hover {
+    text-decoration: underline;
+    color: #2980b9;
+}
+
+.theme_detail {
+    color: #27ae60;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.theme_detail:hover {
+    color: #219a52;
+    text-decoration: underline;
+}
+
+.carte ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.carte ul li {
+    color: #666;
+    margin: 0.3rem 0;
+}
+
+@media (max-width: 768px) {
+    .carte {
+        width: 100%;
+    }
+    
+    #carte-container {
+        padding: 1rem;
+    }
+}

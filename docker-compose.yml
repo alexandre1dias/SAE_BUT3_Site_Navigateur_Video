@@ -1,0 +1,40 @@
+services:
+  neo4j:
+    image: neo4j:5.26.1
+    container_name: neo4j
+    restart: unless-stopped
+    ports:
+      - "7475:7474" # Interface Web
+      - "7687:7687" # Bolt pour Django
+    environment:
+      NEO4J_AUTH: "neo4j/${NEO4J_PASSWORD}"
+      NEO4J_dbms.connector.bolt.listen_address: "0.0.0.0:7687"
+      NEO4J_dbms.connector.bolt.advertised_address: "0.0.0.0:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - lecteur_net
+
+  lecteur:
+    container_name: lecteur
+    build:
+      context: .
+      args:
+        MODE: ${MODE}
+    ports:
+      - "8000:80"
+    depends_on:
+      - neo4j
+    env_file:
+      - .env
+    networks:
+      - lecteur_net
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+
+networks:
+  lecteur_net:
+    driver: bridge

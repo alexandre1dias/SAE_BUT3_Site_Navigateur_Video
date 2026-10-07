@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/artist_detail.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/pagination_videos.css' %}" />
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+{% block title %}
+  Détails de l'artiste - {{ artist.name }}
+{% endblock %}
+
+{% block contenu %}
+  <div class="row d-flex justify-content-center">
+    <div class="col">
+      <div class="card">
+        <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+          <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp" alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2" style="width: 150px; z-index: 1" />
+          </div>
+          <div class="ms-3" style="margin-top: 130px;">
+            <h5>{{ artist.name }}</h5>
+            {% if artist.link %}
+              <a class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{{ artist.link }}" target="_blank">{{ artist.link }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-body p-4 text-black">
+          <div class="mb-5 text-body">
+            <p class="lead fw-normal mb-1">Styles musicaux</p>
+            <div class="p-4 bg-body-tertiary list-group">
+              {% for style in styles %}
+                <li class="list-group-item">{{ style.libelle }}</li>
+              {% empty %}
+                <li>Pas de style musical associé.</li>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-4 text-body">
+            <p class="lead fw-normal mb-0">Interviews</p>
+          </div>
+          <div class="carousel-container row g-2">
+            <a
+            {% if page_obj.has_previous %}
+              href="?page={{ page_obj.previous_page_number }}"
+            {% else %}
+              href="#" disabled
+            {% endif %}
+              class="carousel-arrow left-arrow" >&#10094;</a>
+
+            <div class="carousel-wrapper">
+              {% for video in page_obj %}
+                <div class="card">
+                  <img class="card-img-top" src="{{ video.get_thumbnail }}" alt="{{ video.get_title }}" />
+                  <div class="card-body">
+                    <h5 class="card-title">{{ video.get_title }}</h5>
+                    <p>{{ video.get_readable_duration }}</p>
+                    <p>
+                      <em>Auteur: {{ video.get_author.name }}</em>
+                    </p>
+                    {% if video.is_popular %}
+                    <p>
+                      <em> {{ video.count_views }} vues</em>
+                    </p>
+                    {%else%}
+                    <p>
+                      <em>Nouvelle vidéo</em>
+                    </p>
+                    {% endif %}
+                  </div>
+                  <div class="card-body d-flex justify-content-between align-items-end">
+                    <a href="{% url 'lecteur' video.element_id_property %}" class="btn btn-success"><i class="fa-solid fa-play"></i> Regarder</a>
+                    <a href="#" class="btn btn-success"><i class="fa-solid fa-list"></i> Lire ensuite</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <a 
+            {% if page_obj.has_next %}
+              href="?page={{ page_obj.next_page_number }}"
+            {% else %}
+              href="#" disabled
+            {% endif %}
+            class="carousel-arrow right-arrow">&#10095;</a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

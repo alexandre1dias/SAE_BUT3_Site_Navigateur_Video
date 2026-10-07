@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/dist/bundle.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
+  <script type="text/javascript">
+        const categoryData = {{ filtersData|safe }};
+</script>
+{% endblock %}
+{% block title %}
+  LecteurMap
+{% endblock %}
+{% block contenu %}
+  <meta name="csrf-token" content="{{ csrf_token }}" />
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
+
+  <div class="home-container">
+    <div id="videos-section" >
+      <h1>Explorer les interviews</h1>
+
+      <h2>Interviews récentes</h2>
+      <div class="videos-wrapper">
+        {% for interview in interviews %}
+          <div class="video-card">
+            <a href="{% url 'interview' interview.element_id_property %}"><img src="{{ interview.get_thumbnail }}" alt="{{ interview.title }}" /></a>
+            <div class="video-info">
+              <h4>{{ interview.title }}</h4>
+              <p>{{ interview.get_total_videos }} questions | {{ interview.get_readable_duration }}</p>
+              <p>
+                <em>Auteur: {{ interview.get_author.name }}</em>
+              </p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <h2>Questions individuelles</h2>
+      <div class="filters">
+        <span>Filter par :</span>
+
+          <select id="category-filter" class="form-select" onchange="updateSubcategories()">
+            <option value="" selected disabled>-- Choisissez une categorie --</option>
+            <option value="artist">Artiste</option>
+            <option value="theme">Thème</option>
+            <option value="author">Auteur</option>
+          </select>
+
+          <select id="subcategory-filter" class="form-select" onchange="filterVideos()" disabled>
+            <option value="" selected disabled>-- Choisissez une option --</option>
+          </select>
+
+          <button id="reset-filters" onclick="resetFilters()" class="reset-button">Réinitialiser les filtres</button>
+        </div>
+
+      <div id="questionIndiv-section" class="videos-wrapper">
+        {% for video in videos_with_thumbnails %}
+          <div class="video-card"
+            data-artists="{{ video.get_artist_name }}"
+            data-themes="{% for theme in video.get_themes %}{{ theme.name }},{% endfor %}"
+            data-author="{{ video.get_author.name }}">
+            <a href="{% url 'lecteur' video.element_id_property %}"><img src="{{ video.get_thumbnail }}" alt="{{ video.get_title }}" /></a>
+            <div class="video-info">
+              <h4>{{ video.get_title }}</h4>
+              <p>{{ video.get_readable_duration }}</p>
+              <p>
+                <em>Auteur: {{ video.get_author.name }}</em>
+              </p>
+              {% if video.is_popular %}
+            <p>
+              <em> {{ video.count_views }} vues</em>
+            </p>
+            {%else%}
+            <p>
+              <em>Nouvelle vidéo</em>
+            </p>
+            {% endif %}
+            </div>
+            {% if user.is_superuser %}
+              <a class="btn btn-primary btn-sm" href="{% url 'update_video' video_id=video.element_id_property %}">Modifier la vidéo</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="scrollable-graph-section">
+      <div id="graph-section">
+        {% comment %} <h1>Explorer les interviews</h1> {% endcomment %}
+        <div class="graph-wrapper">
+          <div class="graph-container" id="graph-container" data-status="Chargement...">
+            <div class="control-buttons">
+              <button class="close-btn" id="close-btn">Fermer</button>
+              <button class="refresh-btn" id="refresh-btn">Rafraîchir</button>
+            </div>
+            <div id="sigma-container" style="none"></div>
+            <div id="legend-container">
+                <div class="legend-item"><span class="legend-color" style="background:#6abf69;"><i class="fa-solid fa-microphone-lines"></i></span> <span>Artiste</span></div>
+                <div class="legend-item"><span class="legend-color" style="background:#ff6f61;"><i class="fa-solid fa-play"></i></span> <span>Interview</span></div>
+                <div class="legend-item"><span class="legend-color" style="background:#4c91ff;"><i class="fa-solid fa-lightbulb"></i></span> <span>Thème</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
