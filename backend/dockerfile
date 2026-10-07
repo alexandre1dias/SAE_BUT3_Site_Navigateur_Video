@@ -1,0 +1,23 @@
+FROM python:3.14-slim
+
+# Variables d’environnement
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Dossier de travail
+WORKDIR /app
+
+# Dépendances
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Code source
+COPY manage.py .
+COPY backend backend
+COPY API API
+
+# Exposer le port
+EXPOSE 8000
+
+# Lancer Django
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

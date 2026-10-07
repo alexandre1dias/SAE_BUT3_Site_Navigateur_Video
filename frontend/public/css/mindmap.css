@@ -1,0 +1,429 @@
+/* the Balls colors */
+.mmLegendColorMapmm_Root {
+    background-color: #fff;
+    clip-path: circle(50%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+.mmLegendColorMapArtiste {
+    background-color: #A0522D;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+    aspect-ratio: 1.2;
+}
+
+.mmLegendColorMapExtrait {
+    background-color: #941C1C;
+    border-radius: 10%;
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapInterview {
+    background-color: #9747FF;
+    border-radius: 10%;
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapOccasion {
+    background-color: #c24e00ff;
+    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapQuestion {
+    background-color: #FFCD06;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapAudio {
+    background-color: #010582;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapTag {
+    background-color: #02b360ff;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapTheme {
+    background-color: #016969ff;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    aspect-ratio: 1;
+}
+
+/*
+* MINDMAP CSS
+*/
+
+/* Mindmap container with backdrop */
+.mm_main_relative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    /* Backdrop */
+    background-color: var(--gris-moyen);
+    border: 3px solid var(--vert-neon);
+    box-shadow: 8px 8px 3.2px 5px var(--vert-pale);
+    border-radius: 20px;
+    padding: 20px;
+
+    overflow: hidden;
+    touch-action: none;
+}
+
+/* Fullscreen mode */
+.mm_main_relative:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    padding: 2.5%;
+    border: 3px solid var(--vert-neon);
+}
+
+/* Fullscreen button - top right */
+.mm_fullscreenbtn {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    vertical-align: baseline;
+    top: 20px;
+    right: 20px;
+    z-index: 101;
+    text-align: center;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--noir);
+    color: var(--blanc);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mm_fullscreenbtn img {
+    width: 20px;
+}
+
+.mm_fullscreenbtn:hover {
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 0 10px var(--vert-neon);
+}
+
+/* Controls - vertical flex on right bottom */
+.mm_control_outer {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end
+}
+
+.mm_controls {
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.mm_controls button {
+    padding: 10px;
+    border-radius: 40%;
+    background-color: var(--noir);
+    color: var(--blanc);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.mm_controls button:hover {
+    background-color: var(--vert-pale);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px var(--vert-neon);
+}
+
+/* Toggle buttons for legend */
+.mm_controls>div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mm_controls>div button {
+    padding: 6px 10px;
+    background-color: var(--gris-taupe);
+}
+
+/* Legend with animation */
+.mm_legend_outer {
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.mm_legend_outer button {
+    background-color: var(--noir);
+    color: var(--blanc);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.mm_legend_outer button:hover {
+    background-color: var(--vert-pale);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px var(--vert-neon);
+}
+
+.mm_legend {
+    max-width: 450px;
+    max-height: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid var(--blanc);
+    border-radius: 12px;
+    padding: 10px;
+    background-color: var(--noir);
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+/* mm_legend animation open close vue transition */
+.mm_legend_anim-enter-active,
+.mm_legend_anim-leave-active {
+    transition: all 0.5s ease-out;
+}
+
+.mm_legend_anim-enter-from {
+    opacity: 0;
+    max-width: 0;
+    max-height: 0;
+    padding: 0;
+    margin-right: 0;
+    transform: translateX(30px);
+}
+
+.mm_legend_anim-enter-to {
+    opacity: 1;
+    max-width: 450px;
+    max-height: 150px;
+    padding: 10px;
+    margin-right: 10px;
+    transform: translateX(0);
+}
+
+.mm_legend_anim-leave-from {
+    opacity: 1;
+    max-width: 450px;
+    max-height: 150px;
+    padding: 10px;
+    margin-right: 10px;
+    transform: translateX(0);
+}
+
+.mm_legend_anim-leave-to {
+    opacity: 0;
+    max-width: 0;
+    max-height: 0;
+    padding: 0;
+    margin-right: 0;
+    transform: translateX(30px);
+}
+
+.mm_legend>div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 6px;
+    /* Prevent content from squeezing during animation */
+    min-width: 100px;
+    max-height: 500px;
+}
+
+.mm_legend_cercle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.mm_legend p {
+    margin: 0;
+    font-weight: 500;
+    color: var(--blanc);
+}
+
+/* Scrollbar for legend */
+.mm_legend::-webkit-scrollbar {
+    width: 8px;
+}
+
+.mm_legend::-webkit-scrollbar-track {
+    background-color: var(--gris-taupe);
+    border-radius: 4px;
+}
+
+.mm_legend::-webkit-scrollbar-thumb {
+    background-color: var(--vert-neon);
+    border-radius: 4px;
+    box-shadow: 0 0 8px var(--vert-neon);
+}
+
+.mm_legend::-webkit-scrollbar-thumb:hover {
+    background-color: var(--vert-midel);
+}
+
+/* Links lien blanc entre nodes */
+.mm_linkage {
+    position: absolute;
+    background-color: var(--blanc);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Mobile styles - controls at top right when screen < 800px */
+/* if the viewport width is 800px or less */
+@media screen and (max-width: 800px) {
+    .mm_control_outer {
+        position: absolute;
+        left: 20px;
+        bottom: auto;
+        flex-direction: row;
+        gap: 8px;
+    }
+}
+
+
+/*
+* MINDMAP NODE CSS
+*/
+
+/* Vue transition handles enter/leave */
+.mm_node_outer-enter-active {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.mm_node_outer-leave-active {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mm_node_outer-enter-from {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.mm_node_outer-enter-to {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.mm_node_outer-leave-from {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.mm_node_outer-leave-to {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.mm_node {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    z-index: 5;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.mm_node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px var(--vert-neon);
+}
+
+/* Node content layout title subtitle description */
+.mm_node_content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.mm_node_title {
+    margin: 0 0 4px 0;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mm_node_subtitle {
+    margin: 0 0 8px 0;
+    opacity: 0.9;
+    font-weight: normal;
+}
+
+.mm_node_description {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px;
+    margin-top: 4px;
+}
+
+.mm_node_description p {
+    margin: 2px 0;
+    opacity: 0.8;
+}
+
+/* Preview/thumbnail section */
+.mm_node_preview {
+    width: auto;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.mm_node_thumbnail {
+    height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.mm_node_loading-spinner {
+    height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
+}
+
+.mm_node_no-thumbnail {
+    height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
+    opacity: 0.7;
+    padding: 20%;
+    box-sizing: border-box;
+}

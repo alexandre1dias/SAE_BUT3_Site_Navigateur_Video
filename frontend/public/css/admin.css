@@ -1,0 +1,40 @@
+.bottom_button {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.bottom_button > * {
+    flex: 1 1 0;
+    text-align: center; /* pour centrer le texte dans les boutons */
+}
+
+.popup {
+    position: fixed;        /* reste par-dessus tout */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* vrai centrage */
+    z-index: 9999;          /* au-dessus des autres éléments */
+
+    background-color: var(--gris-moyen) ;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    display: flex;
+    align-items: center;      /* centre verticalement */
+    justify-content: center;  /* centre horizontalement */
+}
+
+
