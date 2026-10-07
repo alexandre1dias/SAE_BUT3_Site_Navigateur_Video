@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bifurcation - Accueil</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body>
+    <header id="navbar">
+        <div class="logo">Interview</div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Mode Lecture</a>
+            <a href="mindmap.html">Mode Carte Mentale</a>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Artiste B</h1>
+            <div class="hero-meta">
+                <span>📍 Studio La Seine, Paris</span>
+                <span><span class="color-badge" style="background: #3578e5;"></span> Électro-Pop</span>
+            </div>
+            <p class="hero-desc">Découvrez l'interview exclusive de l'Artiste B. Il revient sur la création de son dernier album. <strong>Lisez la vidéo jusqu'au bout, ou bifurquez selon vos envies.</strong></p>
+            <div class="hero-buttons">
+                <!-- Bouton Héros relié à vid-processus-b et vid-pression-b -->
+                <button class="btn btn-play" onclick="ouvrirModal(
+                        'Artiste B - Interview Complète', 
+                        'https://picsum.photos/1920/1080?random=10', 
+                        'Découvrez l\'interview exclusive de l\'Artiste B. Un échange sans filtre sur la création et la tournée.', 
+                        'interview', 'Studio La Seine, Paris', '#3578e5', 'Électro-Pop',
+                        'vid-processus-b:::🔗 Bifurquer vers : Le processus créatif|vid-pression-b:::🔗 Bifurquer vers : Gérer la pression'
+                    )">▶ Lire la vidéo</button>
+                <button class="btn btn-info">ℹ Plus d'infos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de Filtres -->
+    <div class="filters-bar">
+        <label>🔍 Filtrer la base :</label>
+        <select id="filter-genre" class="filter-select">
+            <option value="">Toutes les Couleurs (Genres)</option>
+            <option value="rock">🔴 Rock</option>
+            <option value="electro">🔵 Électro</option>
+            <option value="rap">🟢 Rap</option>
+        </select>
+        <select id="filter-lieu" class="filter-select">
+            <option value="">Tous les Lieux</option>
+            <option value="paris">Paris</option>
+            <option value="lyon">Lyon</option>
+            <option value="festival">En Festival</option>
+        </select>
+        <select id="filter-artiste" class="filter-select">
+            <option value="">Tous les Artistes</option>
+            <option value="a">Artiste A</option>
+            <option value="b">Artiste B</option>
+            <option value="c">Artiste C</option>
+        </select>
+    </div>
+
+    <div class="content-section">
+        <!-- Rangée 1 : Extraits & Questions spécifiques -->
+        <div class="theme-row">
+            <div class="row-title">Extraits & Questions spécifiques</div>
+            <div class="carousel" id="questions-carousel">
+                
+                <!-- FAMILLE 1 : LE PROCESSUS CRÉATIF -->
+                
+                <div class="card" id="vid-processus-a" data-genre="rock" data-lieu="lyon" data-artiste="a" onclick="ouvrirModal(
+                        'Le processus créatif (Artiste A)', 'https://picsum.photos/800/450?random=200', 
+                        'L\'Artiste A nous explique comment il compose ses riffs de guitare.', 'question', 'Lyon', '#E50914', 'Rock',
+                        'vid-processus-b:::👤 Même question posée à l\'Artiste B|vid-processus-c:::👤 Même question posée à l\'Artiste C|vid-integrale-a:::▶️ Voir l\'interview complète'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=200" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Le processus créatif (Artiste A)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #E50914;"></span> Question • Lyon</span>
+                    </div>
+                </div>
+
+                <div class="card" id="vid-processus-b" data-genre="electro" data-lieu="paris" data-artiste="b" onclick="ouvrirModal(
+                        'Le processus créatif (Artiste B)', 'https://picsum.photos/800/450?random=201', 
+                        'L\'Artiste B partage ses secrets de fabrication sur ses machines.', 'question', 'Paris', '#3578e5', 'Électro-Pop',
+                        'vid-processus-a:::👤 Même question posée à l\'Artiste A|vid-processus-c:::👤 Même question posée à l\'Artiste C|vid-integrale-b:::▶️ Voir l\'interview complète'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=201" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Le processus créatif (Artiste B)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #3578e5;"></span> Question • Paris</span>
+                    </div>
+                </div>
+
+                <div class="card" id="vid-processus-c" data-genre="rap" data-lieu="festival" data-artiste="c" onclick="ouvrirModal(
+                        'Le processus créatif (Artiste C)', 'https://picsum.photos/800/450?random=202', 
+                        'L\'Artiste C parle de son écriture et de ses inspirations urbaines.', 'question', 'Festival', '#46d369', 'Rap',
+                        'vid-processus-a:::👤 Même question posée à l\'Artiste A|vid-processus-b:::👤 Même question posée à l\'Artiste B|vid-integrale-c:::▶️ Voir l\'interview complète'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=202" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Le processus créatif (Artiste C)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #46d369;"></span> Question • Festival</span>
+                    </div>
+                </div>
+
+                <!-- FAMILLE 2 : GÉRER LA PRESSION -->
+
+                <div class="card" id="vid-pression-a" data-genre="rock" data-lieu="lyon" data-artiste="a" onclick="ouvrirModal(
+                        'Gérer la pression (Artiste A)', 'https://picsum.photos/800/450?random=210', 
+                        'Comment faire face aux attentes du public rock ? L\'Artiste A témoigne.', 'question', 'Lyon', '#E50914', 'Rock',
+                        'vid-pression-b:::👤 Même question posée à l\'Artiste B|vid-integrale-a:::▶️ Voir l\'interview complète'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=210" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Gérer la pression (Artiste A)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #E50914;"></span> Question • Lyon</span>
+                    </div>
+                </div>
+
+                <div class="card" id="vid-pression-b" data-genre="electro" data-lieu="paris" data-artiste="b" onclick="ouvrirModal(
+                        'Gérer la pression (Artiste B)', 'https://picsum.photos/800/450?random=211', 
+                        'L\'Artiste B se confie sur le stress des grandes scènes électro.', 'question', 'Paris', '#3578e5', 'Électro-Pop',
+                        'vid-pression-a:::👤 Même question posée à l\'Artiste A|vid-integrale-b:::▶️ Voir l\'interview complète'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=211" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Gérer la pression (Artiste B)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #3578e5;"></span> Question • Paris</span>
+                    </div>
+                </div>
+
+                <!-- AUTRES QUESTIONS ISOLÉES -->
+                
+                <div class="card" id="vid-trac-c" data-genre="rap" data-lieu="festival" data-artiste="c" onclick="ouvrirModal(
+                        'Le trac avant la scène (Artiste C)', 'https://picsum.photos/800/450?random=22', 
+                        'Artiste C nous parle de son rituel avant de monter sur scène en festival.', 'question', 'Festival', '#46d369', 'Rap',
+                        'vid-integrale-c:::▶️ Voir l\'interview complète d\'Artiste C'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=22" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Le trac avant la scène (Artiste C)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #46d369;"></span> Question • Festival</span>
+                    </div>
+                </div>
+                
+                <div class="card" id="vid-tournee-a" data-genre="rock" data-lieu="paris" data-artiste="a" onclick="ouvrirModal(
+                        'Souvenirs de tournée (Artiste A)', 'https://picsum.photos/800/450?random=23', 
+                        'Les pires et meilleures anecdotes de tournée de l\'Artiste A.', 'question', 'Paris', '#E50914', 'Rock',
+                        'vid-integrale-a:::▶️ Voir l\'interview complète'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=23" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Souvenirs de tournée (Artiste A)</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #E50914;"></span> Question • Paris</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rangée 2 : Interviews Complètes -->
+        <div class="theme-row">
+            <div class="row-title">Interviews Complètes</div>
+            <div class="carousel" id="interviews-carousel">
+                <div class="card" id="vid-integrale-a" data-genre="rock" data-lieu="lyon" data-artiste="a" onclick="ouvrirModal(
+                        'Artiste A - Intégrale', 'https://picsum.photos/800/450?random=30', 
+                        'L\'interview complète de l\'Artiste A. Sans coupure.', 'interview', 'Lyon', '#E50914', 'Rock',
+                        'vid-processus-a:::🔗 Aller à : Le processus créatif|vid-pression-a:::🔗 Aller à : Gérer la pression|vid-tournee-a:::🔗 Aller à : Souvenirs de tournée'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=30" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Artiste A - Intégrale</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #E50914;"></span> 45 min • Lyon</span>
+                    </div>
+                </div>
+
+                <div class="card" id="vid-integrale-b" data-genre="electro" data-lieu="paris" data-artiste="b" onclick="ouvrirModal(
+                        'Artiste B - Intégrale', 'https://picsum.photos/800/450?random=31', 
+                        'Rencontre intimiste au Studio La Seine avec l\'Artiste B.', 'interview', 'Paris', '#3578e5', 'Électro-Pop',
+                        'vid-processus-b:::🔗 Aller à : Le processus créatif|vid-pression-b:::🔗 Aller à : Gérer la pression'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=31" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Artiste B - Intégrale</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #3578e5;"></span> 52 min • Paris</span>
+                    </div>
+                </div>
+
+                <div class="card" id="vid-integrale-c" data-genre="rap" data-lieu="festival" data-artiste="c" onclick="ouvrirModal(
+                        'Artiste C - Intégrale', 'https://picsum.photos/800/450?random=32', 
+                        'Artiste C se confie en plein air lors de son dernier festival estival.', 'interview', 'Festival', '#46d369', 'Rap',
+                        'vid-processus-c:::🔗 Aller à : Le processus créatif|vid-trac-c:::🔗 Aller à : Le trac avant la scène'
+                    )">
+                    <img src="https://picsum.photos/400/225?random=32" alt="Miniature">
+                    <div class="card-info">
+                        <span class="card-title">Artiste C - Intégrale</span>
+                        <span class="card-tags"><span class="color-badge" style="background: #46d369;"></span> 38 min • Festival</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- La fenêtre Modale -->
+    <div id="video-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="fermerModal()">&times;</button>
+            <div class="modal-header" id="modal-bg">
+                <div class="modal-header-content">
+                    <h2 id="modal-title">Titre de la vidéo</h2>
+                    <div class="modal-actions">
+                        <button class="btn btn-play" onclick="lancerVideo()">▶ Lancer la vidéo</button>
+                        <div class="player-choice">
+                            <label for="player-source">Lecteur :</label>
+                            <select id="player-source">
+                                <option value="youtube">YouTube</option>
+                                <option value="vimeo">Vimeo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    <span id="modal-format-badge" class="format-badge">Format</span>
+                    <span id="modal-location">📍 Lieu</span>
+                </div>
+
+                <div class="modal-layout">
+                    <div class="modal-desc-box">
+                        <p class="modal-desc" id="modal-desc"></p>
+                        <div class="related-content">
+                            <h3>Livre dont vous êtes le héros</h3>
+                            <p class="subtitle">Choisissez votre prochain embranchement :</p>
+                            <div class="related-links-container" id="modal-related-links"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-meta-box">
+                        <p><strong>Couleur musicale :</strong> <br>
+                        <span id="modal-color-badge" class="color-badge"></span> <span id="modal-genre-text">Genre</span></p>
+                        <p><strong>Type de contenu :</strong> <span id="modal-meta-type">Interview</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+/* --- CORRECTIONS DE LISIBILITÉ ET POSITIONNEMENT --- */
+
+.legend-box {
+    position: absolute;
+    top: 80px; /* Décale la légende sous la navbar */
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.85); /* Fond sombre pour masquer l'arrière-plan */
+    color: #ffffff; /* Texte en blanc */
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.instructions {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    max-width: 300px;
+}
+
+.color-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.legend-item {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* --- STRUCTURE DE LA CARTE MENTALE AVEC LIGNES --- */
+.tree {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px; /* Espace en haut pour respirer sous la navbar */
+    overflow-x: auto;
+    padding-bottom: 100px;
+}
+
+.tree ul {
+    padding-top: 20px; 
+    position: relative;
+    transition: all 0.5s;
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: 20px 10px 0 10px;
+    transition: all 0.5s;
+}
+
+/* Lignes horizontales au-dessus des enfants */
+.tree li::before, .tree li::after {
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    right: 50%;
+    border-top: 2px solid #888; /* Couleur des traits */
+    width: 50%; 
+    height: 20px;
+}
+.tree li::after {
+    right: auto; 
+    left: 50%;
+    border-left: 2px solid #888;
+}
+
+/* Supprimer les lignes si l'élément n'a pas de "frères" */
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+.tree li:only-child { padding-top: 0; }
+
+/* Arrondir les angles et limiter les bordures des premiers et derniers enfants */
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+.tree li:last-child::before {
+    border-right: 2px solid #888;
+    border-radius: 0 5px 0 0;
+}
+.tree li:first-child::after {
+    border-radius: 5px 0 0 0;
+}
+
+/* Ligne verticale tombant vers les enfants */
+.tree ul ul::before {
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    left: 50%;
+    border-left: 2px solid #888;
+    width: 0; 
+    height: 20px;
+    margin-left: -1px;
+}
+
+/* --- DESIGN DES NŒUDS --- */
+.tree .node {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #ffffff; /* Fond blanc pour les cartes */
+    color: #111111; /* TEXTE NOIR POUR ÊTRE LISIBLE SUR LE BLANC */
+    display: inline-block;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 14px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.tree .node:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* Le nœud racine (Base de données) */
+.tree .root { 
+    background-color: #222222; 
+    color: #ffffff; /* Lui reste blanc car le fond est noir */
+    font-weight: bold; 
+    font-size: 16px; 
+    border: 1px solid #444; 
+}
+
+/* Nœud catégorie (Thématiques transversales, Par artistes) */
+.tree .category { 
+    background-color: #e0e0e0; 
+    font-weight: bold; 
+    color: #111111;
+}
+
+/* S'assurer que les titres internes dans les divs respectent le noir */
+.tree .node-title, .tree .node-subtitle {
+    color: #111111;
+}
