@@ -3,188 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bifurcation - Graph Neo4j</title>
+    <title>Bifurcation - Carte mentale</title>
     <link rel="stylesheet" href="assets/css/common.css">
-    <!-- On ajoute la bibliothèque Vis.js pour le rendu Neo4j -->
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    
-    <style>
-        /* Styles spécifiques pour l'affichage plein écran du graphe */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #111111; /* Fond très sombre typique de Neo4j */
-            overflow: hidden; /* Empêche le scroll de la page entière */
-        }
-        
-        #mynetwork {
-            width: 100vw;
-            height: calc(100vh - 60px); /* Prend toute la place sous la navbar */
-            background-color: #111111;
-        }
-
-        .instructions {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background-color: rgba(0, 0, 0, 0.85);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            z-index: 10;
-            border: 1px solid #333;
-            pointer-events: none; /* Laisse passer les clics vers le graphe en dessous */
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/mindmap.css">
 </head>
 <body>
     <header id="navbar">
-        <div class="logo" style="color: #E50914; text-transform: uppercase; font-weight: bold;">Interview</div>
-        <div class="nav-links">
+        <div class="logo">Interview</div>
+        <nav class="nav-links">
             <a href="index.html">Mode Lecture</a>
             <a href="mindmap.html" class="active">Mode Carte Mentale</a>
-        </div>
+        </nav>
     </header>
 
     <div class="instructions">
-        <strong>Graphe interactif (Style Neo4j) :</strong><br>
+        <strong>Carte mentale interactive :</strong><br>
+        👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
+        ◌ <strong>Bordure en pointillés</strong> : il reste des éléments reliés à découvrir.<br>
         🖱️ <strong>Molette</strong> pour zoomer/dézoomer.<br>
-        🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.<br>
-        🔵 <strong>Tirer un nœud</strong> pour réorganiser la carte.
+        🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
     </div>
 
-    <!-- Le conteneur où le graphe va être dessiné -->
-    <div id="mynetwork"></div>
+    <!-- Point de montage de l'application Vue (voir assets/js/mindmap.js) -->
+    <div id="app"></div>
 
-    <script>
-        // 1. DÉFINITION DES NŒUDS (NODES)
-        // La propriété 'value' définit la taille de la bulle
-        var nodes = new vis.DataSet([
-            // Nœud central
-            { id: 0, label: 'Base de données\nVidéos', group: 'root', value: 30 },
+    <!-- Gabarit de la carte : un SVG dont le contenu dépend de l'état de l'application -->
+    <script type="text/x-template" id="gabarit-carte">
+        <svg ref="svg" class="carte" :class="{ 'en-deplacement': enDeplacement }" :viewBox="viewBox"
+             @wheel.prevent="zoomer" @pointerdown="debuterDeplacement" @pointermove="deplacer"
+             @pointerup="terminerDeplacement" @pointercancel="terminerDeplacement">
+            <defs>
+                <!-- Une pointe de flèche par couleur de lien -->
+                <marker v-for="couleur in couleursLiens" :key="couleur" :id="'fleche-' + couleur"
+                        markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                    <path d="M0,0 L10,5 L0,10 z" :class="'fleche--' + couleur" />
+                </marker>
+            </defs>
 
-            // Artistes
-            { id: 1, label: 'Artiste A\n(Rock)', group: 'artisteA', value: 25 },
-            { id: 2, label: 'Artiste B\n(Électro)', group: 'artisteB', value: 25 },
-            { id: 3, label: 'Artiste C\n(Rap)', group: 'artisteC', value: 25 },
+            <g :transform="transformationVue">
+                <g v-for="lien in liensVisibles" :key="lien.id" class="lien" :class="'lien--' + lien.couleur">
+                    <line :x1="lien.x1" :y1="lien.y1" :x2="lien.x2" :y2="lien.y2"
+                          :marker-end="'url(#fleche-' + lien.couleur + ')'" />
+                    <text v-if="lien.label" :x="lien.milieuX" :y="lien.milieuY" dy="-5"
+                          :transform="'rotate(' + lien.angle + ' ' + lien.milieuX + ' ' + lien.milieuY + ')'">{{ lien.label }}</text>
+                </g>
 
-            // Thématiques
-            { id: 10, label: 'Thème :\nProcessus Créatif', group: 'theme', value: 20 },
-            { id: 11, label: 'Thème :\nGérer la Pression', group: 'theme', value: 20 },
-            { id: 12, label: 'Thème :\nAnecdotes Tournée', group: 'theme', value: 20 },
-            { id: 13, label: 'Thème :\nLe Trac', group: 'theme', value: 20 },
-
-            // Vidéos
-            { id: 101, label: 'Intégrale A', group: 'video', value: 12 },
-            { id: 102, label: 'Processus A', group: 'video', value: 12 },
-            { id: 103, label: 'Pression A', group: 'video', value: 12 },
-            { id: 104, label: 'Tournée A', group: 'video', value: 12 },
-
-            { id: 201, label: 'Intégrale B', group: 'video', value: 12 },
-            { id: 202, label: 'Processus B', group: 'video', value: 12 },
-            { id: 203, label: 'Pression B', group: 'video', value: 12 },
-
-            { id: 301, label: 'Intégrale C', group: 'video', value: 12 },
-            { id: 302, label: 'Processus C', group: 'video', value: 12 },
-            { id: 303, label: 'Trac C', group: 'video', value: 12 }
-        ]);
-
-        // 2. DÉFINITION DES LIENS (EDGES)
-        var edges = new vis.DataSet([
-            // Connexions à la racine
-            { from: 0, to: 1 }, { from: 0, to: 2 }, { from: 0, to: 3 },
-            { from: 0, to: 10 }, { from: 0, to: 11 }, { from: 0, to: 12 }, { from: 0, to: 13 },
-
-            // Relations: Artiste -> Vidéos
-            { from: 1, to: 101, label: 'A_POUR_VIDEO' },
-            { from: 1, to: 102, label: 'A_POUR_VIDEO' },
-            { from: 1, to: 103, label: 'A_POUR_VIDEO' },
-            { from: 1, to: 104, label: 'A_POUR_VIDEO' },
-
-            { from: 2, to: 201, label: 'A_POUR_VIDEO' },
-            { from: 2, to: 202, label: 'A_POUR_VIDEO' },
-            { from: 2, to: 203, label: 'A_POUR_VIDEO' },
-
-            { from: 3, to: 301, label: 'A_POUR_VIDEO' },
-            { from: 3, to: 302, label: 'A_POUR_VIDEO' },
-            { from: 3, to: 303, label: 'A_POUR_VIDEO' },
-
-            // Relations: Thématique -> Vidéos (L'intersection Neo4j !)
-            { from: 10, to: 102, label: 'PARLE_DE' },
-            { from: 10, to: 202, label: 'PARLE_DE' },
-            { from: 10, to: 302, label: 'PARLE_DE' },
-
-            { from: 11, to: 103, label: 'PARLE_DE' },
-            { from: 11, to: 203, label: 'PARLE_DE' },
-
-            { from: 12, to: 104, label: 'PARLE_DE' },
-            
-            { from: 13, to: 303, label: 'PARLE_DE' }
-        ]);
-
-        // 3. PARAMÉTRAGE DU GRAPHE
-        var container = document.getElementById('mynetwork');
-        var data = { nodes: nodes, edges: edges };
-        
-        var options = {
-            nodes: {
-                shape: 'dot', // Forme ronde typique de Neo4j
-                font: {
-                    color: '#ffffff',
-                    size: 14,
-                    face: 'arial',
-                    background: 'rgba(0,0,0,0.4)', // Léger fond derrière le texte
-                    strokeWidth: 0
-                },
-                borderWidth: 2,
-                shadow: true
-            },
-            edges: {
-                width: 1.5,
-                color: { inherit: 'both' }, // Les flèches prennent un dégradé entre les couleurs des deux nœuds
-                font: {
-                    color: '#888888', // Couleur du texte sur les liens (A_POUR_VIDEO...)
-                    size: 10,
-                    align: 'middle'
-                },
-                arrows: {
-                    to: { enabled: true, scaleFactor: 0.5 } // Flèches directionnelles
-                },
-                smooth: {
-                    type: 'continuous'
-                }
-            },
-            groups: {
-                root: { color: { background: '#ffffff', border: '#aaaaaa' } },
-                artisteA: { color: { background: '#E50914', border: '#b80710' } }, // Rock (Rouge)
-                artisteB: { color: { background: '#3578e5', border: '#255db8' } }, // Electro (Bleu)
-                artisteC: { color: { background: '#46d369', border: '#35a852' } }, // Rap (Vert)
-                theme: { color: { background: '#f4b400', border: '#c39000' } },    // Thèmes (Jaune)
-                video: { color: { background: '#555555', border: '#333333' } }     // Vidéos (Gris)
-            },
-            physics: {
-                forceAtlas2Based: {
-                    gravitationalConstant: -100,
-                    centralGravity: 0.01,
-                    springLength: 200,
-                    springConstant: 0.08
-                },
-                maxVelocity: 50,
-                solver: 'forceAtlas2Based', // Algorithme physique très organique
-                timestep: 0.35,
-                stabilization: { iterations: 150 }
-            },
-            interaction: {
-                hover: true,
-                zoomView: true,
-                dragView: true
-            }
-        };
-
-        // 4. INITIALISATION
-        var network = new vis.Network(container, data, options);
+                <!-- Les éléments ne réagissent qu'au clic : aucun déplacement à la souris -->
+                <g v-for="noeud in noeudsVisibles" :key="noeud.id" class="noeud"
+                   :class="['noeud--' + noeud.couleur, { 'noeud--a-decouvrir': resteADecouvrir(noeud.id) }]"
+                   :transform="'translate(' + noeud.x + ' ' + noeud.y + ')'"
+                   @pointerdown.stop @click="basculer(noeud.id)">
+                    <circle :r="noeud.rayon" />
+                    <text :y="noeud.rayon + 20">
+                        <tspan v-for="(ligne, i) in noeud.lignes" :key="i" x="0" :dy="i === 0 ? 0 : 18">{{ ligne }}</tspan>
+                    </text>
+                </g>
+            </g>
+        </svg>
     </script>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/mindmap.js"></script>
 </body>
 </html>

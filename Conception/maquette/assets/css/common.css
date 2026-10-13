@@ -1,8 +1,15 @@
+/* === Styles communs aux deux pages === */
+
 :root {
     --bg-color: #141414;
     --primary-red: #E50914;
     --text-color: #e5e5e5;
     --hover-color: #ffffff;
+
+    /* Couleurs musicales (genres) */
+    --couleur-rock: #E50914;
+    --couleur-electro: #3578e5;
+    --couleur-rap: #46d369;
 }
 
 body {
@@ -11,6 +18,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
 }
+
+/* --- Barre de navigation --- */
 
 header {
     display: flex;
@@ -30,8 +39,39 @@ header.scrolled {
     background-color: #141414;
 }
 
-.logo { font-weight: bold; font-size: 1.5rem; color: var(--primary-red); text-transform: uppercase; letter-spacing: 2px; }
-.nav-links a { color: var(--text-color); margin-left: 20px; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
-.nav-links a:hover, .nav-links a.active { color: var(--hover-color); font-weight: bold; }
+.logo {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--primary-red);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
 
-.color-badge { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; }
+.nav-links a {
+    color: var(--text-color);
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--hover-color);
+    font-weight: bold;
+}
+
+/* --- Pastille de couleur musicale --- */
+
+.color-badge {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.color-badge.genre-rock { background: var(--couleur-rock); }
+.color-badge.genre-electro { background: var(--couleur-electro); }
+.color-badge.genre-rap { background: var(--couleur-rap); }

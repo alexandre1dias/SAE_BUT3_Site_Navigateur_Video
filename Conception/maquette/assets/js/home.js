@@ -1,106 +1,141 @@
+// === Page d'accueil (Mode Lecture) ===
+// Les données (VIDEOS, ARTISTES, GENRES, LIEUX, VIDEO_A_LA_UNE) viennent de data.js
+
+const videoParId = {};
+VIDEOS.forEach(video => { videoParId[video.id] = video; });
+
+const artisteParId = {};
+ARTISTES.forEach(artiste => { artisteParId[artiste.id] = artiste; });
+
+function genreDe(video) {
+    return artisteParId[video.artiste].genre;
+}
+
+function urlImage(numero, largeur, hauteur) {
+    return `https://picsum.photos/${largeur}/${hauteur}?random=${numero}`;
+}
+
+function creerElement(balise, classe, texte) {
+    const element = document.createElement(balise);
+    if (classe) element.className = classe;
+    if (texte) element.textContent = texte;
+    return element;
+}
+
 // === Gestion du défilement (Navbar) ===
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50));
 
+// === Cartes des vidéos ===
+function creerCarte(video) {
+    const carte = creerElement('div', 'card');
+    carte.id = video.id;
+    carte.dataset.genre = genreDe(video);
+    carte.dataset.lieu = video.lieu;
+    carte.dataset.artiste = video.artiste;
+
+    const miniature = creerElement('img');
+    miniature.src = urlImage(video.image, 400, 225);
+    miniature.alt = 'Miniature';
+
+    const etiquettes = creerElement('span', 'card-tags');
+    etiquettes.append(
+        creerElement('span', `color-badge genre-${genreDe(video)}`),
+        ` ${video.duree || 'Question'} • ${LIEUX[video.lieu]}`
+    );
+
+    const infos = creerElement('div', 'card-info');
+    infos.append(creerElement('span', 'card-title', video.titre), etiquettes);
+
+    carte.append(miniature, infos);
+    carte.addEventListener('click', () => ouvrirModal(video));
+    return carte;
+}
+
+const carrouselQuestions = document.getElementById('questions-carousel');
+const carrouselInterviews = document.getElementById('interviews-carousel');
+
+VIDEOS.forEach(video => {
+    const carrousel = video.format === 'interview' ? carrouselInterviews : carrouselQuestions;
+    carrousel.appendChild(creerCarte(video));
+});
+
 // === Logique de la fenêtre Modale ===
 const modal = document.getElementById('video-modal');
 
-function ouvrirModal(titre, imageUrl, description, format, lieu, colorHex, genreText, relatedString) {
-    document.getElementById('modal-title').textContent = titre;
-    document.getElementById('modal-desc').textContent = description;
-    document.getElementById('modal-bg').style.backgroundImage = `url('${imageUrl}')`;
-    
-    document.getElementById('modal-location').textContent = `📍 ${lieu}`;
-    document.getElementById('modal-color-badge').style.background = colorHex;
-    document.getElementById('modal-genre-text').textContent = genreText;
+function ouvrirModal(video) {
+    const genre = genreDe(video);
+    const estInterview = video.format === 'interview';
+
+    document.getElementById('modal-title').textContent = video.titre;
+    document.getElementById('modal-desc').textContent = video.description;
+    document.getElementById('modal-bg').style.backgroundImage =
+        `url('${video.imageModale || urlImage(video.image, 800, 450)}')`;
+
+    document.getElementById('modal-location').textContent = `📍 ${video.lieuTexte || LIEUX[video.lieu]}`;
+    document.getElementById('modal-color-badge').className = `color-badge genre-${genre}`;
+    document.getElementById('modal-genre-text').textContent = GENRES[genre].nomComplet;
 
     const badge = document.getElementById('modal-format-badge');
-    document.getElementById('modal-meta-type').textContent = format === 'interview' ? 'Interview Intégrale' : 'Extrait / Réponse spécifique';
-    
-    if (format === 'interview') {
-        badge.textContent = "Interview Intégrale"; 
-        badge.className = "format-badge interview";
-    } else {
-        badge.textContent = "Extrait (Question)"; 
-        badge.className = "format-badge question";
-    }
+    badge.textContent = estInterview ? 'Interview Intégrale' : 'Extrait (Question)';
+    badge.className = `format-badge ${video.format}`;
+    document.getElementById('modal-meta-type').textContent =
+        estInterview ? 'Interview Intégrale' : 'Extrait / Réponse spécifique';
 
-    const linksContainer = document.getElementById('modal-related-links');
-    linksContainer.innerHTML = "";
-    
-    if (relatedString) {
-        // On sépare chaque bouton par le symbole "|"
-        relatedString.split('|').forEach(linkData => {
-            // On sépare l'ID cible et le texte du bouton grâce au symbole ":::"
-            const parts = linkData.split(':::');
-            
-            if(parts.length === 2) {
-                const targetId = parts[0];
-                const linkText = parts[1];
+    // Un bouton par bifurcation possible depuis cette vidéo
+    const conteneurLiens = document.getElementById('modal-related-links');
+    conteneurLiens.replaceChildren();
 
-                const btn = document.createElement('button');
-                btn.className = 'btn-related';
-                btn.textContent = linkText;
-                
-                // Au clic, on déclenche l'ouverture de l'autre vidéo
-                btn.onclick = () => {
-                    const targetCard = document.getElementById(targetId);
-                    if(targetCard) {
-                        targetCard.click(); // Simule un clic sur la carte correspondante
-                        document.querySelector('.modal-content').scrollTop = 0; // Remonte la modale tout en haut
-                    }
-                };
-                linksContainer.appendChild(btn);
-            }
+    video.liens.forEach(lien => {
+        const cible = videoParId[lien.cible];
+        if (!cible) return;
+
+        const bouton = creerElement('button', 'btn-related', lien.texte);
+        bouton.addEventListener('click', () => {
+            ouvrirModal(cible);
+            document.querySelector('.modal-content').scrollTop = 0; // Remonte la modale tout en haut
         });
-    }
+        conteneurLiens.appendChild(bouton);
+    });
 
     modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-ouverte');
 }
 
-function fermerModal() { 
-    modal.classList.remove('active'); 
-    document.body.style.overflow = 'auto'; 
+function fermerModal() {
+    modal.classList.remove('active');
+    document.body.classList.remove('modal-ouverte');
 }
-
-modal.addEventListener('click', e => { 
-    if (e.target === modal) fermerModal(); 
-});
 
 function lancerVideo() {
     const lecteur = document.getElementById('player-source').value;
     alert(`Lancement du lecteur vidéo via l'API : ${lecteur.toUpperCase()}`);
 }
 
+document.getElementById('hero-play').addEventListener('click', () => ouvrirModal(VIDEO_A_LA_UNE));
+document.getElementById('modal-close').addEventListener('click', fermerModal);
+document.getElementById('modal-play').addEventListener('click', lancerVideo);
+
+// Un clic sur le fond sombre ferme la modale
+modal.addEventListener('click', e => {
+    if (e.target === modal) fermerModal();
+});
+
 // === Logique des filtres croisés de la base de données ===
-const filterGenre = document.getElementById('filter-genre');
-const filterLieu = document.getElementById('filter-lieu');
-const filterArtiste = document.getElementById('filter-artiste');
-const allCards = document.querySelectorAll('.card');
+const filtreGenre = document.getElementById('filter-genre');
+const filtreLieu = document.getElementById('filter-lieu');
+const filtreArtiste = document.getElementById('filter-artiste');
+const cartes = document.querySelectorAll('.card');
 
-function filtrerVidéos() {
-    const selectedGenre = filterGenre.value;
-    const selectedLieu = filterLieu.value;
-    const selectedArtiste = filterArtiste.value;
+function filtrerVideos() {
+    cartes.forEach(carte => {
+        const correspond =
+            (filtreGenre.value === '' || carte.dataset.genre === filtreGenre.value) &&
+            (filtreLieu.value === '' || carte.dataset.lieu === filtreLieu.value) &&
+            (filtreArtiste.value === '' || carte.dataset.artiste === filtreArtiste.value);
 
-    allCards.forEach(card => {
-        const cardGenre = card.getAttribute('data-genre');
-        const cardLieu = card.getAttribute('data-lieu');
-        const cardArtiste = card.getAttribute('data-artiste');
-
-        const matchGenre = (selectedGenre === "" || cardGenre === selectedGenre);
-        const matchLieu = (selectedLieu === "" || cardLieu === selectedLieu);
-        const matchArtiste = (selectedArtiste === "" || cardArtiste === selectedArtiste);
-
-        if (matchGenre && matchLieu && matchArtiste) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
+        carte.hidden = !correspond;
     });
 }
 
-filterGenre.addEventListener('change', filtrerVidéos);
-filterLieu.addEventListener('change', filtrerVidéos);
-filterArtiste.addEventListener('change', filtrerVidéos);
+[filtreGenre, filtreLieu, filtreArtiste].forEach(filtre => filtre.addEventListener('change', filtrerVideos));
