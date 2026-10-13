@@ -1,112 +1,172 @@
 // === Page Carte Mentale (React) ===
-// Les données (VIDEOS, ARTISTES, THEMES, GENRES) viennent de data.js
+// Les tables (ARTISTE, INTERVIEW, THEME, QUESTION, EXTRAIT...) et les fonctions d'accès viennent de data.js
+//
+// La carte suit les relations de la base :
+//   racine → artiste → interview → extrait
+//   racine → thème   → question  → extrait
+// Un extrait est donc relié à la fois à son interview et à sa question.
 
 // === 1. Éléments de la carte ===
 const ID_RACINE = 'racine';
+const COULEUR_PAR_DEFAUT = '#888888';
 
 // Rayon du cercle selon le type d'élément
-const RAYONS = { racine: 34, artiste: 26, theme: 22, video: 14 };
+const RAYONS = { racine: 34, artiste: 26, theme: 24, interview: 20, question: 18, extrait: 13 };
 
-// "couleur" correspond aux classes CSS noeud--xxx / lien--xxx de mindmap.css
-const racine = { id: ID_RACINE, type: 'racine', couleur: 'racine', label: 'Base de données\nVidéos' };
+// Découpe un texte en lignes courtes pour l'afficher sous un cercle
+function couperEnLignes(texte, longueurMax = 22) {
+    const lignes = [];
+    texte.split(' ').forEach(mot => {
+        const derniere = lignes[lignes.length - 1];
+        if (derniere !== undefined && `${derniere} ${mot}`.length <= longueurMax) {
+            lignes[lignes.length - 1] = `${derniere} ${mot}`;
+        } else {
+            lignes.push(mot);
+        }
+    });
+    return lignes;
+}
 
-const noeudsThemes = THEMES.map(theme => ({
-    id: `theme-${theme.id}`,
-    type: 'theme',
-    couleur: 'theme',
-    label: `Thème :\n${theme.nom}`
-}));
+// Couleur d'un artiste : celle de son premier genre (genre_musical.code_couleur)
+function couleurArtiste(artiste) {
+    const genres = genresDeArtiste(artiste);
+    return genres.length ? genres[0].code_couleur : COULEUR_PAR_DEFAUT;
+}
 
-const noeudsArtistes = ARTISTES.map(artiste => ({
-    id: `artiste-${artiste.id}`,
+// "couleur" n'est renseignée que si elle vient de la base ; sinon c'est la classe CSS noeud--<type> qui décide
+const racine = { id: ID_RACINE, type: 'racine', label: 'Base de données Vidéos' };
+
+const noeudsArtistes = ARTISTE.map(artiste => ({
+    id: `artiste-${artiste.id_artiste}`,
     type: 'artiste',
-    couleur: artiste.genre,
-    label: `${artiste.nom}\n(${GENRES[artiste.genre].nom})`
+    couleur: couleurArtiste(artiste),
+    label: `${artiste.nom_artiste} (${genresDeArtiste(artiste).map(genre => genre.nom_genre).join(', ')})`
 }));
 
-// Chaque vidéo appartient à un artiste et peut traiter d'un thème
-const noeudsVideos = VIDEOS.map(video => ({
-    id: video.id,
-    type: 'video',
-    couleur: 'video',
-    label: video.titreCourt,
-    artiste: `artiste-${video.artiste}`,
-    theme: video.theme ? `theme-${video.theme}` : null
+const noeudsInterviews = INTERVIEW.map(interview => ({
+    id: `interview-${interview.id_interview}`,
+    type: 'interview',
+    couleur: couleurArtiste(artisteDeInterview(interview)),
+    label: interview.titre_interview,
+    parent: `artiste-${interview.id_artiste}`
 }));
 
-const tousLesNoeuds = [racine, ...noeudsThemes, ...noeudsArtistes, ...noeudsVideos];
+const noeudsThemes = THEME.map(theme => ({
+    id: `theme-${theme.id_theme}`,
+    type: 'theme',
+    label: `Thème : ${theme.titre_theme}`
+}));
+
+const noeudsQuestions = QUESTION.map(question => ({
+    id: `question-${question.id_question}`,
+    type: 'question',
+    label: question.texte_question,
+    parent: `theme-${question.id_theme}`
+}));
+
+// Les extraits sont rangés par interview puis par ordre de séquence
+const noeudsExtraits = INTERVIEW.flatMap(extraitsDeInterview).map(extrait => ({
+    id: `extrait-${extrait.id_extrait}`,
+    type: 'extrait',
+    label: extrait.titre_extrait,
+    interview: `interview-${extrait.id_interview}`,
+    question: `question-${extrait.id_question}`
+}));
+
+const tousLesNoeuds = [
+    racine,
+    ...noeudsArtistes,
+    ...noeudsThemes,
+    ...noeudsInterviews,
+    ...noeudsQuestions,
+    ...noeudsExtraits
+];
 
 const noeudParId = {};
 tousLesNoeuds.forEach(noeud => {
     noeud.rayon = RAYONS[noeud.type];
-    noeud.lignes = noeud.label.split('\n');
+    noeud.lignes = couperEnLignes(noeud.label);
     noeudParId[noeud.id] = noeud;
 });
 
 // === 2. Positions fixes ===
-// Disposition en cercles autour du thème principal :
-// thèmes sur le premier cercle, artistes sur le deuxième, vidéos sur le troisième.
-const RAYON_THEMES = 230;
-const RAYON_ARTISTES = 440;
-const RAYON_VIDEOS = 700;
-const ECART_VIDEOS = 22; // angle (en degrés) entre deux vidéos d'un même artiste
-const MARGE = 90;
-
-function placer(noeud, distance, angleDegres) {
-    const angle = angleDegres * Math.PI / 180;
-    noeud.x = Math.round(distance * Math.cos(angle));
-    noeud.y = Math.round(distance * Math.sin(angle));
+// Disposition en colonnes, de gauche à droite :
+//   artistes | interviews | extraits | questions | thèmes
+// La racine est en haut au centre ; les extraits, au milieu, font le lien entre les deux côtés.
+function placerEnColonne(noeuds, x, yCentre, ecart) {
+    noeuds.forEach((noeud, i) => {
+        noeud.x = x;
+        noeud.y = Math.round(yCentre + (i - (noeuds.length - 1) / 2) * ecart);
+    });
 }
 
-placer(racine, 0, 0);
+racine.x = 0;
+racine.y = -520;
 
-noeudsThemes.forEach((theme, i) => {
-    placer(theme, RAYON_THEMES, -45 + i * 360 / noeudsThemes.length);
-});
+placerEnColonne(noeudsArtistes, -620, -150, 220);
+placerEnColonne(noeudsInterviews, -330, 120, 220);
+placerEnColonne(noeudsExtraits, 0, 250, 105);
+placerEnColonne(noeudsQuestions, 330, 150, 170);
+placerEnColonne(noeudsThemes, 620, -150, 170);
 
-noeudsArtistes.forEach((artiste, i) => {
-    const angleArtiste = -90 + i * 360 / noeudsArtistes.length;
-    placer(artiste, RAYON_ARTISTES, angleArtiste);
-
-    // Les vidéos de l'artiste sont réparties en éventail derrière lui
-    const sesVideos = noeudsVideos.filter(video => video.artiste === artiste.id);
-    sesVideos.forEach((video, j) => {
-        placer(video, RAYON_VIDEOS, angleArtiste + (j - (sesVideos.length - 1) / 2) * ECART_VIDEOS);
-    });
-});
+// La vue est cadrée sur l'emplacement de la carte entièrement dépliée
+const MARGE = 120;
+const xs = tousLesNoeuds.map(noeud => noeud.x);
+const ys = tousLesNoeuds.map(noeud => noeud.y);
+const VIEW_BOX = [
+    Math.min(...xs) - MARGE,
+    Math.min(...ys) - MARGE,
+    Math.max(...xs) - Math.min(...xs) + 2 * MARGE,
+    Math.max(...ys) - Math.min(...ys) + 2 * MARGE
+].join(' ');
 
 // === 3. Liens ===
+// Un lien par clé étrangère de la base
 const liens = [];
 
 [...noeudsArtistes, ...noeudsThemes].forEach(noeud => {
     liens.push({ from: ID_RACINE, to: noeud.id });
 });
 
-noeudsVideos.forEach(video => {
-    liens.push({ from: video.artiste, to: video.id });
-    if (video.theme) liens.push({ from: video.theme, to: video.id });
+[...noeudsInterviews, ...noeudsQuestions].forEach(noeud => {
+    liens.push({ from: noeud.parent, to: noeud.id });
 });
 
-// Tracé de chaque lien : un segment allant du bord d'un élément au bord de l'autre
+noeudsExtraits.forEach(extrait => {
+    liens.push({ from: extrait.interview, to: extrait.id });
+    liens.push({ from: extrait.question, to: extrait.id });
+});
+
+// Tracé de chaque lien : un segment allant du bord d'un élément au bord de l'autre, terminé par une pointe de flèche
+const LONGUEUR_POINTE = 10;
+const DEMI_LARGEUR_POINTE = 5;
+
 liens.forEach((lien, index) => {
     const depart = noeudParId[lien.from];
     const arrivee = noeudParId[lien.to];
     const dx = arrivee.x - depart.x;
     const dy = arrivee.y - depart.y;
     const longueur = Math.sqrt(dx * dx + dy * dy);
-    const retraitDepart = depart.rayon + 3;
-    const retraitArrivee = arrivee.rayon + 5;
+    // Vecteur unitaire dans le sens du lien
+    const ux = dx / longueur;
+    const uy = dy / longueur;
 
     lien.id = index;
+    lien.type = depart.type;
     lien.couleur = depart.couleur;
-    lien.x1 = depart.x + dx / longueur * retraitDepart;
-    lien.y1 = depart.y + dy / longueur * retraitDepart;
-    lien.x2 = arrivee.x - dx / longueur * retraitArrivee;
-    lien.y2 = arrivee.y - dy / longueur * retraitArrivee;
-});
+    lien.x1 = depart.x + ux * (depart.rayon + 3);
+    lien.y1 = depart.y + uy * (depart.rayon + 3);
+    lien.x2 = arrivee.x - ux * (arrivee.rayon + 5);
+    lien.y2 = arrivee.y - uy * (arrivee.rayon + 5);
 
-// Une pointe de flèche par couleur de lien
-const couleursLiens = [...new Set(liens.map(lien => lien.couleur))];
+    const baseX = lien.x2 - ux * LONGUEUR_POINTE;
+    const baseY = lien.y2 - uy * LONGUEUR_POINTE;
+    lien.pointe = [
+        [lien.x2, lien.y2],
+        [baseX - uy * DEMI_LARGEUR_POINTE, baseY + ux * DEMI_LARGEUR_POINTE],
+        [baseX + uy * DEMI_LARGEUR_POINTE, baseY - ux * DEMI_LARGEUR_POINTE]
+    ].map(point => point.join(',')).join(' ');
+});
 
 const voisinsDe = {};
 tousLesNoeuds.forEach(noeud => { voisinsDe[noeud.id] = []; });
@@ -138,42 +198,27 @@ function calculerVisibles(deplies) {
 const { useState, useRef } = React;
 const e = React.createElement;
 
-// La vue est cadrée sur l'emplacement de la carte entièrement dépliée
-const DEMI_COTE = RAYON_VIDEOS + MARGE;
-const VIEW_BOX = [-DEMI_COTE, -DEMI_COTE, 2 * DEMI_COTE, 2 * DEMI_COTE].join(' ');
-
-function Fleche({ couleur }) {
-    return e('marker', {
-        id: `fleche-${couleur}`,
-        markerUnits: 'userSpaceOnUse',
-        markerWidth: 10,
-        markerHeight: 10,
-        refX: 10,
-        refY: 5,
-        orient: 'auto'
-    }, e('path', { d: 'M0,0 L10,5 L0,10 z', className: `fleche--${couleur}` }));
+// Transmet au CSS une couleur venue de la base (sinon la classe du type s'applique)
+function styleCouleur(couleur) {
+    return couleur ? { '--couleur': couleur } : undefined;
 }
 
 function Lien({ lien }) {
-    return e('g', { className: `lien lien--${lien.couleur}` },
-        e('line', {
-            x1: lien.x1,
-            y1: lien.y1,
-            x2: lien.x2,
-            y2: lien.y2,
-            markerEnd: `url(#fleche-${lien.couleur})`
-        })
+    return e('g', { className: `lien lien--${lien.type}`, style: styleCouleur(lien.couleur) },
+        e('line', { x1: lien.x1, y1: lien.y1, x2: lien.x2, y2: lien.y2 }),
+        e('polygon', { points: lien.pointe })
     );
 }
 
 // Un élément ne réagit qu'au clic : aucun déplacement à la souris
 function Noeud({ noeud, aDecouvrir, onBasculer }) {
-    const classes = ['noeud', `noeud--${noeud.couleur}`];
+    const classes = ['noeud', `noeud--${noeud.type}`];
     // Bordure en pointillés = il reste des éléments reliés à découvrir
     if (aDecouvrir) classes.push('noeud--a-decouvrir');
 
     return e('g', {
         className: classes.join(' '),
+        style: styleCouleur(noeud.couleur),
         transform: `translate(${noeud.x} ${noeud.y})`,
         onPointerDown: event => event.stopPropagation(),
         onClick: () => onBasculer(noeud.id)
@@ -266,7 +311,6 @@ function CarteMentale() {
         onPointerUp: terminerDeplacement,
         onPointerCancel: terminerDeplacement
     },
-        e('defs', null, couleursLiens.map(couleur => e(Fleche, { key: couleur, couleur }))),
         e('g', { transform: `translate(${vue.x} ${vue.y}) scale(${vue.zoom})` },
             liensVisibles.map(lien => e(Lien, { key: lien.id, lien })),
             noeudsVisibles.map(noeud => e(Noeud, {

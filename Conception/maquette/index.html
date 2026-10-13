@@ -13,18 +13,16 @@
         <nav class="nav-links">
             <a href="index.html" class="active">Mode Lecture</a>
             <a href="mindmap.html">Mode Carte Mentale</a>
+            <a href="profil.html">Profil</a>
         </nav>
     </header>
 
-    <!-- Vidéo à la une -->
-    <div class="hero">
+    <!-- Interview à la une : le contenu est rempli par home.js à partir de data.js -->
+    <div class="hero" id="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Artiste B</h1>
-            <div class="hero-meta">
-                <span>📍 Studio La Seine, Paris</span>
-                <span><span class="color-badge genre-electro"></span> Électro-Pop</span>
-            </div>
-            <p class="hero-desc">Découvrez l'interview exclusive de l'Artiste B. Il revient sur la création de son dernier album. <strong>Lisez la vidéo jusqu'au bout, ou bifurquez selon vos envies.</strong></p>
+            <h1 class="hero-title" id="hero-title"></h1>
+            <div class="hero-meta" id="hero-meta"></div>
+            <p class="hero-desc"><span id="hero-desc"></span> <strong>Lisez la vidéo jusqu'au bout, ou bifurquez selon vos envies.</strong></p>
             <div class="hero-buttons">
                 <button class="btn btn-play" id="hero-play">▶ Lire la vidéo</button>
                 <button class="btn btn-info">ℹ Plus d'infos</button>
@@ -32,26 +30,17 @@
         </div>
     </div>
 
-    <!-- Barre de filtres -->
+    <!-- Barre de filtres : les options sont générées à partir des tables genre_musical, lieu et artiste -->
     <div class="filters-bar">
         <label>🔍 Filtrer la base :</label>
         <select id="filter-genre" class="filter-select">
             <option value="">Toutes les Couleurs (Genres)</option>
-            <option value="rock">🔴 Rock</option>
-            <option value="electro">🔵 Électro</option>
-            <option value="rap">🟢 Rap</option>
         </select>
         <select id="filter-lieu" class="filter-select">
             <option value="">Tous les Lieux</option>
-            <option value="paris">Paris</option>
-            <option value="lyon">Lyon</option>
-            <option value="festival">En Festival</option>
         </select>
         <select id="filter-artiste" class="filter-select">
             <option value="">Tous les Artistes</option>
-            <option value="a">Artiste A</option>
-            <option value="b">Artiste B</option>
-            <option value="c">Artiste C</option>
         </select>
     </div>
 
@@ -59,7 +48,7 @@
     <main class="content-section">
         <div class="theme-row">
             <div class="row-title">Extraits & Questions spécifiques</div>
-            <div class="carousel" id="questions-carousel"></div>
+            <div class="carousel" id="extraits-carousel"></div>
         </div>
 
         <div class="theme-row">
@@ -68,7 +57,7 @@
         </div>
     </main>
 
-    <!-- Fenêtre modale d'une vidéo -->
+    <!-- Fenêtre modale d'une vidéo (interview ou extrait) -->
     <div id="video-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" id="modal-close">&times;</button>
@@ -80,8 +69,8 @@
                         <div class="player-choice">
                             <label for="player-source">Lecteur :</label>
                             <select id="player-source">
-                                <option value="youtube">YouTube</option>
-                                <option value="vimeo">Vimeo</option>
+                                <option value="YOUTUBE">YouTube</option>
+                                <option value="VIMEO">Vimeo</option>
                             </select>
                         </div>
                     </div>
@@ -104,17 +93,15 @@
                         </div>
                     </div>
 
-                    <div class="modal-meta-box">
-                        <p><strong>Couleur musicale :</strong> <br>
-                        <span id="modal-color-badge" class="color-badge"></span> <span id="modal-genre-text">Genre</span></p>
-                        <p><strong>Type de contenu :</strong> <span id="modal-meta-type">Interview</span></p>
-                    </div>
+                    <!-- Fiche de la vidéo : les lignes sont générées par home.js -->
+                    <div class="modal-meta-box" id="modal-meta"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="assets/js/data.js"></script>
+    <script src="assets/js/utils.js"></script>
     <script src="assets/js/home.js"></script>
 </body>
 </html>

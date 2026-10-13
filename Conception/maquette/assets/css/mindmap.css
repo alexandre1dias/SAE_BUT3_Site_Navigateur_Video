@@ -4,7 +4,8 @@
     --fond-carte: #111111;
     --couleur-racine: #ffffff;
     --couleur-theme: #f4b400;
-    --couleur-video: #555555;
+    --couleur-question: #f7d774;
+    --couleur-extrait: #666666;
 }
 
 /* La carte occupe tout l'écran : la page elle-même ne défile pas */
@@ -43,6 +44,30 @@ body {
     to { opacity: 1; }
 }
 
+/* --- Couleurs --- */
+/* Chaque élément et chaque lien se colore avec --couleur.
+   Artistes et interviews reçoivent la couleur de leur genre depuis la base
+   (genre_musical.code_couleur, transmise par mindmap.js) ; les autres types ont une couleur fixe. */
+
+.noeud--racine,
+.lien--racine {
+    --couleur: var(--couleur-racine);
+}
+
+.noeud--theme,
+.lien--theme {
+    --couleur: var(--couleur-theme);
+}
+
+.noeud--question,
+.lien--question {
+    --couleur: var(--couleur-question);
+}
+
+.noeud--extrait {
+    --couleur: var(--couleur-extrait);
+}
+
 /* --- Éléments de la carte --- */
 
 .noeud {
@@ -50,8 +75,15 @@ body {
 }
 
 .noeud circle {
+    fill: var(--couleur);
+    /* Bordure : la même couleur, assombrie */
+    stroke: color-mix(in srgb, var(--couleur) 70%, black);
     stroke-width: 3;
     transition: stroke-width 0.15s;
+}
+
+.noeud--extrait circle {
+    stroke: #999999;
 }
 
 .noeud:hover circle {
@@ -74,32 +106,21 @@ body {
     paint-order: stroke;
 }
 
-.noeud--racine circle { fill: var(--couleur-racine); stroke: #aaaaaa; }
-.noeud--theme circle { fill: var(--couleur-theme); stroke: #c39000; }
-.noeud--video circle { fill: var(--couleur-video); stroke: #888888; }
-.noeud--rock circle { fill: var(--couleur-rock); stroke: #b80710; }
-.noeud--electro circle { fill: var(--couleur-electro); stroke: #255db8; }
-.noeud--rap circle { fill: var(--couleur-rap); stroke: #35a852; }
-
 /* --- Liens entre les éléments --- */
+/* Un lien (et sa flèche) prend la couleur de son élément de départ */
 
-.lien line {
-    stroke-width: 1.5;
+.lien {
     opacity: 0.7;
 }
 
-/* Un lien (et sa flèche) prend la couleur de son élément de départ */
-.lien--racine line { stroke: var(--couleur-racine); }
-.lien--theme line { stroke: var(--couleur-theme); }
-.lien--rock line { stroke: var(--couleur-rock); }
-.lien--electro line { stroke: var(--couleur-electro); }
-.lien--rap line { stroke: var(--couleur-rap); }
+.lien line {
+    stroke: var(--couleur);
+    stroke-width: 1.5;
+}
 
-.fleche--racine { fill: var(--couleur-racine); }
-.fleche--theme { fill: var(--couleur-theme); }
-.fleche--rock { fill: var(--couleur-rock); }
-.fleche--electro { fill: var(--couleur-electro); }
-.fleche--rap { fill: var(--couleur-rap); }
+.lien polygon {
+    fill: var(--couleur);
+}
 
 /* --- Encadré d'instructions --- */
 

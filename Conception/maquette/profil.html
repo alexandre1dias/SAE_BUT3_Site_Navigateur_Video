@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bifurcation - Profil</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/profil.css">
+</head>
+<body>
+    <header id="navbar">
+        <div class="logo">Interview</div>
+        <nav class="nav-links">
+            <a href="index.html">Mode Lecture</a>
+            <a href="mindmap.html">Mode Carte Mentale</a>
+            <a href="profil.html" class="active">Profil</a>
+        </nav>
+    </header>
+
+    <!-- Le contenu est rempli par profil.js à partir des tables utilisateur, playlist et playlist_extrait -->
+    <main class="profil">
+        <section class="profil-entete">
+            <div class="profil-avatar" id="profil-avatar"></div>
+            <div>
+                <h1 id="profil-nom"></h1>
+                <p class="profil-email" id="profil-email"></p>
+            </div>
+        </section>
+
+        <section class="profil-bloc">
+            <h2>Préférences</h2>
+            <div class="profil-preference">
+                <label for="lecteur-prefere">Lecteur vidéo préféré :</label>
+                <select id="lecteur-prefere" class="profil-select">
+                    <option value="YOUTUBE">YouTube</option>
+                    <option value="VIMEO">Vimeo</option>
+                </select>
+                <span class="profil-confirmation" id="lecteur-confirmation"></span>
+            </div>
+        </section>
+
+        <section class="profil-bloc">
+            <h2>Mes playlists</h2>
+            <div class="playlists" id="playlists"></div>
+        </section>
+    </main>
+
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/profil.js"></script>
+</body>
+</html>

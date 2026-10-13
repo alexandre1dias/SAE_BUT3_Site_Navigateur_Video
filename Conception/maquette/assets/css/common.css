@@ -5,11 +5,6 @@
     --primary-red: #E50914;
     --text-color: #e5e5e5;
     --hover-color: #ffffff;
-
-    /* Couleurs musicales (genres) */
-    --couleur-rock: #E50914;
-    --couleur-electro: #3578e5;
-    --couleur-rap: #46d369;
 }
 
 body {
@@ -63,6 +58,7 @@ header.scrolled {
 }
 
 /* --- Pastille de couleur musicale --- */
+/* La couleur vient de la base (genre_musical.code_couleur) : le JS la transmet dans --couleur-genre */
 
 .color-badge {
     display: inline-block;
@@ -70,8 +66,5 @@ header.scrolled {
     height: 12px;
     border-radius: 50%;
     margin-right: 5px;
+    background: var(--couleur-genre, #888888);
 }
-
-.color-badge.genre-rock { background: var(--couleur-rock); }
-.color-badge.genre-electro { background: var(--couleur-electro); }
-.color-badge.genre-rap { background: var(--couleur-rap); }

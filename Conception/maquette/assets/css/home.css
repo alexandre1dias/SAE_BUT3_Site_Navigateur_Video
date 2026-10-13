@@ -9,12 +9,13 @@ body.modal-ouverte {
     overflow: hidden;
 }
 
-/* --- Vidéo à la une --- */
+/* --- Interview à la une --- */
+/* L'image de fond (photo de l'artiste) est appliquée par home.js */
 
 .hero {
     position: relative;
     height: 80vh;
-    background-image: url('https://picsum.photos/1920/1080?random=10');
+    background-color: #222;
     background-size: cover;
     background-position: center;
     display: flex;

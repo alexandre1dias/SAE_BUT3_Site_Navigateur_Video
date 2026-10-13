@@ -1,0 +1,165 @@
+/* === Page Profil === */
+
+.profil {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 110px 4% 60px 4%; /* Espace en haut pour la navbar fixe */
+}
+
+/* --- Identité de l'utilisateur --- */
+
+.profil-entete {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.profil-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: var(--primary-red);
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.profil-entete h1 {
+    margin: 0 0 5px 0;
+    font-size: 2.2rem;
+    color: #fff;
+}
+
+.profil-email {
+    margin: 0;
+    color: #aaa;
+}
+
+/* --- Blocs (préférences, playlists) --- */
+
+.profil-bloc {
+    margin-bottom: 40px;
+}
+
+.profil-bloc h2 {
+    font-size: 1.3rem;
+    color: #fff;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.profil-preference {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.profil-select {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 8px 15px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+}
+
+.profil-confirmation {
+    color: #46d369;
+    font-size: 0.9rem;
+}
+
+/* --- Playlists --- */
+
+.playlists {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.playlist {
+    background-color: #181818;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px 25px;
+}
+
+.playlist-titre {
+    margin: 0 0 5px 0;
+    font-size: 1.15rem;
+    color: #fff;
+}
+
+.playlist-infos {
+    margin: 0 0 15px 0;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.playlist-extraits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.playlist-extrait {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.playlist-extrait:hover {
+    background-color: #2a2a2a;
+}
+
+.playlist-position {
+    width: 20px;
+    text-align: center;
+    color: #aaa;
+    font-weight: bold;
+}
+
+.playlist-miniature {
+    width: 120px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 4px;
+    background-color: #222;
+    flex-shrink: 0;
+}
+
+.playlist-extrait-textes {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.playlist-extrait-titre {
+    font-weight: bold;
+    color: #fff;
+}
+
+.playlist-extrait-details {
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.playlist-duree {
+    color: #aaa;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}

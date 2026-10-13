@@ -1,207 +1,261 @@
 // === Données de la maquette ===
-// Jeu de données fictif partagé par les deux pages (Mode Lecture et Mode Carte Mentale).
+// Jeu de données fictif qui reprend la structure de la base de données :
+// une constante par table, une propriété par colonne (mêmes noms que dans le SQL).
 // Dans le site final, ces données viendront de l'API.
 
-const GENRES = {
-    rock: { nom: 'Rock', nomComplet: 'Rock' },
-    electro: { nom: 'Électro', nomComplet: 'Électro-Pop' },
-    rap: { nom: 'Rap', nomComplet: 'Rap' }
-};
-
-const LIEUX = {
-    paris: 'Paris',
-    lyon: 'Lyon',
-    festival: 'Festival'
-};
-
-const ARTISTES = [
-    { id: 'a', nom: 'Artiste A', genre: 'rock' },
-    { id: 'b', nom: 'Artiste B', genre: 'electro' },
-    { id: 'c', nom: 'Artiste C', genre: 'rap' }
+const GENRE_MUSICAL = [
+    { id_genre: 1, nom_genre: 'Rock', code_couleur: '#E50914' },
+    { id_genre: 2, nom_genre: 'Électro-Pop', code_couleur: '#3578e5' },
+    { id_genre: 3, nom_genre: 'Rap', code_couleur: '#46d369' }
 ];
 
-const THEMES = [
-    { id: 'processus', nom: 'Processus Créatif' },
-    { id: 'pression', nom: 'Gérer la Pression' },
-    { id: 'tournee', nom: 'Anecdotes Tournée' },
-    { id: 'trac', nom: 'Le Trac' }
-];
-
-// format : 'question' (extrait sur un thème) ou 'interview' (intégrale)
-// image  : numéro de l'image d'illustration (picsum.photos)
-// liens  : bifurcations proposées depuis la vidéo
-const VIDEOS = [
-    // --- Thème : le processus créatif ---
+const ARTISTE = [
     {
-        id: 'vid-processus-a',
-        titre: 'Le processus créatif (Artiste A)',
-        titreCourt: 'Processus A',
-        description: "L'Artiste A nous explique comment il compose ses riffs de guitare.",
-        format: 'question',
-        artiste: 'a',
-        theme: 'processus',
-        lieu: 'lyon',
-        image: 200,
-        liens: [
-            { cible: 'vid-processus-b', texte: "👤 Même question posée à l'Artiste B" },
-            { cible: 'vid-processus-c', texte: "👤 Même question posée à l'Artiste C" },
-            { cible: 'vid-integrale-a', texte: "▶️ Voir l'interview complète" }
-        ]
+        id_artiste: 1,
+        nom_artiste: 'Artiste A',
+        biographie: 'Guitariste et chanteur, figure de la scène rock lyonnaise.',
+        photo_url: 'https://picsum.photos/1920/1080?random=11'
     },
     {
-        id: 'vid-processus-b',
-        titre: 'Le processus créatif (Artiste B)',
-        titreCourt: 'Processus B',
-        description: "L'Artiste B partage ses secrets de fabrication sur ses machines.",
-        format: 'question',
-        artiste: 'b',
-        theme: 'processus',
-        lieu: 'paris',
-        image: 201,
-        liens: [
-            { cible: 'vid-processus-a', texte: "👤 Même question posée à l'Artiste A" },
-            { cible: 'vid-processus-c', texte: "👤 Même question posée à l'Artiste C" },
-            { cible: 'vid-integrale-b', texte: "▶️ Voir l'interview complète" }
-        ]
+        id_artiste: 2,
+        nom_artiste: 'Artiste B',
+        biographie: 'Producteur et compositeur, entre machines et mélodies pop.',
+        photo_url: 'https://picsum.photos/1920/1080?random=10'
     },
     {
-        id: 'vid-processus-c',
-        titre: 'Le processus créatif (Artiste C)',
-        titreCourt: 'Processus C',
-        description: "L'Artiste C parle de son écriture et de ses inspirations urbaines.",
-        format: 'question',
-        artiste: 'c',
-        theme: 'processus',
-        lieu: 'festival',
-        image: 202,
-        liens: [
-            { cible: 'vid-processus-a', texte: "👤 Même question posée à l'Artiste A" },
-            { cible: 'vid-processus-b', texte: "👤 Même question posée à l'Artiste B" },
-            { cible: 'vid-integrale-c', texte: "▶️ Voir l'interview complète" }
-        ]
-    },
-
-    // --- Thème : gérer la pression ---
-    {
-        id: 'vid-pression-a',
-        titre: 'Gérer la pression (Artiste A)',
-        titreCourt: 'Pression A',
-        description: "Comment faire face aux attentes du public rock ? L'Artiste A témoigne.",
-        format: 'question',
-        artiste: 'a',
-        theme: 'pression',
-        lieu: 'lyon',
-        image: 210,
-        liens: [
-            { cible: 'vid-pression-b', texte: "👤 Même question posée à l'Artiste B" },
-            { cible: 'vid-integrale-a', texte: "▶️ Voir l'interview complète" }
-        ]
-    },
-    {
-        id: 'vid-pression-b',
-        titre: 'Gérer la pression (Artiste B)',
-        titreCourt: 'Pression B',
-        description: "L'Artiste B se confie sur le stress des grandes scènes électro.",
-        format: 'question',
-        artiste: 'b',
-        theme: 'pression',
-        lieu: 'paris',
-        image: 211,
-        liens: [
-            { cible: 'vid-pression-a', texte: "👤 Même question posée à l'Artiste A" },
-            { cible: 'vid-integrale-b', texte: "▶️ Voir l'interview complète" }
-        ]
-    },
-
-    // --- Autres thèmes ---
-    {
-        id: 'vid-trac-c',
-        titre: 'Le trac avant la scène (Artiste C)',
-        titreCourt: 'Trac C',
-        description: 'Artiste C nous parle de son rituel avant de monter sur scène en festival.',
-        format: 'question',
-        artiste: 'c',
-        theme: 'trac',
-        lieu: 'festival',
-        image: 22,
-        liens: [
-            { cible: 'vid-integrale-c', texte: "▶️ Voir l'interview complète d'Artiste C" }
-        ]
-    },
-    {
-        id: 'vid-tournee-a',
-        titre: 'Souvenirs de tournée (Artiste A)',
-        titreCourt: 'Tournée A',
-        description: "Les pires et meilleures anecdotes de tournée de l'Artiste A.",
-        format: 'question',
-        artiste: 'a',
-        theme: 'tournee',
-        lieu: 'paris',
-        image: 23,
-        liens: [
-            { cible: 'vid-integrale-a', texte: "▶️ Voir l'interview complète" }
-        ]
-    },
-
-    // --- Interviews complètes ---
-    {
-        id: 'vid-integrale-a',
-        titre: 'Artiste A - Intégrale',
-        titreCourt: 'Intégrale A',
-        description: "L'interview complète de l'Artiste A. Sans coupure.",
-        format: 'interview',
-        artiste: 'a',
-        lieu: 'lyon',
-        duree: '45 min',
-        image: 30,
-        liens: [
-            { cible: 'vid-processus-a', texte: '🔗 Aller à : Le processus créatif' },
-            { cible: 'vid-pression-a', texte: '🔗 Aller à : Gérer la pression' },
-            { cible: 'vid-tournee-a', texte: '🔗 Aller à : Souvenirs de tournée' }
-        ]
-    },
-    {
-        id: 'vid-integrale-b',
-        titre: 'Artiste B - Intégrale',
-        titreCourt: 'Intégrale B',
-        description: "Rencontre intimiste au Studio La Seine avec l'Artiste B.",
-        format: 'interview',
-        artiste: 'b',
-        lieu: 'paris',
-        duree: '52 min',
-        image: 31,
-        liens: [
-            { cible: 'vid-processus-b', texte: '🔗 Aller à : Le processus créatif' },
-            { cible: 'vid-pression-b', texte: '🔗 Aller à : Gérer la pression' }
-        ]
-    },
-    {
-        id: 'vid-integrale-c',
-        titre: 'Artiste C - Intégrale',
-        titreCourt: 'Intégrale C',
-        description: 'Artiste C se confie en plein air lors de son dernier festival estival.',
-        format: 'interview',
-        artiste: 'c',
-        lieu: 'festival',
-        duree: '38 min',
-        image: 32,
-        liens: [
-            { cible: 'vid-processus-c', texte: '🔗 Aller à : Le processus créatif' },
-            { cible: 'vid-trac-c', texte: '🔗 Aller à : Le trac avant la scène' }
-        ]
+        id_artiste: 3,
+        nom_artiste: 'Artiste C',
+        biographie: 'Rappeur et auteur, habitué des scènes de festival.',
+        photo_url: 'https://picsum.photos/1920/1080?random=12'
     }
 ];
 
-// Vidéo mise en avant en haut de la page d'accueil
-const VIDEO_A_LA_UNE = {
-    titre: 'Artiste B - Interview Complète',
-    description: "Découvrez l'interview exclusive de l'Artiste B. Un échange sans filtre sur la création et la tournée.",
-    format: 'interview',
-    artiste: 'b',
-    lieuTexte: 'Studio La Seine, Paris',
-    imageModale: 'https://picsum.photos/1920/1080?random=10',
-    liens: [
-        { cible: 'vid-processus-b', texte: '🔗 Bifurquer vers : Le processus créatif' },
-        { cible: 'vid-pression-b', texte: '🔗 Bifurquer vers : Gérer la pression' }
-    ]
+// Un artiste peut avoir plusieurs genres
+const ARTISTE_GENRE = [
+    { id_artiste: 1, id_genre: 1 },
+    { id_artiste: 2, id_genre: 2 },
+    { id_artiste: 3, id_genre: 3 }
+];
+
+const LIEU = [
+    { id_lieu: 1, nom_lieu: 'Le Transbordeur', ville: 'Lyon', pays: 'France' },
+    { id_lieu: 2, nom_lieu: 'Studio La Seine', ville: 'Paris', pays: 'France' },
+    { id_lieu: 3, nom_lieu: 'Les Eurockéennes', ville: 'Belfort', pays: 'France' }
+];
+
+const THEME = [
+    { id_theme: 1, titre_theme: 'Processus créatif', description_theme: "Comment naissent les morceaux, de l'idée à l'enregistrement." },
+    { id_theme: 2, titre_theme: 'Gérer la pression', description_theme: 'Les attentes du public, le stress et la façon de les apprivoiser.' },
+    { id_theme: 3, titre_theme: 'Anecdotes de tournée', description_theme: 'La vie sur la route, entre deux concerts.' },
+    { id_theme: 4, titre_theme: 'Le trac', description_theme: 'Les minutes qui précèdent la montée sur scène.' }
+];
+
+// Chaque question appartient à un thème
+const QUESTION = [
+    { id_question: 1, texte_question: 'Comment naît un morceau chez vous ?', description_question: 'Méthode de composition et sources d\'inspiration.', id_theme: 1 },
+    { id_question: 2, texte_question: 'Comment gérez-vous la pression ?', description_question: 'Rapport aux attentes du public et de la profession.', id_theme: 2 },
+    { id_question: 3, texte_question: 'Quel est votre meilleur souvenir de tournée ?', description_question: null, id_theme: 3 },
+    { id_question: 4, texte_question: 'Avez-vous le trac avant de monter sur scène ?', description_question: 'Rituels et préparation avant un concert.', id_theme: 4 }
+];
+
+// Une interview = un artiste filmé dans un lieu (id_lieu peut être null)
+const INTERVIEW = [
+    {
+        id_interview: 1,
+        titre_interview: 'Artiste A - Intégrale',
+        date_tournage: '2026-03-14',
+        description: "L'interview complète de l'Artiste A. Sans coupure.",
+        url_youtube: 'https://www.youtube.com/watch?v=interview-a',
+        url_vimeo: 'https://vimeo.com/100000001',
+        id_artiste: 1,
+        id_lieu: 1
+    },
+    {
+        id_interview: 2,
+        titre_interview: 'Artiste B - Intégrale',
+        date_tournage: '2026-04-02',
+        description: "Rencontre intimiste au Studio La Seine avec l'Artiste B, qui revient sur la création de son dernier album.",
+        url_youtube: 'https://www.youtube.com/watch?v=interview-b',
+        url_vimeo: 'https://vimeo.com/100000002',
+        id_artiste: 2,
+        id_lieu: 2
+    },
+    {
+        id_interview: 3,
+        titre_interview: 'Artiste C - Intégrale',
+        date_tournage: '2026-07-05',
+        description: 'Artiste C se confie en plein air lors de son dernier festival estival.',
+        url_youtube: 'https://www.youtube.com/watch?v=interview-c',
+        url_vimeo: 'https://vimeo.com/100000003',
+        id_artiste: 3,
+        id_lieu: 3
+    }
+];
+
+// Un extrait = la réponse à une question, découpée dans une interview.
+// timecode_debut / timecode_fin sont en secondes.
+// url_youtube / url_vimeo à null : on lit la vidéo de l'interview à partir de timecode_debut.
+const EXTRAIT = [
+    {
+        id_extrait: 1,
+        titre_extrait: 'Le processus créatif (Artiste A)',
+        ordre_sequence: 1,
+        timecode_debut: 0,
+        timecode_fin: 312,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« Tout part d'un riff de guitare. Je l'enregistre sur mon téléphone, et s'il me reste en tête le lendemain, j'en fais un morceau. »",
+        id_interview: 1,
+        id_question: 1
+    },
+    {
+        id_extrait: 2,
+        titre_extrait: 'Gérer la pression (Artiste A)',
+        ordre_sequence: 2,
+        timecode_debut: 312,
+        timecode_fin: 655,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« Le public rock attend qu'on se donne à fond chaque soir. La pression, je la transforme en énergie. »",
+        id_interview: 1,
+        id_question: 2
+    },
+    {
+        id_extrait: 3,
+        titre_extrait: 'Souvenirs de tournée (Artiste A)',
+        ordre_sequence: 3,
+        timecode_debut: 655,
+        timecode_fin: 1020,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« Le pire comme le meilleur : une panne de bus en pleine nuit, et un concert improvisé sur une aire d'autoroute. »",
+        id_interview: 1,
+        id_question: 3
+    },
+    {
+        id_extrait: 4,
+        titre_extrait: 'Le processus créatif (Artiste B)',
+        ordre_sequence: 1,
+        timecode_debut: 0,
+        timecode_fin: 280,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« Je commence toujours par un son sur mes machines. La mélodie vient après, presque par accident. »",
+        id_interview: 2,
+        id_question: 1
+    },
+    {
+        id_extrait: 5,
+        titre_extrait: 'Gérer la pression (Artiste B)',
+        ordre_sequence: 2,
+        timecode_debut: 280,
+        timecode_fin: 610,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« Sur les grandes scènes électro, le stress est énorme. J'ai appris à respirer et à faire confiance à mon set. »",
+        id_interview: 2,
+        id_question: 2
+    },
+    {
+        id_extrait: 6,
+        titre_extrait: 'Le processus créatif (Artiste C)',
+        ordre_sequence: 1,
+        timecode_debut: 0,
+        timecode_fin: 295,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« J'écris dans le métro, dans la rue. La ville me donne les mots, je n'ai plus qu'à les mettre en rythme. »",
+        id_interview: 3,
+        id_question: 1
+    },
+    {
+        id_extrait: 7,
+        titre_extrait: 'Le trac avant la scène (Artiste C)',
+        ordre_sequence: 2,
+        timecode_debut: 295,
+        timecode_fin: 540,
+        url_youtube: null,
+        url_vimeo: null,
+        transcription: "« Avant chaque concert j'ai le même rituel : cinq minutes seul, sans téléphone. Sans ça, impossible de monter sur scène. »",
+        id_interview: 3,
+        id_question: 4
+    }
+];
+
+// Utilisateur connecté dans la maquette (pas de mot de passe ici : il reste côté serveur)
+const UTILISATEUR = {
+    id_utilisateur: 1,
+    nom_utilisateur: 'demo',
+    email: 'demo@example.com',
+    lecteur_prefere: 'YOUTUBE'
 };
+
+const PLAYLIST = [
+    { id_playlist: 1, titre_playlist: 'Mes extraits préférés', date_creation: '2026-09-12 18:30:00', id_utilisateur: 1 },
+    { id_playlist: 2, titre_playlist: 'Spécial processus créatif', date_creation: '2026-10-01 09:15:00', id_utilisateur: 1 }
+];
+
+// Extraits d'une playlist, rangés par position
+const PLAYLIST_EXTRAIT = [
+    { id_playlist: 1, id_extrait: 2, position: 1 },
+    { id_playlist: 1, id_extrait: 7, position: 2 },
+    { id_playlist: 1, id_extrait: 3, position: 3 },
+    { id_playlist: 2, id_extrait: 1, position: 1 },
+    { id_playlist: 2, id_extrait: 4, position: 2 },
+    { id_playlist: 2, id_extrait: 6, position: 3 }
+];
+
+// Choix propre à la maquette (hors base de données) : interview mise en avant sur l'accueil
+const ID_INTERVIEW_A_LA_UNE = 2;
+
+// === Fonctions d'accès aux données ===
+// Elles jouent le rôle des jointures SQL entre les tables.
+
+function trouver(table, colonne, valeur) {
+    return table.find(ligne => ligne[colonne] === valeur);
+}
+
+function artisteDeInterview(interview) {
+    return trouver(ARTISTE, 'id_artiste', interview.id_artiste);
+}
+
+function lieuDeInterview(interview) {
+    return trouver(LIEU, 'id_lieu', interview.id_lieu) || null;
+}
+
+function genresDeArtiste(artiste) {
+    return ARTISTE_GENRE
+        .filter(lien => lien.id_artiste === artiste.id_artiste)
+        .map(lien => trouver(GENRE_MUSICAL, 'id_genre', lien.id_genre));
+}
+
+// Extraits d'une interview, dans l'ordre de la séquence
+function extraitsDeInterview(interview) {
+    return EXTRAIT
+        .filter(extrait => extrait.id_interview === interview.id_interview)
+        .sort((a, b) => a.ordre_sequence - b.ordre_sequence);
+}
+
+function interviewDeExtrait(extrait) {
+    return trouver(INTERVIEW, 'id_interview', extrait.id_interview);
+}
+
+function questionDeExtrait(extrait) {
+    return trouver(QUESTION, 'id_question', extrait.id_question);
+}
+
+function themeDeQuestion(question) {
+    return trouver(THEME, 'id_theme', question.id_theme);
+}
+
+function playlistsDeUtilisateur(utilisateur) {
+    return PLAYLIST.filter(playlist => playlist.id_utilisateur === utilisateur.id_utilisateur);
+}
+
+// Extraits d'une playlist, dans l'ordre choisi par l'utilisateur
+function extraitsDePlaylist(playlist) {
+    return PLAYLIST_EXTRAIT
+        .filter(lien => lien.id_playlist === playlist.id_playlist)
+        .sort((a, b) => a.position - b.position)
+        .map(lien => trouver(EXTRAIT, 'id_extrait', lien.id_extrait));
+}
