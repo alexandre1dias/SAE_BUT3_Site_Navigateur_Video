@@ -88,16 +88,6 @@ body {
     opacity: 0.7;
 }
 
-.lien text {
-    fill: #888888;
-    font-family: arial, sans-serif;
-    font-size: 11px;
-    text-anchor: middle;
-    stroke: var(--fond-carte);
-    stroke-width: 3px;
-    paint-order: stroke;
-}
-
 /* Un lien (et sa flèche) prend la couleur de son élément de départ */
 .lien--racine line { stroke: var(--couleur-racine); }
 .lien--theme line { stroke: var(--couleur-theme); }

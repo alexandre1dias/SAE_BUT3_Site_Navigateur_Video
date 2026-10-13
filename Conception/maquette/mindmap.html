@@ -24,45 +24,11 @@
         🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
     </div>
 
-    <!-- Point de montage de l'application Vue (voir assets/js/mindmap.js) -->
+    <!-- Point de montage de l'application React (voir assets/js/mindmap.js) -->
     <div id="app"></div>
 
-    <!-- Gabarit de la carte : un SVG dont le contenu dépend de l'état de l'application -->
-    <script type="text/x-template" id="gabarit-carte">
-        <svg ref="svg" class="carte" :class="{ 'en-deplacement': enDeplacement }" :viewBox="viewBox"
-             @wheel.prevent="zoomer" @pointerdown="debuterDeplacement" @pointermove="deplacer"
-             @pointerup="terminerDeplacement" @pointercancel="terminerDeplacement">
-            <defs>
-                <!-- Une pointe de flèche par couleur de lien -->
-                <marker v-for="couleur in couleursLiens" :key="couleur" :id="'fleche-' + couleur"
-                        markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
-                    <path d="M0,0 L10,5 L0,10 z" :class="'fleche--' + couleur" />
-                </marker>
-            </defs>
-
-            <g :transform="transformationVue">
-                <g v-for="lien in liensVisibles" :key="lien.id" class="lien" :class="'lien--' + lien.couleur">
-                    <line :x1="lien.x1" :y1="lien.y1" :x2="lien.x2" :y2="lien.y2"
-                          :marker-end="'url(#fleche-' + lien.couleur + ')'" />
-                    <text v-if="lien.label" :x="lien.milieuX" :y="lien.milieuY" dy="-5"
-                          :transform="'rotate(' + lien.angle + ' ' + lien.milieuX + ' ' + lien.milieuY + ')'">{{ lien.label }}</text>
-                </g>
-
-                <!-- Les éléments ne réagissent qu'au clic : aucun déplacement à la souris -->
-                <g v-for="noeud in noeudsVisibles" :key="noeud.id" class="noeud"
-                   :class="['noeud--' + noeud.couleur, { 'noeud--a-decouvrir': resteADecouvrir(noeud.id) }]"
-                   :transform="'translate(' + noeud.x + ' ' + noeud.y + ')'"
-                   @pointerdown.stop @click="basculer(noeud.id)">
-                    <circle :r="noeud.rayon" />
-                    <text :y="noeud.rayon + 20">
-                        <tspan v-for="(ligne, i) in noeud.lignes" :key="i" x="0" :dy="i === 0 ? 0 : 18">{{ ligne }}</tspan>
-                    </text>
-                </g>
-            </g>
-        </svg>
-    </script>
-
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
     <script src="assets/js/data.js"></script>
     <script src="assets/js/mindmap.js"></script>
 </body>

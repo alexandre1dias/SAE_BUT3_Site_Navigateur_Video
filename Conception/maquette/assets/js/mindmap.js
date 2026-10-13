@@ -1,4 +1,4 @@
-// === Page Carte Mentale (Vue.js) ===
+// === Page Carte Mentale (React) ===
 // Les données (VIDEOS, ARTISTES, THEMES, GENRES) viennent de data.js
 
 // === 1. Éléments de la carte ===
@@ -83,8 +83,8 @@ const liens = [];
 });
 
 noeudsVideos.forEach(video => {
-    liens.push({ from: video.artiste, to: video.id, label: 'A_POUR_VIDEO' });
-    if (video.theme) liens.push({ from: video.theme, to: video.id, label: 'PARLE_DE' });
+    liens.push({ from: video.artiste, to: video.id });
+    if (video.theme) liens.push({ from: video.theme, to: video.id });
 });
 
 // Tracé de chaque lien : un segment allant du bord d'un élément au bord de l'autre
@@ -96,7 +96,6 @@ liens.forEach((lien, index) => {
     const longueur = Math.sqrt(dx * dx + dy * dy);
     const retraitDepart = depart.rayon + 3;
     const retraitArrivee = arrivee.rayon + 5;
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
 
     lien.id = index;
     lien.couleur = depart.couleur;
@@ -104,10 +103,6 @@ liens.forEach((lien, index) => {
     lien.y1 = depart.y + dy / longueur * retraitDepart;
     lien.x2 = arrivee.x - dx / longueur * retraitArrivee;
     lien.y2 = arrivee.y - dy / longueur * retraitArrivee;
-    lien.milieuX = (lien.x1 + lien.x2) / 2;
-    lien.milieuY = (lien.y1 + lien.y2) / 2;
-    // Le texte du lien suit le segment sans jamais être à l'envers
-    lien.angle = angle > 90 || angle < -90 ? angle + 180 : angle;
 });
 
 // Une pointe de flèche par couleur de lien
@@ -120,109 +115,168 @@ liens.forEach(lien => {
     voisinsDe[lien.to].push(lien.from);
 });
 
-// === 4. Application Vue ===
-// Le gabarit (#gabarit-carte) se trouve dans mindmap.html
-Vue.createApp({
-    template: '#gabarit-carte',
-
-    data() {
-        return {
-            couleursLiens,
-            // Affichage progressif : éléments dont les voisins sont affichés.
-            // Au départ aucun, donc seul le thème principal est visible.
-            deplies: {},
-            // Zoom et décalage de la vue (les éléments, eux, ne bougent jamais)
-            vue: { x: 0, y: 0, zoom: 1 },
-            enDeplacement: false
-        };
-    },
-
-    computed: {
-        // La vue est cadrée sur l'emplacement de la carte entièrement dépliée
-        viewBox() {
-            const demiCote = RAYON_VIDEOS + MARGE;
-            return [-demiCote, -demiCote, 2 * demiCote, 2 * demiCote].join(' ');
-        },
-
-        transformationVue() {
-            return `translate(${this.vue.x} ${this.vue.y}) scale(${this.vue.zoom})`;
-        },
-
-        // Un élément est visible s'il est atteignable depuis la racine en ne passant que par des éléments dépliés
-        visibles() {
-            const visibles = { [ID_RACINE]: true };
-            const file = [ID_RACINE];
-            while (file.length) {
-                const id = file.shift();
-                if (!this.deplies[id]) continue;
-                voisinsDe[id].forEach(voisin => {
-                    if (!visibles[voisin]) {
-                        visibles[voisin] = true;
-                        file.push(voisin);
-                    }
-                });
+// === 4. Affichage progressif ===
+// Un élément est visible s'il est atteignable depuis la racine en ne passant que par des éléments dépliés
+function calculerVisibles(deplies) {
+    const visibles = { [ID_RACINE]: true };
+    const file = [ID_RACINE];
+    while (file.length) {
+        const id = file.shift();
+        if (!deplies[id]) continue;
+        voisinsDe[id].forEach(voisin => {
+            if (!visibles[voisin]) {
+                visibles[voisin] = true;
+                file.push(voisin);
             }
-            return visibles;
-        },
+        });
+    }
+    return visibles;
+}
 
-        noeudsVisibles() {
-            return tousLesNoeuds.filter(noeud => this.visibles[noeud.id]);
-        },
+// === 5. Composants React ===
+// Écrits avec React.createElement (sans JSX) pour fonctionner sans étape de compilation
+const { useState, useRef } = React;
+const e = React.createElement;
 
-        liensVisibles() {
-            return liens.filter(lien => this.visibles[lien.from] && this.visibles[lien.to]);
-        }
+// La vue est cadrée sur l'emplacement de la carte entièrement dépliée
+const DEMI_COTE = RAYON_VIDEOS + MARGE;
+const VIEW_BOX = [-DEMI_COTE, -DEMI_COTE, 2 * DEMI_COTE, 2 * DEMI_COTE].join(' ');
+
+function Fleche({ couleur }) {
+    return e('marker', {
+        id: `fleche-${couleur}`,
+        markerUnits: 'userSpaceOnUse',
+        markerWidth: 10,
+        markerHeight: 10,
+        refX: 10,
+        refY: 5,
+        orient: 'auto'
+    }, e('path', { d: 'M0,0 L10,5 L0,10 z', className: `fleche--${couleur}` }));
+}
+
+function Lien({ lien }) {
+    return e('g', { className: `lien lien--${lien.couleur}` },
+        e('line', {
+            x1: lien.x1,
+            y1: lien.y1,
+            x2: lien.x2,
+            y2: lien.y2,
+            markerEnd: `url(#fleche-${lien.couleur})`
+        })
+    );
+}
+
+// Un élément ne réagit qu'au clic : aucun déplacement à la souris
+function Noeud({ noeud, aDecouvrir, onBasculer }) {
+    const classes = ['noeud', `noeud--${noeud.couleur}`];
+    // Bordure en pointillés = il reste des éléments reliés à découvrir
+    if (aDecouvrir) classes.push('noeud--a-decouvrir');
+
+    return e('g', {
+        className: classes.join(' '),
+        transform: `translate(${noeud.x} ${noeud.y})`,
+        onPointerDown: event => event.stopPropagation(),
+        onClick: () => onBasculer(noeud.id)
     },
+        e('circle', { r: noeud.rayon }),
+        e('text', { y: noeud.rayon + 20 },
+            noeud.lignes.map((ligne, i) => e('tspan', { key: i, x: 0, dy: i === 0 ? 0 : 18 }, ligne))
+        )
+    );
+}
 
-    methods: {
-        // Un clic affiche les éléments reliés, un second clic les replie
-        basculer(id) {
-            if (this.deplies[id]) delete this.deplies[id];
-            else this.deplies[id] = true;
+function CarteMentale() {
+    // Éléments dont les voisins sont affichés. Au départ aucun, donc seul le thème principal est visible.
+    const [deplies, setDeplies] = useState({});
+    // Zoom et décalage de la vue (les éléments, eux, ne bougent jamais)
+    const [vue, setVue] = useState({ x: 0, y: 0, zoom: 1 });
+    const [enDeplacement, setEnDeplacement] = useState(false);
+    const svg = useRef(null);
+    const depart = useRef(null);
+
+    const visibles = calculerVisibles(deplies);
+    const noeudsVisibles = tousLesNoeuds.filter(noeud => visibles[noeud.id]);
+    const liensVisibles = liens.filter(lien => visibles[lien.from] && visibles[lien.to]);
+
+    // Un clic affiche les éléments reliés, un second clic les replie
+    function basculer(id) {
+        setDeplies(precedents => {
+            const suivants = { ...precedents };
+            if (suivants[id]) delete suivants[id];
+            else suivants[id] = true;
 
             // Un élément masqué perd son état déplié
-            Object.keys(this.deplies).forEach(cle => {
-                if (!this.visibles[cle]) delete this.deplies[cle];
+            const encoreVisibles = calculerVisibles(suivants);
+            Object.keys(suivants).forEach(cle => {
+                if (!encoreVisibles[cle]) delete suivants[cle];
             });
-        },
-
-        // Vrai s'il reste des éléments reliés à découvrir (bordure en pointillés)
-        resteADecouvrir(id) {
-            return voisinsDe[id].some(voisin => !this.visibles[voisin]);
-        },
-
-        // Convertit la position de la souris en coordonnées de la carte
-        positionSouris(event) {
-            const matrice = this.$refs.svg.getScreenCTM().inverse();
-            return new DOMPoint(event.clientX, event.clientY).matrixTransform(matrice);
-        },
-
-        // Zoom centré sur la position de la souris
-        zoomer(event) {
-            const souris = this.positionSouris(event);
-            const zoomVoulu = this.vue.zoom * (event.deltaY < 0 ? 1.15 : 1 / 1.15);
-            const zoom = Math.min(4, Math.max(0.4, zoomVoulu));
-            const facteur = zoom / this.vue.zoom;
-            this.vue.x = souris.x - (souris.x - this.vue.x) * facteur;
-            this.vue.y = souris.y - (souris.y - this.vue.y) * facteur;
-            this.vue.zoom = zoom;
-        },
-
-        debuterDeplacement(event) {
-            this.depart = { souris: this.positionSouris(event), x: this.vue.x, y: this.vue.y };
-            this.enDeplacement = true;
-            this.$refs.svg.setPointerCapture(event.pointerId);
-        },
-
-        deplacer(event) {
-            if (!this.enDeplacement) return;
-            const souris = this.positionSouris(event);
-            this.vue.x = this.depart.x + souris.x - this.depart.souris.x;
-            this.vue.y = this.depart.y + souris.y - this.depart.souris.y;
-        },
-
-        terminerDeplacement() {
-            this.enDeplacement = false;
-        }
+            return suivants;
+        });
     }
-}).mount('#app');
+
+    // Convertit la position de la souris en coordonnées de la carte
+    function positionSouris(event) {
+        const matrice = svg.current.getScreenCTM().inverse();
+        return new DOMPoint(event.clientX, event.clientY).matrixTransform(matrice);
+    }
+
+    // Zoom centré sur la position de la souris
+    function zoomer(event) {
+        const souris = positionSouris(event);
+        const sens = event.deltaY < 0 ? 1.15 : 1 / 1.15;
+        setVue(actuelle => {
+            const zoom = Math.min(4, Math.max(0.4, actuelle.zoom * sens));
+            const facteur = zoom / actuelle.zoom;
+            return {
+                x: souris.x - (souris.x - actuelle.x) * facteur,
+                y: souris.y - (souris.y - actuelle.y) * facteur,
+                zoom
+            };
+        });
+    }
+
+    function debuterDeplacement(event) {
+        depart.current = { souris: positionSouris(event), x: vue.x, y: vue.y };
+        setEnDeplacement(true);
+        svg.current.setPointerCapture(event.pointerId);
+    }
+
+    function deplacer(event) {
+        if (!enDeplacement) return;
+        const souris = positionSouris(event);
+        const origine = depart.current;
+        setVue(actuelle => ({
+            ...actuelle,
+            x: origine.x + souris.x - origine.souris.x,
+            y: origine.y + souris.y - origine.souris.y
+        }));
+    }
+
+    function terminerDeplacement() {
+        setEnDeplacement(false);
+    }
+
+    return e('svg', {
+        ref: svg,
+        className: enDeplacement ? 'carte en-deplacement' : 'carte',
+        viewBox: VIEW_BOX,
+        onWheel: zoomer,
+        onPointerDown: debuterDeplacement,
+        onPointerMove: deplacer,
+        onPointerUp: terminerDeplacement,
+        onPointerCancel: terminerDeplacement
+    },
+        e('defs', null, couleursLiens.map(couleur => e(Fleche, { key: couleur, couleur }))),
+        e('g', { transform: `translate(${vue.x} ${vue.y}) scale(${vue.zoom})` },
+            liensVisibles.map(lien => e(Lien, { key: lien.id, lien })),
+            noeudsVisibles.map(noeud => e(Noeud, {
+                key: noeud.id,
+                noeud,
+                aDecouvrir: voisinsDe[noeud.id].some(voisin => !visibles[voisin]),
+                onBasculer: basculer
+            }))
+        )
+    );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(e(CarteMentale));
