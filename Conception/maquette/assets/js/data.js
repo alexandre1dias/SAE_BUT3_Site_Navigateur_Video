@@ -43,19 +43,11 @@ const LIEU = [
     { id_lieu: 3, nom_lieu: 'Les Eurockéennes', ville: 'Belfort', pays: 'France' }
 ];
 
-const THEME = [
-    { id_theme: 1, titre_theme: 'Processus créatif', description_theme: "Comment naissent les morceaux, de l'idée à l'enregistrement." },
-    { id_theme: 2, titre_theme: 'Gérer la pression', description_theme: 'Les attentes du public, le stress et la façon de les apprivoiser.' },
-    { id_theme: 3, titre_theme: 'Anecdotes de tournée', description_theme: 'La vie sur la route, entre deux concerts.' },
-    { id_theme: 4, titre_theme: 'Le trac', description_theme: 'Les minutes qui précèdent la montée sur scène.' }
-];
-
-// Chaque question appartient à un thème
 const QUESTION = [
-    { id_question: 1, texte_question: 'Comment naît un morceau chez vous ?', description_question: 'Méthode de composition et sources d\'inspiration.', id_theme: 1 },
-    { id_question: 2, texte_question: 'Comment gérez-vous la pression ?', description_question: 'Rapport aux attentes du public et de la profession.', id_theme: 2 },
-    { id_question: 3, texte_question: 'Quel est votre meilleur souvenir de tournée ?', description_question: null, id_theme: 3 },
-    { id_question: 4, texte_question: 'Avez-vous le trac avant de monter sur scène ?', description_question: 'Rituels et préparation avant un concert.', id_theme: 4 }
+    { id_question: 1, texte_question: 'Comment naît un morceau chez vous ?', description_question: 'Méthode de composition et sources d\'inspiration.' },
+    { id_question: 2, texte_question: 'Comment gérez-vous la pression ?', description_question: 'Rapport aux attentes du public et de la profession.' },
+    { id_question: 3, texte_question: 'Quel est votre meilleur souvenir de tournée ?', description_question: null },
+    { id_question: 4, texte_question: 'Avez-vous le trac avant de monter sur scène ?', description_question: 'Rituels et préparation avant un concert.' }
 ];
 
 // Une interview = un artiste filmé dans un lieu (id_lieu peut être null)
@@ -190,21 +182,6 @@ const UTILISATEUR = {
     lecteur_prefere: 'YOUTUBE'
 };
 
-const PLAYLIST = [
-    { id_playlist: 1, titre_playlist: 'Mes extraits préférés', date_creation: '2026-09-12 18:30:00', id_utilisateur: 1 },
-    { id_playlist: 2, titre_playlist: 'Spécial processus créatif', date_creation: '2026-10-01 09:15:00', id_utilisateur: 1 }
-];
-
-// Extraits d'une playlist, rangés par position
-const PLAYLIST_EXTRAIT = [
-    { id_playlist: 1, id_extrait: 2, position: 1 },
-    { id_playlist: 1, id_extrait: 7, position: 2 },
-    { id_playlist: 1, id_extrait: 3, position: 3 },
-    { id_playlist: 2, id_extrait: 1, position: 1 },
-    { id_playlist: 2, id_extrait: 4, position: 2 },
-    { id_playlist: 2, id_extrait: 6, position: 3 }
-];
-
 // Choix propre à la maquette (hors base de données) : interview mise en avant sur l'accueil
 const ID_INTERVIEW_A_LA_UNE = 2;
 
@@ -242,20 +219,4 @@ function interviewDeExtrait(extrait) {
 
 function questionDeExtrait(extrait) {
     return trouver(QUESTION, 'id_question', extrait.id_question);
-}
-
-function themeDeQuestion(question) {
-    return trouver(THEME, 'id_theme', question.id_theme);
-}
-
-function playlistsDeUtilisateur(utilisateur) {
-    return PLAYLIST.filter(playlist => playlist.id_utilisateur === utilisateur.id_utilisateur);
-}
-
-// Extraits d'une playlist, dans l'ordre choisi par l'utilisateur
-function extraitsDePlaylist(playlist) {
-    return PLAYLIST_EXTRAIT
-        .filter(lien => lien.id_playlist === playlist.id_playlist)
-        .sort((a, b) => a.position - b.position)
-        .map(lien => trouver(EXTRAIT, 'id_extrait', lien.id_extrait));
 }

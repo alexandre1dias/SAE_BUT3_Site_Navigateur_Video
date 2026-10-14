@@ -1,0 +1,244 @@
+/* === Fenêtre modale d'une vidéo (interview ou extrait) === */
+/* Partagée par la page d'accueil et la carte mentale */
+
+/* La page ne défile plus quand la modale est ouverte */
+body.modal-ouverte {
+    overflow: hidden;
+}
+
+/* --- Boutons --- */
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.btn-play {
+    background-color: #fff;
+    color: #000;
+}
+
+/* --- Fenêtre modale --- */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: #181818;
+    width: 90%;
+    max-width: 850px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #181818;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-header {
+    height: 350px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+}
+
+.modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70%;
+    background: linear-gradient(to top, #181818, transparent);
+}
+
+.modal-header-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+}
+
+.modal-header h2 {
+    font-size: 2.5rem;
+    margin: 0 0 15px 0;
+    color: #fff;
+}
+
+.player-choice {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 15px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px;
+    border: 1px solid #444;
+}
+
+.player-choice select {
+    background: transparent;
+    color: #fff;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 0 40px 40px 40px;
+    position: relative;
+}
+
+.modal-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.format-badge {
+    border: 1px solid #aaa;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    border-radius: 3px;
+    color: #fff;
+}
+
+.format-badge.interview {
+    border-color: #46d369;
+    color: #46d369;
+}
+
+.format-badge.question {
+    border-color: #3578e5;
+    color: #3578e5;
+}
+
+.modal-layout {
+    display: flex;
+    gap: 30px;
+}
+
+.modal-desc-box {
+    flex: 2;
+}
+
+.modal-desc {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #d2d2d2;
+}
+
+.modal-meta-box {
+    flex: 1;
+    font-size: 0.9rem;
+    color: #aaa;
+    line-height: 1.8;
+}
+
+.modal-meta-box strong {
+    color: #fff;
+}
+
+/* --- Bifurcations proposées dans la modale --- */
+
+.related-content {
+    margin-top: 20px;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+.related-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.related-content p.subtitle {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.related-links-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-related {
+    background-color: #222;
+    color: #ccc;
+    border: 1px solid #444;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-related:hover {
+    background-color: #fff;
+    color: #000;
+}

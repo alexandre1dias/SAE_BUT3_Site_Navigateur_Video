@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bifurcation - Carte mentale</title>
     <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
     <link rel="stylesheet" href="assets/css/mindmap.css">
 </head>
 <body>
@@ -20,6 +21,7 @@
     <div class="instructions">
         <strong>Carte mentale interactive :</strong><br>
         👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
+        ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo pour la lancer.<br>
         ◌ <strong>Bordure en pointillés</strong> : il reste des éléments reliés à découvrir.<br>
         🖱️ <strong>Molette</strong> pour zoomer/dézoomer.<br>
         🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
@@ -28,9 +30,55 @@
     <!-- Point de montage de l'application React (voir assets/js/mindmap.js) -->
     <div id="app"></div>
 
+    <!-- Fenêtre modale d'une vidéo (interview ou extrait) -->
+    <div id="video-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" id="modal-close">&times;</button>
+            <div class="modal-header" id="modal-bg">
+                <div class="modal-header-content">
+                    <h2 id="modal-title">Titre de la vidéo</h2>
+                    <div class="modal-actions">
+                        <button class="btn btn-play" id="modal-play">▶ Lancer la vidéo</button>
+                        <div class="player-choice">
+                            <label for="player-source">Lecteur :</label>
+                            <select id="player-source">
+                                <option value="YOUTUBE">YouTube</option>
+                                <option value="VIMEO">Vimeo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    <span id="modal-format-badge" class="format-badge">Format</span>
+                    <span id="modal-location">📍 Lieu</span>
+                </div>
+
+                <div class="modal-layout">
+                    <div class="modal-desc-box">
+                        <p class="modal-desc" id="modal-desc"></p>
+                        <div class="related-content">
+                            <h3>Livre dont vous êtes le héros</h3>
+                            <p class="subtitle">Choisissez votre prochain embranchement :</p>
+                            <div class="related-links-container" id="modal-related-links"></div>
+                        </div>
+                    </div>
+
+                    <!-- Fiche de la vidéo : les lignes sont générées par modal.js -->
+                    <div class="modal-meta-box" id="modal-meta"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
     <script src="assets/js/data.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/modal.js"></script>
     <script src="assets/js/mindmap.js"></script>
 </body>
 </html>

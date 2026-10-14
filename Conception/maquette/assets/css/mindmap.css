@@ -3,7 +3,6 @@
 :root {
     --fond-carte: #111111;
     --couleur-racine: #ffffff;
-    --couleur-theme: #f4b400;
     --couleur-question: #f7d774;
     --couleur-extrait: #666666;
 }
@@ -54,11 +53,6 @@ body {
     --couleur: var(--couleur-racine);
 }
 
-.noeud--theme,
-.lien--theme {
-    --couleur: var(--couleur-theme);
-}
-
 .noeud--question,
 .lien--question {
     --couleur: var(--couleur-question);
@@ -90,6 +84,12 @@ body {
     stroke-width: 6;
 }
 
+/* Triangle « lecture » des interviews et extraits (ouvrent la fiche de la vidéo) */
+.noeud .icone-lecture {
+    fill: #ffffff;
+    pointer-events: none;
+}
+
 /* Bordure en pointillés : il reste des éléments reliés à découvrir */
 .noeud--a-decouvrir circle {
     stroke-dasharray: 7 5;
@@ -113,7 +113,8 @@ body {
     opacity: 0.7;
 }
 
-.lien line {
+.lien path {
+    fill: none;
     stroke: var(--couleur);
     stroke-width: 1.5;
 }

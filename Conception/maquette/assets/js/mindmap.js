@@ -1,9 +1,10 @@
 // === Page Carte Mentale (React) ===
-// Les tables (ARTISTE, INTERVIEW, THEME, QUESTION, EXTRAIT...) et les fonctions d'accès viennent de data.js
+// Les tables (ARTISTE, INTERVIEW, QUESTION, EXTRAIT...) et les fonctions d'accès viennent de data.js,
+// la fenêtre modale d'une vidéo (ouvrirInterview, ouvrirExtrait) de modal.js
 //
 // La carte suit les relations de la base :
 //   racine → artiste → interview → extrait
-//   racine → thème   → question  → extrait
+//   racine → question → extrait
 // Un extrait est donc relié à la fois à son interview et à sa question.
 
 // === 1. Éléments de la carte ===
@@ -11,7 +12,7 @@ const ID_RACINE = 'racine';
 const COULEUR_PAR_DEFAUT = '#888888';
 
 // Rayon du cercle selon le type d'élément
-const RAYONS = { racine: 34, artiste: 26, theme: 24, interview: 20, question: 18, extrait: 13 };
+const RAYONS = { racine: 34, artiste: 26, interview: 20, question: 18, extrait: 13 };
 
 // Découpe un texte en lignes courtes pour l'afficher sous un cercle
 function couperEnLignes(texte, longueurMax = 22) {
@@ -48,20 +49,14 @@ const noeudsInterviews = INTERVIEW.map(interview => ({
     type: 'interview',
     couleur: couleurArtiste(artisteDeInterview(interview)),
     label: interview.titre_interview,
-    parent: `artiste-${interview.id_artiste}`
-}));
-
-const noeudsThemes = THEME.map(theme => ({
-    id: `theme-${theme.id_theme}`,
-    type: 'theme',
-    label: `Thème : ${theme.titre_theme}`
+    parent: `artiste-${interview.id_artiste}`,
+    ouvrirVideo: () => ouvrirInterview(interview)
 }));
 
 const noeudsQuestions = QUESTION.map(question => ({
     id: `question-${question.id_question}`,
     type: 'question',
-    label: question.texte_question,
-    parent: `theme-${question.id_theme}`
+    label: question.texte_question
 }));
 
 // Les extraits sont rangés par interview puis par ordre de séquence
@@ -70,13 +65,13 @@ const noeudsExtraits = INTERVIEW.flatMap(extraitsDeInterview).map(extrait => ({
     type: 'extrait',
     label: extrait.titre_extrait,
     interview: `interview-${extrait.id_interview}`,
-    question: `question-${extrait.id_question}`
+    question: `question-${extrait.id_question}`,
+    ouvrirVideo: () => ouvrirExtrait(extrait)
 }));
 
 const tousLesNoeuds = [
     racine,
     ...noeudsArtistes,
-    ...noeudsThemes,
     ...noeudsInterviews,
     ...noeudsQuestions,
     ...noeudsExtraits
@@ -90,27 +85,57 @@ tousLesNoeuds.forEach(noeud => {
 });
 
 // === 2. Positions fixes ===
-// Disposition en colonnes, de gauche à droite :
-//   artistes | interviews | extraits | questions | thèmes
-// La racine est en haut au centre ; les extraits, au milieu, font le lien entre les deux côtés.
-function placerEnColonne(noeuds, x, yCentre, ecart) {
-    noeuds.forEach((noeud, i) => {
-        noeud.x = x;
-        noeud.y = Math.round(yCentre + (i - (noeuds.length - 1) / 2) * ecart);
-    });
+// Disposition en colonnes symétriques, de gauche à droite :
+//   artistes | interviews | extraits | questions
+// Les extraits, régulièrement espacés, servent de repère : chaque interview est centrée sur ses extraits,
+// chaque artiste sur ses interviews, et chaque question au plus près de ses extraits.
+// La racine, en haut au centre, rejoint les artistes et les questions par l'extérieur des colonnes (voir les liens).
+const COLONNES = { artiste: -480, interview: -160, extrait: 160, question: 480 };
+const ECART_EXTRAITS = 120;
+const ECART_MIN_QUESTIONS = 140;
+
+function moyenne(valeurs) {
+    return valeurs.reduce((total, valeur) => total + valeur, 0) / valeurs.length;
 }
 
-racine.x = 0;
-racine.y = -520;
+// Place un élément à la hauteur moyenne des éléments auxquels il est relié
+function centrerSur(noeud, relies) {
+    noeud.x = COLONNES[noeud.type];
+    noeud.y = Math.round(moyenne(relies.map(relie => relie.y)));
+}
 
-placerEnColonne(noeudsArtistes, -620, -150, 220);
-placerEnColonne(noeudsInterviews, -330, 120, 220);
-placerEnColonne(noeudsExtraits, 0, 250, 105);
-placerEnColonne(noeudsQuestions, 330, 150, 170);
-placerEnColonne(noeudsThemes, 620, -150, 170);
+noeudsExtraits.forEach((extrait, i) => {
+    extrait.x = COLONNES.extrait;
+    extrait.y = Math.round((i - (noeudsExtraits.length - 1) / 2) * ECART_EXTRAITS);
+});
+
+noeudsInterviews.forEach(interview => {
+    centrerSur(interview, noeudsExtraits.filter(extrait => extrait.interview === interview.id));
+});
+
+noeudsArtistes.forEach(artiste => {
+    centrerSur(artiste, noeudsInterviews.filter(interview => interview.parent === artiste.id));
+});
+
+// Questions : rangées selon la hauteur moyenne de leurs extraits (moins de liens qui se croisent),
+// puis écartées si elles se chevauchent
+noeudsQuestions.forEach(question => {
+    centrerSur(question, noeudsExtraits.filter(extrait => extrait.question === question.id));
+});
+const questionsTriees = [...noeudsQuestions].sort((a, b) => a.y - b.y);
+const hauteurVoulue = moyenne(questionsTriees.map(question => question.y));
+questionsTriees.forEach((question, i) => {
+    if (i > 0) question.y = Math.max(question.y, questionsTriees[i - 1].y + ECART_MIN_QUESTIONS);
+});
+const decalage = hauteurVoulue - moyenne(questionsTriees.map(question => question.y));
+questionsTriees.forEach(question => { question.y = Math.round(question.y + decalage); });
+
+const hautDesColonnes = Math.min(...[...noeudsArtistes, ...noeudsInterviews, ...noeudsExtraits, ...noeudsQuestions].map(noeud => noeud.y));
+racine.x = 0;
+racine.y = hautDesColonnes - 220;
 
 // La vue est cadrée sur l'emplacement de la carte entièrement dépliée
-const MARGE = 120;
+const MARGE = 200; // Assez large pour les liens qui contournent les colonnes
 const xs = tousLesNoeuds.map(noeud => noeud.x);
 const ys = tousLesNoeuds.map(noeud => noeud.y);
 const VIEW_BOX = [
@@ -124,11 +149,11 @@ const VIEW_BOX = [
 // Un lien par clé étrangère de la base
 const liens = [];
 
-[...noeudsArtistes, ...noeudsThemes].forEach(noeud => {
+[...noeudsArtistes, ...noeudsQuestions].forEach(noeud => {
     liens.push({ from: ID_RACINE, to: noeud.id });
 });
 
-[...noeudsInterviews, ...noeudsQuestions].forEach(noeud => {
+noeudsInterviews.forEach(noeud => {
     liens.push({ from: noeud.parent, to: noeud.id });
 });
 
@@ -137,27 +162,47 @@ noeudsExtraits.forEach(extrait => {
     liens.push({ from: extrait.question, to: extrait.id });
 });
 
-// Tracé de chaque lien : un segment allant du bord d'un élément au bord de l'autre, terminé par une pointe de flèche
+// Tracé de chaque lien, du bord d'un élément au bord de l'autre, terminé par une pointe de flèche.
+// Les liens de la racine contournent les colonnes par l'extérieur (courbe) pour ne pas croiser les autres liens ;
+// tous les autres sont des segments droits.
 const LONGUEUR_POINTE = 10;
 const DEMI_LARGEUR_POINTE = 5;
+const DETOUR = 220; // Distance entre une colonne extérieure et la courbe qui la contourne
 
 liens.forEach((lien, index) => {
     const depart = noeudParId[lien.from];
     const arrivee = noeudParId[lien.to];
-    const dx = arrivee.x - depart.x;
-    const dy = arrivee.y - depart.y;
-    const longueur = Math.sqrt(dx * dx + dy * dy);
-    // Vecteur unitaire dans le sens du lien
-    const ux = dx / longueur;
-    const uy = dy / longueur;
+    // Sens d'arrivée sur l'élément (vecteur unitaire), utilisé pour placer la pointe
+    let ux;
+    let uy;
+
+    if (depart.type === 'racine') {
+        // La courbe sort de la racine à l'horizontale et arrive sur l'élément par l'extérieur
+        const cote = Math.sign(arrivee.x - depart.x);
+        const xDetour = arrivee.x + cote * DETOUR;
+        const x1 = depart.x + cote * (depart.rayon + 3);
+        const x2 = arrivee.x + cote * (arrivee.rayon + 5);
+        lien.x2 = x2;
+        lien.y2 = arrivee.y;
+        lien.chemin = `M ${x1} ${depart.y} C ${xDetour} ${depart.y} ${xDetour} ${arrivee.y} ${x2} ${arrivee.y}`;
+        ux = -cote;
+        uy = 0;
+    } else {
+        const dx = arrivee.x - depart.x;
+        const dy = arrivee.y - depart.y;
+        const longueur = Math.sqrt(dx * dx + dy * dy);
+        ux = dx / longueur;
+        uy = dy / longueur;
+        const x1 = depart.x + ux * (depart.rayon + 3);
+        const y1 = depart.y + uy * (depart.rayon + 3);
+        lien.x2 = arrivee.x - ux * (arrivee.rayon + 5);
+        lien.y2 = arrivee.y - uy * (arrivee.rayon + 5);
+        lien.chemin = `M ${x1} ${y1} L ${lien.x2} ${lien.y2}`;
+    }
 
     lien.id = index;
     lien.type = depart.type;
     lien.couleur = depart.couleur;
-    lien.x1 = depart.x + ux * (depart.rayon + 3);
-    lien.y1 = depart.y + uy * (depart.rayon + 3);
-    lien.x2 = arrivee.x - ux * (arrivee.rayon + 5);
-    lien.y2 = arrivee.y - uy * (arrivee.rayon + 5);
 
     const baseX = lien.x2 - ux * LONGUEUR_POINTE;
     const baseY = lien.y2 - uy * LONGUEUR_POINTE;
@@ -205,7 +250,7 @@ function styleCouleur(couleur) {
 
 function Lien({ lien }) {
     return e('g', { className: `lien lien--${lien.type}`, style: styleCouleur(lien.couleur) },
-        e('line', { x1: lien.x1, y1: lien.y1, x2: lien.x2, y2: lien.y2 }),
+        e('path', { d: lien.chemin }),
         e('polygon', { points: lien.pointe })
     );
 }
@@ -224,6 +269,8 @@ function Noeud({ noeud, aDecouvrir, onBasculer }) {
         onClick: () => onBasculer(noeud.id)
     },
         e('circle', { r: noeud.rayon }),
+        // Petit triangle « lecture » sur les éléments qui correspondent à une vidéo
+        noeud.ouvrirVideo && e('polygon', { className: 'icone-lecture', points: '-4,-6 7,0 -4,6' }),
         e('text', { y: noeud.rayon + 20 },
             noeud.lignes.map((ligne, i) => e('tspan', { key: i, x: 0, dy: i === 0 ? 0 : 18 }, ligne))
         )
@@ -231,7 +278,7 @@ function Noeud({ noeud, aDecouvrir, onBasculer }) {
 }
 
 function CarteMentale() {
-    // Éléments dont les voisins sont affichés. Au départ aucun, donc seul le thème principal est visible.
+    // Éléments dont les voisins sont affichés. Au départ aucun, donc seule la racine est visible.
     const [deplies, setDeplies] = useState({});
     // Zoom et décalage de la vue (les éléments, eux, ne bougent jamais)
     const [vue, setVue] = useState({ x: 0, y: 0, zoom: 1 });
@@ -243,8 +290,12 @@ function CarteMentale() {
     const noeudsVisibles = tousLesNoeuds.filter(noeud => visibles[noeud.id]);
     const liensVisibles = liens.filter(lien => visibles[lien.from] && visibles[lien.to]);
 
-    // Un clic affiche les éléments reliés, un second clic les replie
+    // Un clic affiche les éléments reliés, un second clic les replie.
+    // Sur une interview ou un extrait, le clic qui déplie ouvre aussi la fiche de la vidéo.
     function basculer(id) {
+        const noeud = noeudParId[id];
+        if (noeud.ouvrirVideo && !deplies[id]) noeud.ouvrirVideo();
+
         setDeplies(precedents => {
             const suivants = { ...precedents };
             if (suivants[id]) delete suivants[id];
