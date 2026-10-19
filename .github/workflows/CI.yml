@@ -1,0 +1,31 @@
+name: Verification du Code (CI)
+
+on:
+  push:
+    branches: [ "main","develop" ]
+  pull_request:
+    branches: [ "main","develop" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Récupère le code du dépôt
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      # 2. Installe Node.js sur le serveur de test
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Installe les dépendances du projet
+      - name: Installation des dépendances
+        run: npm ci
+
+      # 4. Vérifie que le projet compile sans erreur
+      - name: Compilation du projet (Build)
+        run: npm run build
