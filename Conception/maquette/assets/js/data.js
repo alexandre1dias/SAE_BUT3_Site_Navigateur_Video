@@ -12,21 +12,15 @@ const GENRE_MUSICAL = [
 const ARTISTE = [
     {
         id_artiste: 1,
-        nom_artiste: 'Artiste A',
-        biographie: 'Guitariste et chanteur, figure de la scène rock lyonnaise.',
-        photo_url: 'https://picsum.photos/1920/1080?random=11'
+        nom_artiste: 'Artiste A'
     },
     {
         id_artiste: 2,
-        nom_artiste: 'Artiste B',
-        biographie: 'Producteur et compositeur, entre machines et mélodies pop.',
-        photo_url: 'https://picsum.photos/1920/1080?random=10'
+        nom_artiste: 'Artiste B'
     },
     {
         id_artiste: 3,
-        nom_artiste: 'Artiste C',
-        biographie: 'Rappeur et auteur, habitué des scènes de festival.',
-        photo_url: 'https://picsum.photos/1920/1080?random=12'
+        nom_artiste: 'Artiste C'
     }
 ];
 
@@ -44,10 +38,10 @@ const LIEU = [
 ];
 
 const QUESTION = [
-    { id_question: 1, texte_question: 'Comment naît un morceau chez vous ?', description_question: 'Méthode de composition et sources d\'inspiration.' },
-    { id_question: 2, texte_question: 'Comment gérez-vous la pression ?', description_question: 'Rapport aux attentes du public et de la profession.' },
-    { id_question: 3, texte_question: 'Quel est votre meilleur souvenir de tournée ?', description_question: null },
-    { id_question: 4, texte_question: 'Avez-vous le trac avant de monter sur scène ?', description_question: 'Rituels et préparation avant un concert.' }
+    { id_question: 1, texte_question: 'Comment naît un morceau chez vous ?' },
+    { id_question: 2, texte_question: 'Comment gérez-vous la pression ?' },
+    { id_question: 3, texte_question: 'Quel est votre meilleur souvenir de tournée ?' },
+    { id_question: 4, texte_question: 'Avez-vous le trac avant de monter sur scène ?' }
 ];
 
 // Une interview = un artiste filmé dans un lieu (id_lieu peut être null)
@@ -179,7 +173,8 @@ const UTILISATEUR = {
     id_utilisateur: 1,
     nom_utilisateur: 'demo',
     email: 'demo@example.com',
-    lecteur_prefere: 'YOUTUBE'
+    lecteur_prefere: 'YOUTUBE',
+    est_admin: false
 };
 
 // Choix propre à la maquette (hors base de données) : interview mise en avant sur l'accueil

@@ -14,7 +14,8 @@ function afficherInterviewALaUne() {
     const artiste = artisteDeInterview(interviewALaUne);
     const genres = genresDeArtiste(artiste);
 
-    document.getElementById('hero').style.backgroundImage = `url('${artiste.photo_url}')`;
+    // La base ne stocke pas de photo d'artiste : on utilise l'image d'illustration de l'interview
+    document.getElementById('hero').style.backgroundImage = `url('${imageInterview(interviewALaUne, 1920, 1080)}')`;
     document.getElementById('hero-title').textContent = artiste.nom_artiste;
     document.getElementById('hero-desc').textContent = interviewALaUne.description;
 
