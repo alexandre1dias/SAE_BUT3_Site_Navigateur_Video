@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bifurcation - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'SoundFlow/css/common.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header id="navbar">
+        <div class="logo">Interview</div>
+        <nav class="nav-links">
+            {% with page=request.resolver_match.url_name %}
+            <a href="{% url 'home' %}" {% if page == 'home' or page == 'home_base' %}class="active"{% endif %}>Mode Lecture</a>
+            <a href="{% url 'mind_map' %}" {% if page == 'mind_map' %}class="active"{% endif %}>Mode Carte Mentale</a>
+            {% endwith %}
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

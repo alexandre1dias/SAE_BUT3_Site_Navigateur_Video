@@ -1,0 +1,142 @@
+/* === Page Carte Mentale === */
+
+:root {
+    --fond-carte: #111111;
+    --couleur-racine: #ffffff;
+    --couleur-question: #f7d774;
+    --couleur-extrait: #666666;
+}
+
+/* La carte occupe tout l'écran : la page elle-même ne défile pas */
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background-color: var(--fond-carte);
+}
+
+.carte {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    padding-top: 80px; /* Espace en haut pour la navbar fixe : sinon la racine passe dessous */
+    box-sizing: border-box;
+    background-color: var(--fond-carte);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+}
+
+.carte.en-deplacement {
+    cursor: grabbing;
+}
+
+/* Les éléments apparaissent en fondu */
+.noeud,
+.lien {
+    animation: apparition 0.35s ease-out;
+}
+
+@keyframes apparition {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Couleurs --- */
+/* Chaque élément et chaque lien se colore avec --couleur.
+   Artistes et interviews reçoivent la couleur de leur genre depuis la base
+   (genre_musical.code_couleur, transmise par mindmap.js) ; les autres types ont une couleur fixe. */
+
+.noeud--racine,
+.lien--racine {
+    --couleur: var(--couleur-racine);
+}
+
+.noeud--question,
+.lien--question {
+    --couleur: var(--couleur-question);
+}
+
+.noeud--extrait {
+    --couleur: var(--couleur-extrait);
+}
+
+/* --- Éléments de la carte --- */
+
+.noeud {
+    cursor: pointer;
+}
+
+.noeud circle {
+    fill: var(--couleur);
+    /* Bordure : la même couleur, assombrie */
+    stroke: color-mix(in srgb, var(--couleur) 70%, black);
+    stroke-width: 3;
+    transition: stroke-width 0.15s;
+}
+
+.noeud--extrait circle {
+    stroke: #999999;
+}
+
+.noeud:hover circle {
+    stroke-width: 6;
+}
+
+/* Triangle « lecture » des interviews et extraits (ouvrent la fiche de la vidéo) */
+.noeud .icone-lecture {
+    fill: #ffffff;
+    pointer-events: none;
+}
+
+/* Bordure en pointillés : il reste des éléments reliés à découvrir */
+.noeud--a-decouvrir circle {
+    stroke-dasharray: 7 5;
+}
+
+.noeud text {
+    fill: #ffffff;
+    font-family: arial, sans-serif;
+    font-size: 16px;
+    text-anchor: middle;
+    /* Contour sombre pour rester lisible par-dessus les liens */
+    stroke: var(--fond-carte);
+    stroke-width: 4px;
+    paint-order: stroke;
+}
+
+/* --- Liens entre les éléments --- */
+/* Un lien (et sa flèche) prend la couleur de son élément de départ */
+
+.lien {
+    opacity: 0.7;
+}
+
+.lien path {
+    fill: none;
+    stroke: var(--couleur);
+    stroke-width: 1.5;
+}
+
+.lien polygon {
+    fill: var(--couleur);
+}
+
+/* --- Encadré d'instructions --- */
+
+.instructions {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 10;
+    border: 1px solid #333;
+    pointer-events: none; /* Laisse passer les clics vers la carte en dessous */
+    font-size: 14px;
+}

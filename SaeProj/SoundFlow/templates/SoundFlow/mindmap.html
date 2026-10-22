@@ -1,0 +1,35 @@
+{% extends 'SoundFlow/base.html' %}
+{% load static %}
+
+{% block title %}Carte mentale{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'SoundFlow/css/modal.css' %}">
+<link rel="stylesheet" href="{% static 'SoundFlow/css/mindmap.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="instructions">
+        <strong>Carte mentale interactive :</strong><br>
+        👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
+        ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo pour la lancer.<br>
+        ◌ <strong>Bordure en pointillés</strong> : il reste des éléments reliés à découvrir.<br>
+        🖱️ <strong>Molette</strong> pour zoomer/dézoomer.<br>
+        🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
+    </div>
+
+    <!-- Point de montage de l'application React (voir static/SoundFlow/js/mindmap.js) -->
+    <div id="app"></div>
+
+    {% include 'SoundFlow/partials/video_modal.html' %}
+{% endblock %}
+
+{% block scripts %}
+{{ donnees|json_script:"donnees" }}
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="{% static 'SoundFlow/js/data.js' %}"></script>
+<script src="{% static 'SoundFlow/js/utils.js' %}"></script>
+<script src="{% static 'SoundFlow/js/modal.js' %}"></script>
+<script src="{% static 'SoundFlow/js/mindmap.js' %}"></script>
+{% endblock %}
