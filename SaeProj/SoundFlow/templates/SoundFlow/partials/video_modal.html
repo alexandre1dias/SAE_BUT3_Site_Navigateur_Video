@@ -1,0 +1,41 @@
+<div id="video-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" id="modal-close">&times;</button>
+        <div class="modal-header" id="modal-bg">
+            <div class="modal-header-content">
+                <h2 id="modal-title">Titre de la vidéo</h2>
+                <div class="modal-actions">
+                    <button class="btn btn-play" id="modal-play">▶ Lancer la vidéo</button>
+                    <div class="player-choice">
+                        <label for="player-source">Lecteur :</label>
+                        <select id="player-source">
+                            <option value="YOUTUBE">YouTube</option>
+                            <option value="VIMEO">Vimeo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="modal-info">
+                <span id="modal-format-badge" class="format-badge">Format</span>
+                <span id="modal-location">📍 Lieu</span>
+            </div>
+
+            <div class="modal-layout">
+                <div class="modal-desc-box">
+                    <p class="modal-desc" id="modal-desc"></p>
+                    <div class="related-content">
+                        <h3>Livre dont vous êtes le héros</h3>
+                        <p class="subtitle">Choisissez votre prochain embranchement :</p>
+                        <div class="related-links-container" id="modal-related-links"></div>
+                    </div>
+                </div>
+
+                <!-- Fiche de la vidéo : les lignes sont générées par modal.js -->
+                <div class="modal-meta-box" id="modal-meta"></div>
+            </div>
+        </div>
+    </div>
+</div>
