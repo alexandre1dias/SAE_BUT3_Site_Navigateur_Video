@@ -1,70 +1,127 @@
-/* === Styles communs aux deux pages === */
-
 :root {
-    --bg-color: #141414;
-    --primary-red: #E50914;
-    --text-color: #e5e5e5;
-    --hover-color: #ffffff;
+    --bg-app: #0F0F0F;
+    --bg-sidebar: #212121;
+    --bg-card: #181818;
+    --hover-color: #3D3D3D;
+    --text-main: #FFFFFF;
+    --text-sec: #AAAAAA;
+    --accent: #FF0000;
+    --accent-hover: #CC0000;
+    --border: #333333;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
 }
 
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-/* --- Barre de navigation --- */
-
-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 4%;
-    background: linear-gradient(to bottom, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0) 100%);
-    position: fixed;
-    top: 0;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 100;
-    transition: background 0.3s;
 }
 
-header.scrolled {
-    background-color: #141414;
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-app);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--hover-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-sec);
+}
+
+#navbar {
+    width: 240px;
+    min-height: 100vh;
+    flex: 0 0 240px;
+    background-color: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    z-index: 50;
 }
 
 .logo {
-    font-weight: bold;
     font-size: 1.5rem;
-    color: var(--primary-red);
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    font-weight: 900;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo::before {
+    content: '▶';
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
 }
 
 .nav-links a {
-    color: var(--text-color);
-    margin-left: 20px;
     text-decoration: none;
-    font-size: 0.95rem;
+    color: var(--text-main);
+    padding: 0.8rem 1.5rem;
     font-weight: 500;
-    transition: color 0.3s;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: var(--hover-color);
-    font-weight: bold;
+    background-color: var(--hover-color);
 }
 
-/* --- Pastille de couleur musicale --- */
-/* La couleur vient de la base (genre_musical.code_couleur) : le JS la transmet dans --couleur-genre */
+.nav-links a.active {
+    border-left: 4px solid var(--accent);
+    font-weight: 700;
+}
 
-.color-badge {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 5px;
-    background: var(--couleur-genre, #888888);
+@media (max-width: 700px) {
+    body {
+        display: block;
+    }
+
+    #navbar {
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        flex: none;
+    }
+
+    .logo {
+        padding: 1rem 1.25rem;
+    }
+
+    .nav-links {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0;
+    }
+
+    .nav-links a {
+        white-space: nowrap;
+        padding: 0.75rem 1rem;
+    }
 }

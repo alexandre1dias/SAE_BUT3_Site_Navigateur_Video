@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bifurcation - Carte mentale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/common.css">
     <link rel="stylesheet" href="assets/css/modal.css">
     <link rel="stylesheet" href="assets/css/mindmap.css">
@@ -18,17 +21,19 @@
         </nav>
     </header>
 
-    <div class="instructions">
-        <strong>Carte mentale interactive :</strong><br>
-        👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
-        ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo pour la lancer.<br>
-        ◌ <strong>Bordure en pointillés</strong> : il reste des éléments reliés à découvrir.<br>
-        🖱️ <strong>Molette</strong> pour zoomer/dézoomer.<br>
-        🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
-    </div>
+    <main class="mindmap-wrapper">
+        <div class="instructions">
+            <strong>Carte mentale interactive :</strong><br>
+            👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
+            ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo pour la lancer.<br>
+            ◌ <strong>Bordure en pointillés</strong> : il reste des éléments reliés à découvrir.<br>
+            🖱️ <strong>Molette</strong> pour zoomer/dézoomer.<br>
+            🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
+        </div>
 
-    <!-- Point de montage de l'application React (voir assets/js/mindmap.js) -->
-    <div id="app"></div>
+        <!-- Point de montage de l'application React (voir assets/js/mindmap.js) -->
+        <div id="app"></div>
+    </main>
 
     <!-- Fenêtre modale d'une vidéo (interview ou extrait) -->
     <div id="video-modal" class="modal-overlay">

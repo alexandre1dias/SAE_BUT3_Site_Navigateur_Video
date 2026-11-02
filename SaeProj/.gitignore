@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environnements virtuels
+.venv/
+venv/
+env/
+ENV/
+
+# Outils Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Variables d'environnement et secrets locaux
+.env
+.env.*
+!.env.example
+
+# Frontend Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Éditeurs et IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Système d'exploitation
+.DS_Store
+Thumbs.db

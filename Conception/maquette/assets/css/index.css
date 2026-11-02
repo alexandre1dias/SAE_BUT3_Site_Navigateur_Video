@@ -1,0 +1,359 @@
+/* =========================================
+   VARIABLES & RESET (Thème Sombre Plateforme)
+   ========================================= */
+:root {
+    --bg-app: #0F0F0F;
+    --bg-sidebar: #212121;
+    --bg-card: #181818;
+    --hover-color: #3D3D3D;
+    --text-main: #FFFFFF;
+    --text-sec: #AAAAAA;
+    --accent: #FF0000;
+    --accent-hover: #CC0000;
+    --border: #333333;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+}
+
+/* Personnalisation de la barre de défilement */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-app); }
+::-webkit-scrollbar-thumb { background: var(--hover-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-sec); }
+
+/* =========================================
+   MENU LATÉRAL (Sidebar)
+   ========================================= */
+#navbar {
+    width: 240px;
+    background-color: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    z-index: 50;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo::before {
+    content: '▶';
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-main);
+    padding: 0.8rem 1.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.nav-links a:hover {
+    background-color: var(--hover-color);
+}
+
+.nav-links a.active {
+    background-color: var(--hover-color);
+    border-left: 4px solid var(--accent);
+    font-weight: 700;
+}
+
+/* =========================================
+   ZONE PRINCIPALE & FILTRES (Top Bar)
+   ========================================= */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.filters-bar {
+    background-color: var(--bg-app);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 40;
+}
+
+.filters-bar label {
+    color: var(--text-sec);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.filter-select {
+    background-color: var(--bg-sidebar);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.filter-select:hover {
+    background-color: var(--hover-color);
+}
+
+/* =========================================
+   FLUX DE CONTENU (Scrollable Feed)
+   ========================================= */
+.scrollable-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+/* =========================================
+   VIDÉO À LA UNE (Layout Split)
+   ========================================= */
+.hero {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    min-height: 350px;
+    justify-content: flex-end;
+    box-shadow: inset 0 -150px 100px -50px rgba(0,0,0,0.9);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+}
+
+.hero-meta {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+.hero-desc {
+    color: var(--text-sec);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    border: none;
+    border-radius: 4px;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.btn-play {
+    background-color: var(--accent);
+    color: white;
+}
+
+.btn-play:hover { background-color: var(--accent-hover); }
+
+.btn-info {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.btn-info:hover { background-color: rgba(255,255,255,0.2); }
+
+/* =========================================
+   GRILLES VIDÉOS (Flux)
+   ========================================= */
+.theme-row {
+    margin-bottom: 3rem;
+}
+
+.row-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.carousel > div {
+    cursor: pointer;
+}
+
+.carousel > div img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--bg-card);
+    transition: transform 0.2s, border-radius 0.2s;
+}
+
+.carousel > div:hover img {
+    transform: scale(1.03);
+    border-radius: 0px;
+}
+
+/* =========================================
+   MODALE (Lecteur Théâtre)
+   ========================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    width: 95%;
+    max-width: 1200px;
+    height: 90vh;
+    background: var(--bg-app);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Espace Player Vidéo (Haut) */
+.modal-header {
+    background-color: #000;
+    flex: 0 0 60%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+}
+
+.modal-header-content {
+    width: 100%;
+}
+
+#modal-title { font-size: 2rem; margin-bottom: 1rem; }
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.7);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+/* Espace Informations (Bas) */
+.modal-body {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    gap: 2rem;
+}
+
+.modal-layout {
+    display: flex;
+    flex: 1;
+    gap: 2rem;
+}
+
+.modal-desc-box { flex: 2; }
+.modal-meta-box {
+    flex: 1;
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.modal-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-sec);
+}
+
+.format-badge {
+    background: var(--hover-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.related-content h3 { font-size: 1.1rem; margin-top: 2rem; color: var(--accent); }

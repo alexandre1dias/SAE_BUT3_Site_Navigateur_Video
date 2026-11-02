@@ -26,8 +26,12 @@ body.modal-ouverte {
 }
 
 .btn-play {
-    background-color: #fff;
-    color: #000;
+    background-color: var(--accent);
+    color: #fff;
+}
+
+.btn-play:hover {
+    background-color: var(--accent-hover);
 }
 
 /* --- Fenêtre modale --- */
@@ -38,7 +42,7 @@ body.modal-ouverte {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.95);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,9 +58,9 @@ body.modal-ouverte {
 }
 
 .modal-content {
-    background-color: #181818;
-    width: 90%;
-    max-width: 850px;
+    background-color: var(--bg-app);
+    width: 95%;
+    max-width: 1200px;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
@@ -96,7 +100,7 @@ body.modal-ouverte {
     position: relative;
     display: flex;
     align-items: flex-end;
-    padding: 40px;
+    padding: 2rem;
 }
 
 .modal-header::after {
@@ -106,7 +110,7 @@ body.modal-ouverte {
     left: 0;
     right: 0;
     height: 70%;
-    background: linear-gradient(to top, #181818, transparent);
+    background: linear-gradient(to top, var(--bg-app), transparent);
 }
 
 .modal-header-content {
@@ -129,7 +133,7 @@ body.modal-ouverte {
     align-items: center;
     gap: 10px;
     margin-left: 15px;
-    border: 1px solid #444;
+    border: 1px solid var(--border);
 }
 
 .player-choice select {
@@ -142,7 +146,7 @@ body.modal-ouverte {
 }
 
 .modal-body {
-    padding: 0 40px 40px 40px;
+    padding: 2rem;
     position: relative;
 }
 
@@ -191,7 +195,7 @@ body.modal-ouverte {
 .modal-meta-box {
     flex: 1;
     font-size: 0.9rem;
-    color: #aaa;
+    color: var(--text-sec);
     line-height: 1.8;
 }
 
@@ -203,14 +207,14 @@ body.modal-ouverte {
 
 .related-content {
     margin-top: 20px;
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--border);
     padding-top: 20px;
 }
 
 .related-content h3 {
     font-size: 1.2rem;
     margin-bottom: 5px;
-    color: #fff;
+    color: var(--accent);
 }
 
 .related-content p.subtitle {
