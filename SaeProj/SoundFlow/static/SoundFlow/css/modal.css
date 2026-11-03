@@ -103,10 +103,12 @@ body.modal-ouverte {
     color: var(--bg-color);
 }
 
-/* Simulation de l'espace Player vidéo (16/9) */
+/* Vignette en haut de la fiche : hauteur limitée pour que la fiche tienne à l'écran */
 .modal-header {
     flex-shrink: 0;
-    aspect-ratio: 16 / 9;
+    height: 35vh;        /* 35 % de la hauteur de l'écran */
+    min-height: 200px;
+    max-height: 320px;
     background-color: #000;
     background-size: cover;
     background-position: center;
@@ -204,19 +206,28 @@ body.modal-ouverte {
 
 .modal-meta-box {
     flex: 1;
+    align-self: flex-start;  /* le bloc gris ne s'étire pas sur toute la hauteur */
     font-size: 0.95rem;
     color: var(--text-muted);
-    line-height: 2;
+    line-height: 1.4;
     background: var(--surface-color);
-    padding: 30px;
+    padding: 20px;
     border-radius: 16px;
     border: 1px solid var(--border-color);
+}
+
+.modal-meta-box p {
+    margin: 0 0 12px;
+}
+
+.modal-meta-box p:last-child {
+    margin-bottom: 0;
 }
 
 .modal-meta-box strong {
     color: var(--text-color);
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 /* --- Bifurcations --- */
@@ -265,9 +276,11 @@ body.modal-ouverte {
 
 /* --- Lecteur vidéo (ajouté par modal.js à la place de la miniature) --- */
 
+/* Pendant la lecture, l'en-tête prend les proportions d'une vidéo, sans dépasser l'écran */
 .modal-header.en-lecture {
     height: auto;
     aspect-ratio: 16 / 9;
+    max-height: 60vh;
     padding: 0;
 }
 
