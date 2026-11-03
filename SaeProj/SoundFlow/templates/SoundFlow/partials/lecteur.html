@@ -4,8 +4,8 @@
     <div class="player-choice">
         <label>Lecteur :</label>
         <select class="choix-lecteur">
-            <option value="youtube">YouTube</option>
-            <option value="vimeo">Vimeo</option>
+            {% if youtube %}<option value="youtube">YouTube</option>{% endif %}
+            {% if vimeo %}<option value="vimeo">Vimeo</option>{% endif %}
         </select>
     </div>
 </div>

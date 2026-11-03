@@ -1,5 +1,5 @@
 {% extends 'SoundFlow/base.html' %}
-{% load static %}
+{% load static videos %}
 
 {% block title %}Accueil{% endblock %}
 
@@ -11,7 +11,7 @@
 {% block content %}
     <!-- Interview à la une -->
     {% with interview=interview_a_la_une %}
-    <div class="hero" style="background-image: url('https://picsum.photos/1920/1080?random={{ interview.idInterview|add:30 }}')">
+    <div class="hero" style="background-image: url('{{ interview.urlYoutube|miniature }}')">
         <div class="hero-content">
             <h1 class="hero-title">{{ interview.artiste.nomArtiste }}</h1>
             <div class="hero-meta">
@@ -75,7 +75,7 @@
             <div class="row-title">Extraits & Questions spécifiques</div>
             <div class="carousel">
                 {% for extrait in extraits %}
-                    {% include 'SoundFlow/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" numero_image=extrait.idExtrait|add:200 %}
+                    {% include 'SoundFlow/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" url_youtube=extrait.urlYoutube|default:extrait.interview.urlYoutube %}
                 {% endfor %}
             </div>
         </div>
@@ -84,7 +84,7 @@
             <div class="row-title">Interviews Complètes</div>
             <div class="carousel">
                 {% for interview in interviews %}
-                    {% include 'SoundFlow/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" numero_image=interview.idInterview|add:30 %}
+                    {% include 'SoundFlow/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" url_youtube=interview.urlYoutube %}
                 {% endfor %}
             </div>
         </div>

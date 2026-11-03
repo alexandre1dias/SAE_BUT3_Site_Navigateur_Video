@@ -1,6 +1,7 @@
+{% load videos %}
 {% with interview=extrait.interview %}
 <div class="fiche" id="fiche-extrait-{{ extrait.idExtrait }}" hidden>
-    <div class="modal-header" style="background-image: url('https://picsum.photos/800/450?random={{ extrait.idExtrait|add:200 }}')">
+    <div class="modal-header" style="background-image: url('{{ extrait.urlYoutube|default:interview.urlYoutube|miniature }}')">
         <div class="modal-header-content">
             <h2>{{ extrait.titreExtrait }}</h2>
             {# Sans vidéo propre à l'extrait, on lit l'interview à partir du timecode de début #}

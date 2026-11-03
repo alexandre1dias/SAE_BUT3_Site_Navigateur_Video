@@ -1,5 +1,6 @@
+{% load videos %}
 <div class="fiche" id="fiche-interview-{{ interview.idInterview }}" hidden>
-    <div class="modal-header" style="background-image: url('https://picsum.photos/800/450?random={{ interview.idInterview|add:30 }}')">
+    <div class="modal-header" style="background-image: url('{{ interview.urlYoutube|miniature }}')">
         <div class="modal-header-content">
             <h2>{{ interview.titreInterview }}</h2>
             {% include 'SoundFlow/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=0 %}
