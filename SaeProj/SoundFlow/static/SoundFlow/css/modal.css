@@ -262,3 +262,25 @@ body.modal-ouverte {
     background-color: var(--text-color);
     color: var(--bg-color);
 }
+
+/* --- Lecteur vidéo (ajouté par modal.js à la place de la miniature) --- */
+
+.modal-header.en-lecture {
+    height: auto;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+}
+
+/* Pendant la lecture, on cache le titre, le bouton et le dégradé */
+.modal-header.en-lecture .modal-header-content,
+.modal-header.en-lecture::after {
+    display: none;
+}
+
+.lecteur-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}

@@ -1,10 +1,11 @@
+{% load videos %}
 {# Une carte de vidéo. Les attributs data-* servent aux filtres (home.js) et à l'ouverture de la fiche (modal.js) #}
 <div class="card"
      data-fiche="{{ type_fiche }}-{{ id_fiche }}"
      data-artiste="{{ interview.artiste.idArtiste }}"
      data-lieu="{{ interview.lieu.idLieu|default:'' }}"
      data-genres="{% for genre in interview.artiste.genres.all %}{{ genre.idGenre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-    <img src="https://picsum.photos/400/225?random={{ numero_image }}" alt="Miniature">
+    <img src="{{ url_youtube|miniature }}" alt="Miniature">
     <div class="card-info">
         <span class="card-title">{{ titre }}</span>
         <span class="card-tags">
