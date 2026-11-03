@@ -28,20 +28,39 @@
     {% endwith %}
 
     <!-- Barre de filtres -->
+    <!-- Barre de filtres (Boutons Pilules avec pastilles de couleurs) -->
     <div class="filters-bar">
-        <label>🔍 Filtrer la base :</label>
-        <select id="filter-genre" class="filter-select">
+        <label>🔍 Genres :</label>
+
+        <!-- Conteneur des pilules colorées -->
+        <div class="genre-chips-container" id="genre-chips">
+            <button type="button" class="chip-btn active" data-value="">
+                <span class="color-badge" style="background: #ffffff; box-shadow: 0 0 6px #ffffff;"></span>
+                Tous
+            </button>
+            {% for genre in genres %}
+                <button type="button" class="chip-btn" data-value="{{ genre.idGenre }}">
+                    <span class="color-badge" style="background: {{ genre.codeCouleur|default:'#888888' }}; box-shadow: 0 0 6px {{ genre.codeCouleur|default:'#888888' }};"></span>
+                    {{ genre.nomGenre }}
+                </button>
+            {% endfor %}
+        </div>
+
+        <!-- Vrai select masqué : permet à home.js de garder son filtre d'origine sans rien casser -->
+        <select id="filter-genre" style="display: none;">
             <option value="">Toutes les Couleurs (Genres)</option>
             {% for genre in genres %}
                 <option value="{{ genre.idGenre }}">{{ genre.nomGenre }}</option>
             {% endfor %}
         </select>
+
         <select id="filter-lieu" class="filter-select">
             <option value="">Tous les Lieux</option>
             {% for lieu in lieux %}
                 <option value="{{ lieu.idLieu }}">{{ lieu.nomLieu }} ({{ lieu.villeLieu }})</option>
             {% endfor %}
         </select>
+
         <select id="filter-artiste" class="filter-select">
             <option value="">Tous les Artistes</option>
             {% for artiste in artistes %}
@@ -77,4 +96,24 @@
 {% block scripts %}
 <script src="{% static 'SoundFlow/js/modal.js' %}"></script>
 <script src="{% static 'SoundFlow/js/home.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chipBtns = document.querySelectorAll('.chip-btn');
+    const hiddenSelect = document.getElementById('filter-genre');
+
+    chipBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Bascule le style visuel actif
+            chipBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Transmet la valeur au filtre masqué pour que home.js mette à jour la grille
+            if (hiddenSelect) {
+                hiddenSelect.value = btn.dataset.value;
+                hiddenSelect.dispatchEvent(new Event('change'));
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

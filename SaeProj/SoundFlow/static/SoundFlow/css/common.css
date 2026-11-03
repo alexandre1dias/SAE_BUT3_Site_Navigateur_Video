@@ -1,70 +1,83 @@
-/* === Styles communs aux deux pages === */
+/* === Styles communs aux deux pages (Style Web-App / Streaming Original) === */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
 :root {
-    --bg-color: #141414;
-    --primary-red: #E50914;
-    --text-color: #e5e5e5;
+    --bg-color: #0a0a0a; /* Noir profond */
+    --surface-color: #1a1a1c; /* Gris très foncé pour les éléments de surface */
+    --primary-accent: #00e5ff; /* Cyan néon pour les actions */
+    --text-color: #f0f0f5;
+    --text-muted: #9a9a9a;
     --hover-color: #ffffff;
+    --border-color: #2a2a2c;
+    --font-main: 'Outfit', sans-serif;
 }
 
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: var(--font-main);
     margin: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
+    -webkit-font-smoothing: antialiased;
 }
 
 /* --- Barre de navigation --- */
-
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 4%;
-    background: linear-gradient(to bottom, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0) 100%);
+    padding: 15px 5%;
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
     position: fixed;
     top: 0;
     width: 100%;
     box-sizing: border-box;
     z-index: 100;
-    transition: background 0.3s;
-}
-
-header.scrolled {
-    background-color: #141414;
 }
 
 .logo {
-    font-weight: bold;
-    font-size: 1.5rem;
-    color: var(--primary-red);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 2px;
+}
+
+.logo::before {
+    content: '▶';
+    color: var(--primary-accent);
+    font-size: 1.2rem;
 }
 
 .nav-links a {
     color: var(--text-color);
-    margin-left: 20px;
+    margin-left: 30px;
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: color 0.3s;
+    font-size: 1rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    padding: 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: var(--hover-color);
-    font-weight: bold;
+    color: var(--primary-accent);
+    border-bottom: 2px solid var(--primary-accent);
 }
 
 /* --- Pastille de couleur musicale --- */
-/* La couleur vient de la base (GenreMusical.codeCouleur) : le template la transmet dans --couleur-genre */
-
 .color-badge {
     display: inline-block;
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    margin-right: 5px;
+    margin-right: 8px;
     background: var(--couleur-genre, #888888);
+    box-shadow: 0 0 8px var(--couleur-genre, #888888);
 }
