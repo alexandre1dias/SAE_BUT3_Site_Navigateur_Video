@@ -1,43 +1,56 @@
 /* === Page Carte Mentale === */
+/* La carte est un arbre de listes imbriquées (ul > li > button + ul), affiché de gauche à droite.
+   Les traits qui relient les éléments sont dessinés en CSS avec ::before et ::after. */
 
 :root {
     --fond-carte: #111111;
+    --trait: #555555;
     --couleur-racine: #ffffff;
     --couleur-question: #f7d774;
     --couleur-extrait: #666666;
 }
 
-/* La carte occupe tout l'écran : la page elle-même ne défile pas */
-html,
-body {
-    height: 100%;
-    overflow: hidden;
-}
-
 body {
     background-color: var(--fond-carte);
 }
 
+/* Zone de la carte : on fait défiler dans les deux sens si l'arbre est grand */
 .carte {
-    display: block;
-    width: 100vw;
-    height: 100vh;
-    padding-top: 80px; /* Espace en haut pour la navbar fixe : sinon la racine passe dessous */
+    min-height: 100vh;
+    padding: 100px 40px 200px;
     box-sizing: border-box;
-    background-color: var(--fond-carte);
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
+    overflow-x: auto;
 }
 
-.carte.en-deplacement {
-    cursor: grabbing;
+.arbre,
+.arbre ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-/* Les éléments apparaissent en fondu */
-.noeud,
-.lien {
-    animation: apparition 0.35s ease-out;
+/* Les enfants d'un élément sont cachés tant qu'il n'est pas ouvert */
+.arbre ul {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.arbre li.ouvert > ul {
+    display: flex;
+}
+
+/* Chaque élément : le bouton, puis la colonne de ses enfants à droite */
+.arbre li {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 6px 0 6px 40px;
+    animation: apparition 0.3s ease-out;
+}
+
+.arbre > li {
+    padding-left: 0;
 }
 
 @keyframes apparition {
@@ -45,98 +58,99 @@ body {
     to { opacity: 1; }
 }
 
-/* --- Couleurs --- */
-/* Chaque élément et chaque lien se colore avec --couleur.
-   Artistes et interviews reçoivent la couleur de leur genre depuis la base
-   (genre_musical.code_couleur, transmise par mindmap.js) ; les autres types ont une couleur fixe. */
+/* --- Traits --- */
 
-.noeud--racine,
-.lien--racine {
-    --couleur: var(--couleur-racine);
+/* Trait horizontal qui arrive sur l'élément */
+.arbre ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 40px;
+    border-top: 2px solid var(--trait);
 }
 
-.noeud--question,
-.lien--question {
-    --couleur: var(--couleur-question);
+/* Trait vertical qui relie les frères entre eux */
+.arbre ul > li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-left: 2px solid var(--trait);
+}
+
+.arbre ul > li:first-child::after { top: 50%; }
+.arbre ul > li:last-child::after { bottom: 50%; }
+.arbre ul > li:only-child::after { display: none; }
+
+/* Trait qui sort d'un élément ouvert vers ses enfants */
+.arbre li.ouvert > .noeud {
+    margin-right: 40px;
+    position: relative;
+}
+
+.arbre li.ouvert > .noeud::after {
+    content: '';
+    position: absolute;
+    left: calc(100% + 3px); /* juste après la bordure du bouton */
+    top: 50%;
+    width: 40px;
+    border-top: 2px solid var(--trait);
+}
+
+/* --- Éléments --- */
+/* Chaque type a sa couleur ; artistes et interviews reçoivent celle de leur genre (attribut style) */
+
+.noeud--racine { --couleur: var(--couleur-racine); }
+.noeud--question { --couleur: var(--couleur-question); }
+.noeud--extrait { --couleur: var(--couleur-extrait); }
+
+.noeud {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 3px solid var(--couleur, #888888);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 15px;
+    max-width: 260px;
+    text-align: left;
+    white-space: normal;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s;
+}
+
+.noeud:hover {
+    background-color: color-mix(in srgb, var(--couleur, #888888) 35%, #1e1e1e);
+}
+
+.noeud--racine {
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .noeud--extrait {
-    --couleur: var(--couleur-extrait);
+    font-size: 13px;
 }
 
-/* --- Éléments de la carte --- */
-
-.noeud {
-    cursor: pointer;
-}
-
-.noeud circle {
-    fill: var(--couleur);
-    /* Bordure : la même couleur, assombrie */
-    stroke: color-mix(in srgb, var(--couleur) 70%, black);
-    stroke-width: 3;
-    transition: stroke-width 0.15s;
-}
-
-.noeud--extrait circle {
-    stroke: #999999;
-}
-
-.noeud:hover circle {
-    stroke-width: 6;
-}
-
-/* Triangle « lecture » des interviews et extraits (ouvrent la fiche de la vidéo) */
-.noeud .icone-lecture {
-    fill: #ffffff;
-    pointer-events: none;
-}
-
-/* Bordure en pointillés : il reste des éléments reliés à découvrir */
-.noeud--a-decouvrir circle {
-    stroke-dasharray: 7 5;
-}
-
-.noeud text {
-    fill: #ffffff;
-    font-family: arial, sans-serif;
-    font-size: 16px;
-    text-anchor: middle;
-    /* Contour sombre pour rester lisible par-dessus les liens */
-    stroke: var(--fond-carte);
-    stroke-width: 4px;
-    paint-order: stroke;
-}
-
-/* --- Liens entre les éléments --- */
-/* Un lien (et sa flèche) prend la couleur de son élément de départ */
-
-.lien {
-    opacity: 0.7;
-}
-
-.lien path {
-    fill: none;
-    stroke: var(--couleur);
-    stroke-width: 1.5;
-}
-
-.lien polygon {
-    fill: var(--couleur);
+/* Bordure en pointillés : l'élément a des enfants encore cachés */
+.arbre li:has(> ul > li):not(.ouvert) > .noeud {
+    border-style: dashed;
 }
 
 /* --- Encadré d'instructions --- */
 
 .instructions {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
-    left: 20px;
+    right: 20px;
     background-color: rgba(0, 0, 0, 0.85);
     color: #ffffff;
     padding: 15px 20px;
     border-radius: 8px;
     z-index: 10;
     border: 1px solid #333;
-    pointer-events: none; /* Laisse passer les clics vers la carte en dessous */
+    pointer-events: none;
     font-size: 14px;
 }

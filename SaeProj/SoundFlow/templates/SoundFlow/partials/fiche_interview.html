@@ -1,0 +1,39 @@
+<div class="fiche" id="fiche-interview-{{ interview.idInterview }}" hidden>
+    <div class="modal-header" style="background-image: url('https://picsum.photos/800/450?random={{ interview.idInterview|add:30 }}')">
+        <div class="modal-header-content">
+            <h2>{{ interview.titreInterview }}</h2>
+            {% include 'SoundFlow/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=0 %}
+        </div>
+    </div>
+
+    <div class="modal-body">
+        <div class="modal-info">
+            <span class="format-badge interview">Interview Intégrale</span>
+            <span>📍 {% include 'SoundFlow/partials/lieu.html' %}</span>
+        </div>
+
+        <div class="modal-layout">
+            <div class="modal-desc-box">
+                <p class="modal-desc">{{ interview.descriptionInterview|default:"" }}</p>
+                <div class="related-content">
+                    <h3>Livre dont vous êtes le héros</h3>
+                    <p class="subtitle">Choisissez votre prochain embranchement :</p>
+                    <div class="related-links-container">
+                        {# Bifurcations : les extraits de l'interview, dans l'ordre de la séquence #}
+                        {% for extrait in interview.extraits.all %}
+                            <button class="btn-related" data-fiche="extrait-{{ extrait.idExtrait }}">🔗 Aller à : {{ extrait.titreExtrait }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-meta-box">
+                <p><strong>Artiste :</strong> {{ interview.artiste.nomArtiste }}</p>
+                <p><strong>Couleur musicale :</strong><br>{% include 'SoundFlow/partials/genres.html' with artiste=interview.artiste %}</p>
+                <p><strong>Type de contenu :</strong> Interview Intégrale</p>
+                <p><strong>Tournage :</strong> {{ interview.dateTournage|date:"d/m/Y"|default:"Date non précisée" }}</p>
+                <p><strong>Séquences :</strong> {{ interview.extraits.count }} extraits</p>
+            </div>
+        </div>
+    </div>
+</div>

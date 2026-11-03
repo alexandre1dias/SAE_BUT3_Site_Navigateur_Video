@@ -9,43 +9,65 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Interview à la une : le contenu est rempli par home.js à partir de data.js -->
-    <div class="hero" id="hero">
+    <!-- Interview à la une -->
+    {% with interview=interview_a_la_une %}
+    <div class="hero" style="background-image: url('https://picsum.photos/1920/1080?random={{ interview.idInterview|add:30 }}')">
         <div class="hero-content">
-            <h1 class="hero-title" id="hero-title"></h1>
-            <div class="hero-meta" id="hero-meta"></div>
-            <p class="hero-desc"><span id="hero-desc"></span> <strong>Lisez la vidéo jusqu'au bout, ou bifurquez selon vos envies.</strong></p>
+            <h1 class="hero-title">{{ interview.artiste.nomArtiste }}</h1>
+            <div class="hero-meta">
+                <span>📍 {% include 'SoundFlow/partials/lieu.html' %}</span>
+                <span>{% include 'SoundFlow/partials/genres.html' with artiste=interview.artiste %}</span>
+            </div>
+            <p class="hero-desc">{{ interview.descriptionInterview }} <strong>Lisez la vidéo jusqu'au bout, ou bifurquez selon vos envies.</strong></p>
             <div class="hero-buttons">
-                <button class="btn btn-play" id="hero-play">▶ Lire la vidéo</button>
+                <button class="btn btn-play" data-fiche="interview-{{ interview.idInterview }}">▶ Lire la vidéo</button>
                 <button class="btn btn-info">ℹ Plus d'infos</button>
             </div>
         </div>
     </div>
+    {% endwith %}
 
-    <!-- Barre de filtres : les options sont générées à partir des tables genre_musical, lieu et artiste -->
+    <!-- Barre de filtres -->
     <div class="filters-bar">
         <label>🔍 Filtrer la base :</label>
         <select id="filter-genre" class="filter-select">
             <option value="">Toutes les Couleurs (Genres)</option>
+            {% for genre in genres %}
+                <option value="{{ genre.idGenre }}">{{ genre.nomGenre }}</option>
+            {% endfor %}
         </select>
         <select id="filter-lieu" class="filter-select">
             <option value="">Tous les Lieux</option>
+            {% for lieu in lieux %}
+                <option value="{{ lieu.idLieu }}">{{ lieu.nomLieu }} ({{ lieu.villeLieu }})</option>
+            {% endfor %}
         </select>
         <select id="filter-artiste" class="filter-select">
             <option value="">Tous les Artistes</option>
+            {% for artiste in artistes %}
+                <option value="{{ artiste.idArtiste }}">{{ artiste.nomArtiste }}</option>
+            {% endfor %}
         </select>
     </div>
 
-    <!-- Rangées de vidéos : les cartes sont générées par home.js à partir de data.js -->
+    <!-- Rangées de vidéos -->
     <main class="content-section">
         <div class="theme-row">
             <div class="row-title">Extraits & Questions spécifiques</div>
-            <div class="carousel" id="extraits-carousel"></div>
+            <div class="carousel">
+                {% for extrait in extraits %}
+                    {% include 'SoundFlow/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" numero_image=extrait.idExtrait|add:200 %}
+                {% endfor %}
+            </div>
         </div>
 
         <div class="theme-row">
             <div class="row-title">Interviews Complètes</div>
-            <div class="carousel" id="interviews-carousel"></div>
+            <div class="carousel">
+                {% for interview in interviews %}
+                    {% include 'SoundFlow/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" numero_image=interview.idInterview|add:30 %}
+                {% endfor %}
+            </div>
         </div>
     </main>
 
@@ -53,9 +75,6 @@
 {% endblock %}
 
 {% block scripts %}
-{{ donnees|json_script:"donnees" }}
-<script src="{% static 'SoundFlow/js/data.js' %}"></script>
-<script src="{% static 'SoundFlow/js/utils.js' %}"></script>
 <script src="{% static 'SoundFlow/js/modal.js' %}"></script>
 <script src="{% static 'SoundFlow/js/home.js' %}"></script>
 {% endblock %}

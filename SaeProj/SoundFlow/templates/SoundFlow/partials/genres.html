@@ -1,0 +1,1 @@
+{% for genre in artiste.genres.all %}<span class="color-badge" style="--couleur-genre: {{ genre.codeCouleur }}"></span>{% endfor %} {{ artiste.genres.all|join:", " }}
