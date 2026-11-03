@@ -1,40 +1,46 @@
 # SAE BUT3 - Site Navigateur Vidéo
-
-**Sujet du projet :** 
+ 
+**Sujet du projet :**
 Conception et développement d'une plateforme web interactive de visionnage d'interviews offrant une navigation dynamique et non linéaire.
 L'utilisateur peut explorer les vidéos de manière fluide, que ce soit par artiste (lecture linéaire) ou par thématique abordée (lecture transversale).
-
+ 
 ## Équipe
-- DESGRANGES Lucas 
-- DIAS Alexandre 
-- DRAME Zakharia 
+- DESGRANGES Lucas
+- DIAS Alexandre
+- DRAME Zakharia
 - SCHMIT Clément
-  
 ---
-
-## Stack Technique (Prévisionnelle)
-
+ 
+## Stack Technique
+ 
 ### Côté Serveur (Back-end)
-- **Framework :** Django (API REST via Django REST Framework)
+- **Framework :** Django
 - **Base de données :** SQLite (via l'ORM Django)
-
 ### Côté Client (Front-end)
-- **Framework :** React.js ou Vue.js *(en cours de définition)*
-- **Style :** *(À définir : ex. TailwindCSS, Bootstrap...)*
-- **Intégration Vidéo :** API YouTube Iframe & API Vimeo
-
-### Outils & DevOps
+- **Templates :** Django
+- **Style :** CSS
+- **Interactions :** JavaScript
+- **Intégration Vidéo :** YouTube & Vimeo
+### Outils
 - **Gestion de version :** Git & GitHub
-- **CI/CD :** GitHub Actions
-- **Conteneurisation :** Docker
-
 ---
-
+ 
+## Lancer le projet
+ 
+```bash
+cd SaeProj
+python manage.py migrate
+python manage.py shell -c "from SoundFlow import peuplement; peuplement.run()"
+python manage.py runserver
+```
+ 
+Puis ouvrir http://127.0.0.1:8000/SoundFlow/
+ 
+---
+ 
 ## Organisation & Planification
-
+ 
 Le suivi de l'avancement du projet, la répartition des tâches et le calendrier prévisionnel sont gérés via les outils suivants :
-
+ 
 - 📋 **[Tableau de bord du projet (GitHub Projects)](https://github.com/users/alexandre1dias/projects/5)**
 - 📊 **[Diagramme de Gantt (GanttPro)](https://app.ganttpro.com/#/project/1790688890295/gantt)**
-
-

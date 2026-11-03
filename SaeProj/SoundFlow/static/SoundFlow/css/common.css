@@ -58,7 +58,7 @@ header.scrolled {
 }
 
 /* --- Pastille de couleur musicale --- */
-/* La couleur vient de la base (genre_musical.code_couleur) : le JS la transmet dans --couleur-genre */
+/* La couleur vient de la base (GenreMusical.codeCouleur) : le template la transmet dans --couleur-genre */
 
 .color-badge {
     display: inline-block;

@@ -1,0 +1,11 @@
+{# Bouton de lecture et choix du lecteur. Reçoit youtube, vimeo et debut #}
+<div class="modal-actions">
+    <button class="btn btn-play btn-lancer" data-youtube="{{ youtube|default:'' }}" data-vimeo="{{ vimeo|default:'' }}" data-debut="{{ debut }}">▶ Lancer la vidéo</button>
+    <div class="player-choice">
+        <label>Lecteur :</label>
+        <select class="choix-lecteur">
+            <option value="youtube">YouTube</option>
+            <option value="vimeo">Vimeo</option>
+        </select>
+    </div>
+</div>

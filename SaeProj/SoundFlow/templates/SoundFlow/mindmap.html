@@ -12,24 +12,60 @@
     <div class="instructions">
         <strong>Carte mentale interactive :</strong><br>
         👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
-        ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo pour la lancer.<br>
-        ◌ <strong>Bordure en pointillés</strong> : il reste des éléments reliés à découvrir.<br>
-        🖱️ <strong>Molette</strong> pour zoomer/dézoomer.<br>
-        🤚 <strong>Cliquer et glisser</strong> le fond pour se déplacer.
+        ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo.<br>
+        ◌ <strong>Bordure en pointillés</strong> : il reste des éléments à découvrir.
     </div>
 
-    <!-- Point de montage de l'application React (voir static/SoundFlow/js/mindmap.js) -->
-    <div id="app"></div>
+    <!-- La carte est un arbre de listes imbriquées. Le CSS dessine les traits,
+         mindmap.js ouvre et ferme les branches -->
+    <div class="carte">
+        <ul class="arbre">
+            <li>
+                <button class="noeud noeud--racine">Base de données Vidéos</button>
+                <ul>
+                    {# Branche artiste → interview → extrait #}
+                    {% for artiste in artistes %}
+                    <li>
+                        <button class="noeud noeud--artiste" style="--couleur: {{ artiste.genres.first.codeCouleur|default:'#888888' }}">
+                            {{ artiste.nomArtiste }}
+                        </button>
+                        <ul>
+                            {% for interview in artiste.interviews.all %}
+                            <li>
+                                <button class="noeud noeud--interview" style="--couleur: {{ artiste.genres.first.codeCouleur|default:'#888888' }}" data-fiche="interview-{{ interview.idInterview }}">
+                                    ▶ {{ interview.titreInterview }}
+                                </button>
+                                <ul>
+                                    {% for extrait in interview.extraits.all %}
+                                    <li><button class="noeud noeud--extrait" data-fiche="extrait-{{ extrait.idExtrait }}">▶ {{ extrait.titreExtrait }}</button></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+
+                    {# Branche question → extrait #}
+                    {% for question in questions %}
+                    <li>
+                        <button class="noeud noeud--question">{{ question.texteQuestion }}</button>
+                        <ul>
+                            {% for extrait in question.extraits.all %}
+                            <li><button class="noeud noeud--extrait" data-fiche="extrait-{{ extrait.idExtrait }}">▶ {{ extrait.interview.artiste.nomArtiste }} : {{ extrait.titreExtrait }}</button></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
 
     {% include 'SoundFlow/partials/video_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
-{{ donnees|json_script:"donnees" }}
-<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-<script src="{% static 'SoundFlow/js/data.js' %}"></script>
-<script src="{% static 'SoundFlow/js/utils.js' %}"></script>
 <script src="{% static 'SoundFlow/js/modal.js' %}"></script>
 <script src="{% static 'SoundFlow/js/mindmap.js' %}"></script>
 {% endblock %}
