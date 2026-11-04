@@ -1,0 +1,28 @@
+{% extends 'SoundFlow/administration/base_admin.html' %}
+{% load videos %}
+
+{% block title %}Administration{% endblock %}
+{% block titre_admin %}Supprimer {% if type_video == 'interview' %}une interview{% else %}un extrait{% endif %}{% endblock %}
+
+{% block admin_contenu %}
+    <section class="admin-carte admin-confirmation">
+        <img class="admin-miniature admin-miniature--grande" src="{{ video|miniature_de }}" alt="" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='">
+        <div>
+            <p>Voulez-vous vraiment supprimer <strong>« {{ video }} »</strong> ? Cette action est définitive.</p>
+            {% if extraits_lies %}
+            <p class="admin-message admin-message--warning">
+                Attention : {{ extraits_lies|length }} extrait{{ extraits_lies|length|pluralize }} de cette interview
+                ser{{ extraits_lies|length|pluralize:"a,ont" }} aussi supprimé{{ extraits_lies|length|pluralize }} :
+            </p>
+            <ul class="admin-liste">
+                {% for extrait in extraits_lies %}<li>{{ extrait.titreExtrait }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+            <form method="post" class="admin-boutons">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">🗑 Oui, supprimer</button>
+                <a class="btn btn-info" href="{% url 'admin_videos' %}">Annuler</a>
+            </form>
+        </div>
+    </section>
+{% endblock %}

@@ -37,3 +37,24 @@ def miniature(url_youtube, url_vimeo=''):
     if url_vimeo:
         return miniature_oembed('vimeo', url_vimeo)
     return ''
+
+@register.filter
+def miniature_de(video):
+    """Miniature d'une Interview ou d'un Extrait :
+    celle enregistrée en base (page d'administration), sinon celle de YouTube, sinon celle de Vimeo.
+    Un extrait sans vidéo propre prend la miniature de son interview."""
+    if not video:
+        return ''
+    image = (video.urlMiniature
+             or miniature(video.urlYoutube, video.urlVimeo))
+    interview = getattr(video, 'interview', None)
+    if not image and interview and not (video.urlYoutube or video.urlVimeo):
+        return miniature_de(interview)
+    return image
+
+
+@register.filter
+def duree(secondes):
+    """253 -> '4:13'"""
+    from SoundFlow.forms import formater_duree
+    return formater_duree(secondes)

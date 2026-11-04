@@ -11,7 +11,7 @@
 {% block content %}
     <!-- Interview à la une -->
     {% with interview=interview_a_la_une %}
-    <div class="hero" style="background-image: url('{{ interview.urlYoutube|miniature }}')">
+    <div class="hero" style="background-image: url('{{ interview|miniature_de }}')">
         <div class="hero-content">
             <h1 class="hero-title">{{ interview.artiste.nomArtiste }}</h1>
             <div class="hero-meta">
@@ -75,7 +75,7 @@
             <div class="row-title">Extraits & Questions spécifiques</div>
             <div class="carousel">
                 {% for extrait in extraits %}
-                    {% include 'SoundFlow/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" url_youtube=extrait.urlYoutube|default:extrait.interview.urlYoutube %}
+                    {% include 'SoundFlow/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" video=extrait %}
                 {% endfor %}
             </div>
         </div>
@@ -84,7 +84,7 @@
             <div class="row-title">Interviews Complètes</div>
             <div class="carousel">
                 {% for interview in interviews %}
-                    {% include 'SoundFlow/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" url_youtube=interview.urlYoutube %}
+                    {% include 'SoundFlow/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" video=interview %}
                 {% endfor %}
             </div>
         </div>
