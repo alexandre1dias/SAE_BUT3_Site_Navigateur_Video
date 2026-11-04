@@ -49,7 +49,9 @@ echo [4/5] Preparation de la base de donnees...
 cd SaeProj
 "%VPY%" manage.py migrate --noinput
 if errorlevel 1 goto erreur
-"%VPY%" manage.py shell -c "from SoundFlow.models import Interview; from SoundFlow import peuplement_reel; print('Base deja remplie.') if Interview.objects.exists() else peuplement_reel.run()"
+"%VPY%" manage.py shell -c "from rec117.models import Interview; from rec117 import peuplement_reel; print('Base deja remplie.') if Interview.objects.exists() else peuplement_reel.run()"
+if errorlevel 1 goto erreur
+"%VPY%" manage.py creer_admin
 if errorlevel 1 goto erreur
 
 REM 5. Lancement + ouverture du navigateur apres 3 s

@@ -47,7 +47,8 @@ echo "[3/5] Installation des dependances (requirements.txt)..."
 echo "[4/5] Preparation de la base de donnees..."
 cd SaeProj
 "$VPY" manage.py migrate --noinput
-"$VPY" manage.py shell -c "from SoundFlow.models import Interview; from SoundFlow import peuplement_reel; print('Base deja remplie.') if Interview.objects.exists() else peuplement_reel.run()"
+"$VPY" manage.py shell -c "from rec117.models import Interview; from rec117 import peuplement_reel; print('Base deja remplie.') if Interview.objects.exists() else peuplement_reel.run()"
+"$VPY" manage.py creer_admin
 
 # 5. Lancement + ouverture du navigateur apres 3 s
 echo "[5/5] Lancement du site sur $URL"
