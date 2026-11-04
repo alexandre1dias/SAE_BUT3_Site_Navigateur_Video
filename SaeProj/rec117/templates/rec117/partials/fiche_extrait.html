@@ -6,9 +6,9 @@
             <h2>{{ extrait.titreExtrait }}</h2>
             {# Sans vidéo propre à l'extrait, on lit l'interview à partir du timecode de début #}
             {% if extrait.urlYoutube or extrait.urlVimeo %}
-                {% include 'SoundFlow/partials/lecteur.html' with youtube=extrait.urlYoutube vimeo=extrait.urlVimeo debut=0 %}
+                {% include 'rec117/partials/lecteur.html' with youtube=extrait.urlYoutube vimeo=extrait.urlVimeo debut=0 %}
             {% else %}
-                {% include 'SoundFlow/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=extrait.timecodeDebut %}
+                {% include 'rec117/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=extrait.timecodeDebut %}
             {% endif %}
         </div>
     </div>
@@ -16,7 +16,7 @@
     <div class="modal-body">
         <div class="modal-info">
             <span class="format-badge question">Extrait (Question)</span>
-            <span>📍 {% include 'SoundFlow/partials/lieu.html' %}</span>
+            <span>📍 {% include 'rec117/partials/lieu.html' %}</span>
         </div>
 
         <div class="modal-layout">
@@ -39,7 +39,7 @@
 
             <div class="modal-meta-box">
                 <p><strong>Artiste :</strong> {{ interview.artiste.nomArtiste }}</p>
-                <p><strong>Couleur musicale :</strong><br>{% include 'SoundFlow/partials/genres.html' with artiste=interview.artiste %}</p>
+                <p><strong>Couleur musicale :</strong><br>{% include 'rec117/partials/genres.html' with artiste=interview.artiste %}</p>
                 <p><strong>Type de contenu :</strong> Extrait / Réponse spécifique</p>
                 <p><strong>Question :</strong> {{ extrait.question.texteQuestion }}</p>
                 <p><strong>Séquence :</strong> n°{{ extrait.ordreSequence }} (de {{ extrait.timecodeDebut }} s à {% if extrait.timecodeFin is None %}la fin{% else %}{{ extrait.timecodeFin }} s{% endif %})</p>

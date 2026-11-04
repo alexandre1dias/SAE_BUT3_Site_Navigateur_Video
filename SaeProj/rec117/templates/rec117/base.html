@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoundFlow - {% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'SoundFlow/css/common.css' %}">
+    <title>rec117 - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'rec117/css/common.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <header id="navbar">
-        <div class="logo">SoundFlow</div>
+        <div class="logo">rec117</div>
         <nav class="nav-links">
             {% with page=request.resolver_match.url_name %}
             <a href="{% url 'home' %}" {% if page == 'home' or page == 'home_base' %}class="active"{% endif %}>Mode Lecture</a>

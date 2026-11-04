@@ -30,11 +30,11 @@ L'utilisateur peut explorer les vidéos de manière fluide, que ce soit par arti
 ```bash
 cd SaeProj
 python manage.py migrate
-python manage.py shell -c "from SoundFlow import peuplement; peuplement.run()"
+python manage.py shell -c "from rec117 import peuplement_reel; peuplement_reel.run()"
 python manage.py runserver
 ```
  
-Puis ouvrir http://127.0.0.1:8000/SoundFlow/
+Puis ouvrir http://127.0.0.1:8000/rec117/
  
 ---
  

@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('idArtiste', models.AutoField(primary_key=True, serialize=False)),
                 ('nomArtiste', models.CharField(max_length=150)),
-                ('genres', models.ManyToManyField(related_name='artistes', to='SoundFlow.genremusical')),
+                ('genres', models.ManyToManyField(related_name='artistes', to='rec117.genremusical')),
             ],
         ),
         migrations.CreateModel(
@@ -55,8 +55,8 @@ class Migration(migrations.Migration):
                 ('descriptionInterview', models.TextField(blank=True, null=True)),
                 ('urlYoutube', models.URLField(blank=True, null=True)),
                 ('urlVimeo', models.URLField(blank=True, null=True)),
-                ('artiste', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='interviews', to='SoundFlow.artiste')),
-                ('lieu', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='interviews', to='SoundFlow.lieu')),
+                ('artiste', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='interviews', to='rec117.artiste')),
+                ('lieu', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='interviews', to='rec117.lieu')),
             ],
         ),
         migrations.CreateModel(
@@ -78,8 +78,8 @@ class Migration(migrations.Migration):
                 ('urlYoutube', models.URLField(blank=True, null=True)),
                 ('urlVimeo', models.URLField(blank=True, null=True)),
                 ('transcription', models.TextField(blank=True, help_text='Retranscription pour la recherche', null=True)),
-                ('interview', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='extraits', to='SoundFlow.interview')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='extraits', to='SoundFlow.question')),
+                ('interview', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='extraits', to='rec117.interview')),
+                ('question', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='extraits', to='rec117.question')),
             ],
             options={
                 'ordering': ['ordreSequence'],
