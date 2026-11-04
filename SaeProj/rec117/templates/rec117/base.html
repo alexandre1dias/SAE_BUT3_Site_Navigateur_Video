@@ -10,11 +10,7 @@
 </head>
 <body>
     <header id="navbar">
-<<<<<<< HEAD:SaeProj/rec117/templates/rec117/base.html
-        <div class="logo">rec117</div>
-=======
-        <a class="logo" href="{% url 'home' %}" aria-label="Retour à l'accueil">SoundFlow</a>
->>>>>>> e9c9749 (ajout du menu pour administrer le site):SaeProj/SoundFlow/templates/SoundFlow/base.html
+        <a class="logo" href="{% url 'home' %}" aria-label="Retour à l'accueil">rec117</a>
         <nav class="nav-links">
             {% with page=request.resolver_match.url_name %}
             <a href="{% url 'home' %}" {% if page == 'home' or page == 'home_base' %}class="active"{% endif %}>Mode Lecture</a>

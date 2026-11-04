@@ -43,14 +43,14 @@ def staff_requis(vue):
 
 
 class ConnexionView(LoginView):
-    template_name = 'SoundFlow/administration/connexion.html'
+    template_name = 'rec117/administration/connexion.html'
     redirect_authenticated_user = False
 
 
 @staff_requis
 def accueil(request):
     """Formulaire d'URL + liste de toutes les vidéos."""
-    return render(request, 'SoundFlow/administration/accueil.html', {
+    return render(request, 'rec117/administration/accueil.html', {
         'form_url': UrlForm(),
         'interviews': Interview.objects.select_related('artiste', 'lieu').prefetch_related('extraits')
                                        .order_by('artiste__nomArtiste', 'idInterview'),
@@ -62,7 +62,7 @@ def accueil(request):
 def _page_formulaire(request, form, type_video, **contexte):
     """Affiche le formulaire, champs regroupés en blocs (voir l'attribut groupes des formulaires)."""
     contexte.setdefault('auto', set())
-    return render(request, 'SoundFlow/administration/formulaire.html', {
+    return render(request, 'rec117/administration/formulaire.html', {
         'form': form,
         'type_video': type_video,
         'groupes': [(titre, [form[nom] for nom in noms]) for titre, noms in form.groupes],
@@ -182,7 +182,7 @@ def supprimer(request, type_video, pk):
         video.delete()
         messages.success(request, f'« {nom} » a été supprimé(e).')
         return redirect('admin_videos')
-    return render(request, 'SoundFlow/administration/supprimer.html', {
+    return render(request, 'rec117/administration/supprimer.html', {
         'video': video,
         'type_video': type_video,
         'extraits_lies': video.extraits.all() if type_video == 'interview' else [],
