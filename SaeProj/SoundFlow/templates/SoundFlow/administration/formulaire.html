@@ -1,0 +1,83 @@
+{% extends 'SoundFlow/administration/base_admin.html' %}
+{% load videos %}
+
+{% block title %}Administration{% endblock %}
+{% block titre_admin %}{{ titre_page }}{% endblock %}
+
+{% block admin_contenu %}
+    <p><a class="btn-lien" href="{% url 'admin_videos' %}">← Retour à la liste</a></p>
+
+    {% if infos %}
+    <!-- Résumé de ce qui a été trouvé à partir de l'URL -->
+    <section class="admin-carte admin-resume">
+        {% if infos.erreur %}
+            <p class="admin-message admin-message--warning">{{ infos.erreur }}</p>
+        {% else %}
+            <p class="admin-message admin-message--success">
+                Informations récupérées depuis {% if infos.plateforme == 'youtube' %}YouTube{% else %}Vimeo{% endif %}.
+                Les champs marqués <span class="badge-auto">✓ auto</span> ont été pré-remplis : vérifiez-les,
+                et complétez ceux marqués <span class="badge-manuel">✎ à remplir</span>.
+            </p>
+        {% endif %}
+        {% if infos.auteur %}<p class="admin-aide">Chaîne / auteur de la vidéo : <strong>{{ infos.auteur }}</strong></p>{% endif %}
+    </section>
+    {% endif %}
+
+    <form method="post" class="admin-carte admin-formulaire"
+          {% if not video %}action="{% url 'admin_ajouter' type_video %}"{% endif %} novalidate>
+        {% csrf_token %}
+        {% for nom in auto %}<input type="hidden" name="_auto" value="{{ nom }}">{% endfor %}
+
+        <div class="admin-apercu">
+            <img id="apercu-miniature" src="{{ form.urlMiniature.value|default:'' }}" alt="Aperçu de la miniature"
+                 {% if not form.urlMiniature.value %}hidden{% endif %}>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="admin-message admin-message--error">{{ form.non_field_errors|join:" " }}</div>
+        {% endif %}
+
+        {% for titre, champs in groupes %}
+        <fieldset class="admin-groupe">
+            <legend>{{ titre }}</legend>
+            <div class="admin-champs">
+            {% for champ in champs %}
+                <div class="admin-champ{% if champ.widget_type == 'textarea' or champ.widget_type == 'checkboxselectmultiple' %} admin-champ--large{% endif %}{% if champ.errors %} admin-champ--erreur{% endif %}">
+                    <label for="{{ champ.id_for_label }}">
+                        {{ champ.label }}{% if champ.field.required %} *{% endif %}
+                        {% if champ.name in auto %}
+                            <span class="badge-auto">✓ auto</span>
+                        {% elif infos and champ.name in champs_principaux %}
+                            <span class="badge-manuel">✎ à remplir</span>
+                        {% endif %}
+                    </label>
+                    {{ champ }}
+                    {% if champ.help_text %}<small class="admin-aide-champ">{{ champ.help_text }}</small>{% endif %}
+                    {% for erreur in champ.errors %}<small class="admin-erreur">{{ erreur }}</small>{% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+        </fieldset>
+        {% endfor %}
+
+        <div class="admin-boutons">
+            <button type="submit" class="btn btn-play">💾 Enregistrer</button>
+            <a class="btn btn-info" href="{% url 'admin_videos' %}">Annuler</a>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Met à jour l'aperçu quand on change l'URL de la miniature
+const champMiniature = document.getElementById('id_urlMiniature');
+const apercu = document.getElementById('apercu-miniature');
+if (champMiniature && apercu) {
+    champMiniature.addEventListener('input', () => {
+        apercu.src = champMiniature.value.trim();
+        apercu.hidden = !champMiniature.value.trim();
+    });
+    apercu.addEventListener('error', () => { apercu.hidden = true; });
+}
+</script>
+{% endblock %}

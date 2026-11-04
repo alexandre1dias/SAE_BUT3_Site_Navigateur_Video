@@ -1,0 +1,505 @@
+/* === Page d'administration des vidéos (même style que le reste du site) === */
+
+body {
+    padding-top: 80px;
+}
+
+.admin {
+    padding: 20px 5% 60px 5%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.admin-entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.admin-entete .row-title {
+    margin: 0;
+}
+
+.admin-compte {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* --- Cartes (sections) --- */
+.admin-carte {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.admin-carte h2 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-compteur {
+    background: var(--border-color);
+    color: var(--primary-accent);
+    border-radius: 30px;
+    padding: 2px 10px;
+    font-size: 0.85rem;
+}
+
+.admin-aide {
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 15px 0;
+}
+
+.admin-aide--petit {
+    font-size: 0.9rem;
+    margin: 15px 0 0 0;
+}
+
+.admin-sans-url {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 16px 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-color);
+}
+
+.admin-sans-url strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.admin-sans-url .admin-aide--petit {
+    margin: 0;
+}
+
+.admin-sans-url__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.admin a:not(.btn):not(.btn-petit):not(.admin-plateforme) {
+    color: var(--primary-accent);
+}
+
+/* --- Champ URL + boutons --- */
+.admin-url {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-url input {
+    flex: 1 1 320px;
+}
+
+/* --- Champs de formulaire --- */
+.admin input[type="text"],
+.admin input[type="url"],
+.admin input[type="date"],
+.admin input[type="number"],
+.admin input[type="password"],
+.admin select,
+.admin textarea {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+    color-scheme: dark;
+}
+
+.admin-url input {
+    border-radius: 30px;
+    padding: 12px 20px;
+    width: auto;
+}
+
+.admin input:focus,
+.admin select:focus,
+.admin textarea:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+}
+
+.admin textarea {
+    resize: vertical;
+}
+
+.admin-groupe {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 0 0 10px 0;
+    padding: 20px 0 15px 0;
+}
+
+.admin-groupe legend {
+    padding: 0 12px 0 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+    color: var(--primary-accent);
+}
+
+.admin-champs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px 25px;
+}
+
+.admin-champ {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.admin-champs .admin-champ {
+    margin-bottom: 0;
+}
+
+.admin-champ--large {
+    grid-column: 1 / -1;
+}
+
+.admin-champ label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Cases à cocher des genres */
+.admin-champ div:has(> div > label > input[type="checkbox"]) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.admin-champ label:has(input[type="checkbox"]) {
+    font-weight: 400;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.admin-champ input[type="checkbox"] {
+    accent-color: var(--primary-accent);
+}
+
+.admin-aide-champ {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.admin-erreur {
+    color: #ff5c7a;
+    font-size: 0.85rem;
+}
+
+.admin-champ--erreur input,
+.admin-champ--erreur select,
+.admin-champ--erreur textarea {
+    border-color: #ff5c7a;
+}
+
+/* Badges « récupéré automatiquement » / « à remplir » */
+.badge-auto,
+.badge-manuel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 30px;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-auto {
+    color: var(--bg-color);
+    background: var(--primary-accent);
+}
+
+.badge-manuel {
+    color: #ffb84d;
+    border: 1px solid #ffb84d;
+}
+
+/* Aperçu de la miniature */
+.admin-apercu img {
+    max-width: 360px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.admin-boutons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.admin-boutons .btn {
+    text-decoration: none;
+}
+
+.btn-danger {
+    background-color: #e5384f;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c92a40;
+    box-shadow: 0 0 15px rgba(229, 56, 79, 0.5);
+}
+
+.btn-lien {
+    background: none;
+    border: none;
+    color: var(--primary-accent);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+}
+
+.btn-lien:hover {
+    text-decoration: underline;
+}
+
+/* --- Messages --- */
+.admin-messages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-message {
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 0 0 10px 0;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    line-height: 1.5;
+}
+
+.admin-messages .admin-message {
+    margin: 0;
+}
+
+.admin-message--success { border-color: var(--primary-accent); }
+.admin-message--warning { border-color: #ffb84d; color: #ffd699; }
+.admin-message--error   { border-color: #ff5c7a; color: #ff9aac; }
+
+/* --- Tableaux --- */
+.admin-tableau-conteneur {
+    overflow-x: auto;
+}
+
+.admin-tableau {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.admin-tableau th {
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 0 12px 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-tableau td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.admin-tableau tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-titre {
+    font-weight: 600;
+}
+
+.admin-question {
+    color: var(--text-muted);
+    min-width: 200px;
+}
+
+.admin-miniature {
+    width: 110px;
+    min-height: 40px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--bg-color);
+    display: block;
+}
+
+.admin-miniature--grande {
+    width: 280px;
+    max-width: 100%;
+}
+
+.admin-plateforme {
+    display: inline-block;
+    font-size: 0.75rem;
+    border-radius: 30px;
+    padding: 3px 10px;
+    margin: 2px 0;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.admin-plateforme--youtube { color: #ff4e45; border-color: #ff4e45; }
+.admin-plateforme--vimeo   { color: #1ab7ea; border-color: #1ab7ea; }
+
+.admin-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.btn-petit {
+    display: inline-block;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-left: 4px;
+}
+
+.btn-petit:hover {
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+}
+
+.btn-petit--danger:hover {
+    border-color: #ff5c7a;
+    color: #ff5c7a;
+}
+
+.admin-vide {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* --- Suppression / connexion --- */
+.admin-confirmation {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.admin-confirmation > div {
+    flex: 1 1 300px;
+}
+
+.admin-confirmation p:first-child {
+    margin-top: 0;
+    font-size: 1.05rem;
+}
+
+.admin-liste {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.admin-connexion {
+    max-width: 420px;
+}
+
+/* --- Téléphone --- */
+@media (max-width: 700px) {
+    .admin-carte {
+        padding: 18px;
+    }
+
+    .admin-sans-url {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-sans-url__actions {
+        flex-direction: column;
+    }
+
+    .admin-sans-url__actions .btn-petit {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .admin-url .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .admin-tableau th:nth-child(n+4):not(:last-child),
+    .admin-tableau td:nth-child(n+4):not(:last-child) {
+        display: none;
+    }
+
+    .admin-tableau th:first-child,
+    .admin-tableau td:first-child {
+        display: none;
+    }
+
+    .admin-actions .btn-petit {
+        display: block;
+        margin: 4px 0;
+        text-align: center;
+    }
+}
+
+.admin .btn {
+    font-family: inherit;
+    text-decoration: none;
+}

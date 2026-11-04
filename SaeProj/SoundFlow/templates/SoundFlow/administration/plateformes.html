@@ -1,0 +1,3 @@
+{% if video.urlYoutube %}<a class="admin-plateforme admin-plateforme--youtube" href="{{ video.urlYoutube }}" target="_blank" rel="noopener">YouTube</a>{% endif %}
+{% if video.urlVimeo %}<a class="admin-plateforme admin-plateforme--vimeo" href="{{ video.urlVimeo }}" target="_blank" rel="noopener">Vimeo</a>{% endif %}
+{% if not video.urlYoutube and not video.urlVimeo %}<span class="admin-plateforme">Interview</span>{% endif %}

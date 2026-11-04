@@ -1,0 +1,98 @@
+{% extends 'SoundFlow/administration/base_admin.html' %}
+{% load videos %}
+
+{% block title %}Administration{% endblock %}
+{% block titre_admin %}Administration des vidéos{% endblock %}
+
+{% block admin_contenu %}
+    <!-- 1. Ajouter une vidéo à partir de son URL -->
+    <section class="admin-carte">
+        <h2>➕ Ajouter une vidéo</h2>
+        <p class="admin-aide">Collez l'adresse d'une vidéo YouTube ou Vimeo : le titre, la miniature, l'auteur, la durée, la description et la date
+            sont récupérés automatiquement quand c'est possible. Vous complétez ensuite le reste à la main.</p>
+        <form method="get" class="admin-url">
+            <input type="text" name="url" id="id_url" required
+                   placeholder="https://youtu.be/…  ou  https://vimeo.com/…" autofocus>
+            <button type="submit" class="btn btn-play" formaction="{% url 'admin_ajouter' 'interview' %}">Interview complète</button>
+            <button type="submit" class="btn btn-info" formaction="{% url 'admin_ajouter' 'extrait' %}">Extrait</button>
+        </form>
+        <div class="admin-sans-url">
+            <div>
+                <strong>Vous n'avez pas encore le lien ?</strong>
+                <p class="admin-aide admin-aide--petit">Commencez avec un formulaire vide et complétez les informations manuellement.</p>
+            </div>
+            <div class="admin-sans-url__actions">
+                <a class="btn-petit" href="{% url 'admin_ajouter' 'interview' %}">Créer une interview</a>
+                <a class="btn-petit" href="{% url 'admin_ajouter' 'extrait' %}">Créer un extrait</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Liste des interviews -->
+    <section class="admin-carte">
+        <h2>🎬 Interviews complètes <span class="admin-compteur">{{ interviews|length }}</span></h2>
+        {% if interviews %}
+        <div class="admin-tableau-conteneur">
+            <table class="admin-tableau">
+                <thead>
+                    <tr><th></th><th>Titre</th><th>Artiste</th><th>Lieu</th><th>Tournage</th><th>Durée</th><th>Vidéo</th><th>Extraits</th><th></th></tr>
+                </thead>
+                <tbody>
+                {% for interview in interviews %}
+                    <tr>
+                        <td><img class="admin-miniature" src="{{ interview|miniature_de }}" alt="" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='"></td>
+                        <td class="admin-titre">{{ interview.titreInterview }}</td>
+                        <td>{{ interview.artiste.nomArtiste }}</td>
+                        <td>{{ interview.lieu.villeLieu|default:"—" }}</td>
+                        <td>{{ interview.dateTournage|date:"d/m/Y"|default:"—" }}</td>
+                        <td>{{ interview.duree|duree|default:"—" }}</td>
+                        <td>{% include 'SoundFlow/administration/plateformes.html' with video=interview %}</td>
+                        <td>{{ interview.extraits.all|length }}</td>
+                        <td class="admin-actions">
+                            <a class="btn-petit" href="{% url 'admin_modifier' 'interview' interview.pk %}">✎ Modifier</a>
+                            <a class="btn-petit btn-petit--danger" href="{% url 'admin_supprimer' 'interview' interview.pk %}">🗑 Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="admin-vide">Aucune interview pour l'instant.</p>
+        {% endif %}
+    </section>
+
+    <!-- 3. Liste des extraits -->
+    <section class="admin-carte">
+        <h2>✂ Extraits <span class="admin-compteur">{{ extraits|length }}</span></h2>
+        {% if extraits %}
+        <div class="admin-tableau-conteneur">
+            <table class="admin-tableau">
+                <thead>
+                    <tr><th></th><th>Titre</th><th>Interview</th><th>N°</th><th>Question</th><th>Vidéo</th><th></th></tr>
+                </thead>
+                <tbody>
+                {% for extrait in extraits %}
+                    <tr>
+                        <td><img class="admin-miniature" src="{{ extrait|miniature_de }}" alt="" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='"></td>
+                        <td class="admin-titre">{{ extrait.titreExtrait }}</td>
+                        <td>{{ extrait.interview.titreInterview }}</td>
+                        <td>{{ extrait.ordreSequence }}</td>
+                        <td class="admin-question">{{ extrait.question.texteQuestion|truncatechars:60 }}</td>
+                        <td>{% include 'SoundFlow/administration/plateformes.html' with video=extrait %}</td>
+                        <td class="admin-actions">
+                            <a class="btn-petit" href="{% url 'admin_modifier' 'extrait' extrait.pk %}">✎ Modifier</a>
+                            <a class="btn-petit btn-petit--danger" href="{% url 'admin_supprimer' 'extrait' extrait.pk %}">🗑 Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="admin-vide">Aucun extrait pour l'instant.</p>
+        {% endif %}
+    </section>
+
+    <p class="admin-aide admin-aide--petit">Pour gérer les artistes, genres, lieux et questions : <a href="{% url 'admin:index' %}">administration Django</a>.</p>
+{% endblock %}

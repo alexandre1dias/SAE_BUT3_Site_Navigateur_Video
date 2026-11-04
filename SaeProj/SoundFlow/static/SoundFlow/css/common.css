@@ -36,15 +36,35 @@ header {
     z-index: 100;
 }
 
-.logo {
+.logo,
+.admin header .logo {
     font-weight: 700;
     font-size: 1.6rem;
     color: var(--text-color);
+    text-decoration: none;
     display: flex;
     align-items: center;
     gap: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
+    cursor: pointer;
+}
+
+.logo:visited,
+.logo:focus,
+.logo:active,
+.admin header .logo,
+.admin header .logo:visited,
+.admin header .logo:focus,
+.admin header .logo:active {
+    color: var(--text-color);
+    text-decoration: none !important;
+}
+
+.logo:hover,
+.admin header .logo:hover {
+    color: var(--text-color);
+    text-decoration: none !important;
 }
 
 .logo::before {
@@ -71,6 +91,18 @@ header {
     border-bottom: 2px solid var(--primary-accent);
 }
 
+/* Bouton « Administration » de la barre de navigation */
+.nav-links a.nav-admin {
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 6px 14px;
+}
+
+.nav-links a.nav-admin:hover,
+.nav-links a.nav-admin.active {
+    border: 1px solid var(--primary-accent);
+}
+
 /* --- Pastille de couleur musicale --- */
 .color-badge {
     display: inline-block;
@@ -80,4 +112,29 @@ header {
     margin-right: 8px;
     background: var(--couleur-genre, #888888);
     box-shadow: 0 0 8px var(--couleur-genre, #888888);
+}
+
+/* --- Barre de navigation sur téléphone --- */
+@media (max-width: 700px) {
+    header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 4%;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px 18px;
+    }
+
+    .nav-links a {
+        margin-left: 0;
+        font-size: 0.8rem;
+    }
+
+    body {
+        padding-top: 150px !important;
+    }
 }

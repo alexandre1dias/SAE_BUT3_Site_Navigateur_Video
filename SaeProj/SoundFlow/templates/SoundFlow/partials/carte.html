@@ -5,7 +5,7 @@
      data-artiste="{{ interview.artiste.idArtiste }}"
      data-lieu="{{ interview.lieu.idLieu|default:'' }}"
      data-genres="{% for genre in interview.artiste.genres.all %}{{ genre.idGenre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-    <img src="{{ url_youtube|miniature }}" alt="Miniature">
+    <img src="{{ video|miniature_de }}" alt="Miniature">
     <div class="card-info">
         <span class="card-title">{{ titre }}</span>
         <span class="card-tags">

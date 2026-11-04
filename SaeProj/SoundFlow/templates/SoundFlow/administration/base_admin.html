@@ -1,0 +1,25 @@
+{% extends 'SoundFlow/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'SoundFlow/css/modal.css' %}">
+<link rel="stylesheet" href="{% static 'SoundFlow/css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="admin">
+    <div class="admin-entete">
+        <h1 class="row-title">{% block titre_admin %}{% endblock %}</h1>
+    </div>
+
+    {% if messages %}
+    <ul class="admin-messages">
+        {% for message in messages %}
+        <li class="admin-message admin-message--{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% block admin_contenu %}{% endblock %}
+</main>
+{% endblock %}
