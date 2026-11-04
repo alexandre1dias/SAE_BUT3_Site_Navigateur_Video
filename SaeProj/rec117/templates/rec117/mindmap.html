@@ -1,11 +1,11 @@
-{% extends 'SoundFlow/base.html' %}
+{% extends 'rec117/base.html' %}
 {% load static %}
 
 {% block title %}Carte mentale{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'SoundFlow/css/modal.css' %}">
-<link rel="stylesheet" href="{% static 'SoundFlow/css/mindmap.css' %}">
+<link rel="stylesheet" href="{% static 'rec117/css/modal.css' %}">
+<link rel="stylesheet" href="{% static 'rec117/css/mindmap.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -62,10 +62,10 @@
         </ul>
     </div>
 
-    {% include 'SoundFlow/partials/video_modal.html' %}
+    {% include 'rec117/partials/video_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'SoundFlow/js/modal.js' %}"></script>
-<script src="{% static 'SoundFlow/js/mindmap.js' %}"></script>
+<script src="{% static 'rec117/js/modal.js' %}"></script>
+<script src="{% static 'rec117/js/mindmap.js' %}"></script>
 {% endblock %}

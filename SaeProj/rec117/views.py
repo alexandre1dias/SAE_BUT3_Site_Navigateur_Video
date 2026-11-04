@@ -1,9 +1,9 @@
 from django.views.generic import TemplateView
-from SoundFlow.models import GenreMusical, Artiste, Lieu, Question, Interview, Extrait
+from rec117.models import GenreMusical, Artiste, Lieu, Question, Interview, Extrait
 
 
 class HomeView(TemplateView):
-    template_name = "SoundFlow/index.html"
+    template_name = "rec117/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,7 +24,7 @@ class HomeView(TemplateView):
 
 
 class MindMapView(TemplateView):
-    template_name = "SoundFlow/mindmap.html"
+    template_name = "rec117/mindmap.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

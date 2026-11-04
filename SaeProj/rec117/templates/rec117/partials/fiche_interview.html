@@ -3,14 +3,14 @@
     <div class="modal-header" style="background-image: url('{{ interview|miniature_de }}')">
         <div class="modal-header-content">
             <h2>{{ interview.titreInterview }}</h2>
-            {% include 'SoundFlow/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=0 %}
+            {% include 'rec117/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=0 %}
         </div>
     </div>
 
     <div class="modal-body">
         <div class="modal-info">
             <span class="format-badge interview">Interview Intégrale</span>
-            <span>📍 {% include 'SoundFlow/partials/lieu.html' %}</span>
+            <span>📍 {% include 'rec117/partials/lieu.html' %}</span>
         </div>
 
         <div class="modal-layout">
@@ -30,7 +30,7 @@
 
             <div class="modal-meta-box">
                 <p><strong>Artiste :</strong> {{ interview.artiste.nomArtiste }}</p>
-                <p><strong>Couleur musicale :</strong><br>{% include 'SoundFlow/partials/genres.html' with artiste=interview.artiste %}</p>
+                <p><strong>Couleur musicale :</strong><br>{% include 'rec117/partials/genres.html' with artiste=interview.artiste %}</p>
                 <p><strong>Type de contenu :</strong> Interview Intégrale</p>
                 <p><strong>Tournage :</strong> {{ interview.dateTournage|date:"d/m/Y"|default:"Date non précisée" }}</p>
                 {% if interview.duree %}<p><strong>Durée :</strong> {{ interview.duree|duree }}</p>{% endif %}

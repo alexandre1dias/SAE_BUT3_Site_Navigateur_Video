@@ -1,11 +1,12 @@
-{% extends 'SoundFlow/base.html' %}
+
+{% extends 'rec117/base.html' %}
 {% load static videos %}
 
 {% block title %}Accueil{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'SoundFlow/css/home.css' %}">
-<link rel="stylesheet" href="{% static 'SoundFlow/css/modal.css' %}">
+<link rel="stylesheet" href="{% static 'rec117/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'rec117/css/modal.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -15,8 +16,8 @@
         <div class="hero-content">
             <h1 class="hero-title">{{ interview.artiste.nomArtiste }}</h1>
             <div class="hero-meta">
-                <span>📍 {% include 'SoundFlow/partials/lieu.html' %}</span>
-                <span>{% include 'SoundFlow/partials/genres.html' with artiste=interview.artiste %}</span>
+                <span>📍 {% include 'rec117/partials/lieu.html' %}</span>
+                <span>{% include 'rec117/partials/genres.html' with artiste=interview.artiste %}</span>
             </div>
             <p class="hero-desc">{{ interview.descriptionInterview }} <strong>Lisez la vidéo jusqu'au bout, ou bifurquez selon vos envies.</strong></p>
             <div class="hero-buttons">
@@ -75,7 +76,7 @@
             <div class="row-title">Extraits & Questions spécifiques</div>
             <div class="carousel">
                 {% for extrait in extraits %}
-                    {% include 'SoundFlow/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" video=extrait %}
+                    {% include 'rec117/partials/carte.html' with interview=extrait.interview type_fiche="extrait" id_fiche=extrait.idExtrait titre=extrait.titreExtrait type="Extrait" video=extrait %}
                 {% endfor %}
             </div>
         </div>
@@ -84,18 +85,18 @@
             <div class="row-title">Interviews Complètes</div>
             <div class="carousel">
                 {% for interview in interviews %}
-                    {% include 'SoundFlow/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" video=interview %}
+                    {% include 'rec117/partials/carte.html' with type_fiche="interview" id_fiche=interview.idInterview titre=interview.titreInterview type="Intégrale" video=interview %}
                 {% endfor %}
             </div>
         </div>
     </main>
 
-    {% include 'SoundFlow/partials/video_modal.html' %}
+    {% include 'rec117/partials/video_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'SoundFlow/js/modal.js' %}"></script>
-<script src="{% static 'SoundFlow/js/home.js' %}"></script>
+<script src="{% static 'rec117/js/modal.js' %}"></script>
+<script src="{% static 'rec117/js/home.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const chipBtns = document.querySelectorAll('.chip-btn');
@@ -116,4 +117,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+
 {% endblock %}
