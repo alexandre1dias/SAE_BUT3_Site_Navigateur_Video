@@ -1,6 +1,6 @@
 {% load videos %}
 <div class="fiche" id="fiche-interview-{{ interview.idInterview }}" hidden>
-    <div class="modal-header" style="background-image: url('{{ interview.urlYoutube|miniature }}')">
+    <div class="modal-header" style="background-image: url('{{ interview|miniature_de }}')">
         <div class="modal-header-content">
             <h2>{{ interview.titreInterview }}</h2>
             {% include 'rec117/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=0 %}
@@ -33,6 +33,7 @@
                 <p><strong>Couleur musicale :</strong><br>{% include 'rec117/partials/genres.html' with artiste=interview.artiste %}</p>
                 <p><strong>Type de contenu :</strong> Interview Intégrale</p>
                 <p><strong>Tournage :</strong> {{ interview.dateTournage|date:"d/m/Y"|default:"Date non précisée" }}</p>
+                {% if interview.duree %}<p><strong>Durée :</strong> {{ interview.duree|duree }}</p>{% endif %}
                 <p><strong>Séquences :</strong> {{ interview.extraits.count }} extraits</p>
             </div>
         </div>

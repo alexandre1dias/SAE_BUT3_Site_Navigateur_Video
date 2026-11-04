@@ -46,6 +46,8 @@ class Interview(models.Model):
     descriptionInterview = models.TextField(blank=True, null=True)
     urlYoutube = models.URLField(blank=True, null=True)
     urlVimeo = models.URLField(blank=True, null=True)
+    urlMiniature = models.URLField(max_length=500, blank=True, null=True, help_text="Image d'aperçu (récupérée automatiquement depuis YouTube ou Vimeo)")
+    duree = models.PositiveIntegerField(null=True, blank=True, help_text="En secondes")
 
     artiste = models.ForeignKey(Artiste, on_delete=models.CASCADE, related_name="interviews")
     lieu = models.ForeignKey(Lieu, on_delete=models.SET_NULL, null=True, blank=True, related_name="interviews")
@@ -62,6 +64,7 @@ class Extrait(models.Model):
     timecodeFin = models.PositiveIntegerField(null=True, blank=True, help_text="En secondes")
     urlYoutube = models.URLField(blank=True, null=True)
     urlVimeo = models.URLField(blank=True, null=True)
+    urlMiniature = models.URLField(max_length=500, blank=True, null=True, help_text="Image d'aperçu (récupérée automatiquement depuis YouTube ou Vimeo)")
     transcription = models.TextField(blank=True, null=True, help_text="Retranscription pour la recherche")
 
     interview = models.ForeignKey(Interview, on_delete=models.CASCADE, related_name="extraits")

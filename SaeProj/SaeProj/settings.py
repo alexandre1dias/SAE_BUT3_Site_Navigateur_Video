@@ -118,6 +118,14 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
+# Page d'administration des vidéos
+# True  : la page est accessible à tous, sans connexion (choix actuel du projet)
+# False : la page est réservée aux comptes staff (connexion avec admin / rec117 par exemple)
+ADMINISTRATION_OUVERTE = True
+LOGIN_URL = 'admin_connexion'
+LOGIN_REDIRECT_URL = 'admin_videos'
+
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 

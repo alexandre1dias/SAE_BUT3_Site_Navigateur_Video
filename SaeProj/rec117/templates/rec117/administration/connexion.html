@@ -1,0 +1,34 @@
+{% extends 'SoundFlow/administration/base_admin.html' %}
+
+{% block title %}Connexion{% endblock %}
+{% block titre_admin %}Connexion à l'administration{% endblock %}
+
+{% block admin_contenu %}
+    <section class="admin-carte admin-connexion">
+        {% if user.is_authenticated and not user.is_staff %}
+            <p class="admin-message admin-message--warning">Le compte « {{ user.username }} » n'a pas accès à l'administration.
+                Connectez-vous avec un compte de l'équipe (staff).</p>
+        {% else %}
+            <p class="admin-aide">Cette page est réservée à l'équipe du site.</p>
+        {% endif %}
+
+        <form method="post" class="admin-formulaire">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="admin-message admin-message--error">Nom d'utilisateur ou mot de passe incorrect.</div>
+            {% endif %}
+            <div class="admin-champ">
+                <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+                {{ form.username }}
+            </div>
+            <div class="admin-champ">
+                <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+                {{ form.password }}
+            </div>
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="admin-boutons">
+                <button type="submit" class="btn btn-play">Se connecter</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}
