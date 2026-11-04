@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("SoundFlow", "0001_initial"),
+        ("rec117", "0001_initial"),
     ]
 
     operations = [

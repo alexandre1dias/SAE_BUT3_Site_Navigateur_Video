@@ -36,7 +36,7 @@ PAGE_YOUTUBE = '''<html><meta property="og:title" content="Interview Rivkah">
 
 def faux_reseau(adresse):
     if 'youtube.com/oembed' in adresse:
-        return json.dumps({'title': 'Interview Rivkah - SoundFlow', 'author_name': 'Studio Orléans',
+        return json.dumps({'title': 'Interview Rivkah - rec117', 'author_name': 'Studio Orléans',
                            'thumbnail_url': 'https://i.ytimg.com/vi/1NYQ65FTEC8/hqdefault.jpg'})
     if 'youtube.com/watch' in adresse:
         return PAGE_YOUTUBE
@@ -52,7 +52,7 @@ class RecupererInfosTests(TestCase):
     def test_youtube(self, _):
         infos = infos_video.recuperer_infos('https://www.youtube.com/watch?v=1NYQ65FTEC8')
         self.assertEqual(infos['url'], 'https://youtu.be/1NYQ65FTEC8')
-        self.assertEqual(infos['titre'], 'Interview Rivkah - SoundFlow')
+        self.assertEqual(infos['titre'], 'Interview Rivkah - rec117')
         self.assertEqual(infos['auteur'], 'Studio Orléans')
         self.assertEqual(infos['duree'], 253)
         self.assertEqual(infos['description'], 'Rivkah parle de son univers.\nBonne écoute !')
@@ -77,7 +77,7 @@ class SansReseauTests(TestCase):
 
 
 @mock.patch.object(infos_video, '_telecharger', side_effect=faux_reseau)
-@mock.patch('SoundFlow.templatetags.videos.miniature_oembed', return_value='')
+@mock.patch('rec117.templatetags.videos.miniature_oembed', return_value='')
 class PageAdministrationTests(TestCase):
     def setUp(self):
         self.rivkah = Artiste.objects.create(nomArtiste='Rivkah')
@@ -109,7 +109,7 @@ class PageAdministrationTests(TestCase):
         reponse = self.client.get(reverse('admin_ajouter', args=['interview']),
                                   {'url': 'https://www.youtube.com/watch?v=1NYQ65FTEC8'})
         form = reponse.context['form']
-        self.assertEqual(form.initial['titreInterview'], 'Interview Rivkah - SoundFlow')
+        self.assertEqual(form.initial['titreInterview'], 'Interview Rivkah - rec117')
         self.assertEqual(form.initial['artiste'], self.rivkah.pk)  # nom trouvé dans le titre
         self.assertEqual(form.initial['urlYoutube'], 'https://youtu.be/1NYQ65FTEC8')
         self.assertEqual(form.initial['duree'], 253)

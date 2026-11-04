@@ -56,5 +56,5 @@ def miniature_de(video):
 @register.filter
 def duree(secondes):
     """253 -> '4:13'"""
-    from SoundFlow.forms import formater_duree
+    from rec117.forms import formater_duree
     return formater_duree(secondes)
