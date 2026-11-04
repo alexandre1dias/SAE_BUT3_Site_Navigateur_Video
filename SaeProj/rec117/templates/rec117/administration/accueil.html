@@ -1,4 +1,4 @@
-{% extends 'SoundFlow/administration/base_admin.html' %}
+{% extends 'rec117/administration/base_admin.html' %}
 {% load videos %}
 
 {% block title %}Administration{% endblock %}
@@ -46,7 +46,7 @@
                         <td>{{ interview.lieu.villeLieu|default:"—" }}</td>
                         <td>{{ interview.dateTournage|date:"d/m/Y"|default:"—" }}</td>
                         <td>{{ interview.duree|duree|default:"—" }}</td>
-                        <td>{% include 'SoundFlow/administration/plateformes.html' with video=interview %}</td>
+                        <td>{% include 'rec117/administration/plateformes.html' with video=interview %}</td>
                         <td>{{ interview.extraits.all|length }}</td>
                         <td class="admin-actions">
                             <a class="btn-petit" href="{% url 'admin_modifier' 'interview' interview.pk %}">✎ Modifier</a>
@@ -79,7 +79,7 @@
                         <td>{{ extrait.interview.titreInterview }}</td>
                         <td>{{ extrait.ordreSequence }}</td>
                         <td class="admin-question">{{ extrait.question.texteQuestion|truncatechars:60 }}</td>
-                        <td>{% include 'SoundFlow/administration/plateformes.html' with video=extrait %}</td>
+                        <td>{% include 'rec117/administration/plateformes.html' with video=extrait %}</td>
                         <td class="admin-actions">
                             <a class="btn-petit" href="{% url 'admin_modifier' 'extrait' extrait.pk %}">✎ Modifier</a>
                             <a class="btn-petit btn-petit--danger" href="{% url 'admin_supprimer' 'extrait' extrait.pk %}">🗑 Supprimer</a>
