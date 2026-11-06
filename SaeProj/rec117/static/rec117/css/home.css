@@ -220,3 +220,68 @@ body {
 .card[hidden] {
     display: none;
 }
+
+/* --- Responsive --- */
+
+/* Boutons du hero : espacés et qui passent à la ligne proprement */
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Les cartes ne dépassent jamais la largeur de l'écran */
+.carousel {
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+}
+
+/* Pas d'effet de survol « collé » sur écran tactile */
+@media (hover: none) {
+    .card:hover,
+    .chip-btn:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .hero {
+        height: auto;
+        min-height: 320px;
+        padding: 24px;
+        margin: 0 4% 30px;
+        border-radius: 16px;
+    }
+
+    .hero::before {
+        background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.5) 60%, transparent 100%);
+    }
+
+    .hero-title { font-size: 2rem; }
+    .hero-desc  { font-size: 1rem; }
+
+    .hero-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .filters-bar {
+        flex-wrap: wrap;
+        overflow-x: visible;
+        margin: 10px 4% 30px;
+    }
+
+    .genre-chips-container {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .filter-select {
+        flex: 1 1 140px;
+        min-width: 0;
+    }
+
+    .content-section { padding: 0 4% 40px; }
+    .row-title { font-size: 1.2rem; }
+    .carousel { gap: 18px; }
+}
