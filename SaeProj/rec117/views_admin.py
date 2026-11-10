@@ -24,8 +24,8 @@ MODELES = {
 
 # Champs signalés « à remplir » quand ils n'ont pas pu être récupérés depuis l'URL
 CHAMPS_PRINCIPAUX = {
-    'interview': {'titreInterview', 'urlMiniature', 'duree', 'artiste', 'dateTournage', 'lieu', 'descriptionInterview'},
-    'extrait': {'titreExtrait', 'urlMiniature', 'interview', 'question', 'timecodeFin', 'transcription'},
+    'interview': {'titreInterview', 'urlMiniature', 'artiste', 'dateTournage', 'lieu', 'descriptionInterview'},
+    'extrait': {'titreExtrait', 'urlMiniature', 'duree', 'interview', 'question', 'transcription'},
 }
 
 
@@ -49,13 +49,12 @@ class ConnexionView(LoginView):
 
 @staff_requis
 def accueil(request):
-    """Formulaire d'URL + liste de toutes les vidéos."""
+    """Formulaire d'URL + liste des interviews (chacune avec ses extraits)."""
     return render(request, 'rec117/administration/accueil.html', {
         'form_url': UrlForm(),
-        'interviews': Interview.objects.select_related('artiste', 'lieu').prefetch_related('extraits')
+        'interviews': Interview.objects.select_related('artiste', 'lieu')
+                                       .prefetch_related('extraits__question')
                                        .order_by('artiste__nomArtiste', 'idInterview'),
-        'extraits': Extrait.objects.select_related('interview__artiste', 'question')
-                                   .order_by('interview__artiste__nomArtiste', 'interview', 'ordreSequence'),
     })
 
 
@@ -91,7 +90,6 @@ def _valeurs_initiales(type_video, infos):
             'titreInterview': infos['titre'],
             'descriptionInterview': infos['description'],
             'dateTournage': infos['date'],
-            'duree': infos['duree'],
         })
         if artiste:
             valeurs['artiste'] = artiste.pk
@@ -101,7 +99,7 @@ def _valeurs_initiales(type_video, infos):
         valeurs.update({
             'titreExtrait': infos['titre'],
             'transcription': infos['description'],
-            'timecodeFin': infos['duree'],
+            'duree': infos['duree'],
         })
         if artiste:
             derniere = artiste.interviews.order_by('idInterview').last()
@@ -117,7 +115,7 @@ def _doublons(url):
     if not url:
         return []
     filtre = Q(urlYoutube=url) | Q(urlVimeo=url)
-    return list(Interview.objects.filter(filtre)) + list(Extrait.objects.filter(filtre))
+    return list(Extrait.objects.filter(filtre))
 
 
 @staff_requis
@@ -139,7 +137,7 @@ def ajouter(request, type_video):
     else:
         url = request.GET.get('url', '').strip()
         if not url:
-            form = Formulaire()
+            form = Formulaire(initial={'interview': request.GET.get('interview')})
         else:
             infos = recuperer_infos(url)
             if not infos['plateforme']:

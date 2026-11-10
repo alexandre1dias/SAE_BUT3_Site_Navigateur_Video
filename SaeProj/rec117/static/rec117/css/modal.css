@@ -169,6 +169,13 @@ body.modal-ouverte {
     overflow-y: auto;
 }
 
+.fiche:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
 .modal-info {
     display: flex;
     gap: 20px;
@@ -309,6 +316,10 @@ body.modal-ouverte {
         overflow-y: auto;
     }
 
+    .fiche:not([hidden]) {
+        display: block;
+    }
+
     .modal-header {
         height: auto;
         min-height: 220px;
@@ -339,7 +350,13 @@ body.modal-ouverte {
         padding: 0;
     }
 
-    .close-btn { top: 12px; right: 12px; }
+    .close-btn {
+        position: sticky;
+        top: 12px;
+        align-self: flex-end;
+        flex-shrink: 0;
+        margin: 12px 12px -57px 0;
+    }
 
     .modal-body {
         padding: 20px;
@@ -369,4 +386,97 @@ body.modal-ouverte {
         width: 100%;
         text-align: left;
     }
+}
+
+/* --- Playlist d'une interview complète (fiche_interview.html) --- */
+
+.playlist {
+    list-style: none;
+    margin: 0 0 15px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 6px 10px;
+}
+
+/* Extrait en cours de lecture */
+.playlist-item.en-cours {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 8px var(--primary-accent);
+}
+
+.playlist-lire {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    background: none;
+    border: 0;
+    color: var(--text-color);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.playlist-numero {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background-color: var(--bg-color);
+    color: var(--primary-accent);
+    font-weight: 700;
+}
+
+.playlist-item.en-cours .playlist-numero {
+    background-color: var(--primary-accent);
+    color: var(--bg-color);
+}
+
+.playlist-titre {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.playlist-titre small {
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* « Fiche » garde sa taille, même sur téléphone */
+.playlist .playlist-fiche {
+    width: auto;
+    flex-shrink: 0;
+    padding: 6px 14px;
+}
+
+.playlist-vide {
+    color: var(--text-muted);
+}
+
+.playlist-commandes {
+    display: flex;
+    gap: 10px;
+}
+
+.playlist-commandes .btn-related {
+    flex: 1;
+    text-align: center;
 }

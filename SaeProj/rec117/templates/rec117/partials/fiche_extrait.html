@@ -4,12 +4,7 @@
     <div class="modal-header" style="background-image: url('{{ extrait|miniature_de }}')">
         <div class="modal-header-content">
             <h2>{{ extrait.titreExtrait }}</h2>
-            {# Sans vidéo propre à l'extrait, on lit l'interview à partir du timecode de début #}
-            {% if extrait.urlYoutube or extrait.urlVimeo %}
-                {% include 'rec117/partials/lecteur.html' with youtube=extrait.urlYoutube vimeo=extrait.urlVimeo debut=0 %}
-            {% else %}
-                {% include 'rec117/partials/lecteur.html' with youtube=interview.urlYoutube vimeo=interview.urlVimeo debut=extrait.timecodeDebut %}
-            {% endif %}
+            {% include 'rec117/partials/lecteur.html' with youtube=extrait.urlYoutube vimeo=extrait.urlVimeo debut=0 %}
         </div>
     </div>
 
@@ -32,7 +27,7 @@
                                 <button class="btn-related" data-fiche="extrait-{{ autre.idExtrait }}">👤 Même question posée à {{ autre.interview.artiste.nomArtiste }}</button>
                             {% endif %}
                         {% endfor %}
-                        <button class="btn-related" data-fiche="interview-{{ interview.idInterview }}">▶️ Voir l'interview complète</button>
+                        <button class="btn-related" data-fiche="interview-{{ interview.idInterview }}">▶️ Voir la playlist de l'interview</button>
                     </div>
                 </div>
             </div>
@@ -42,7 +37,8 @@
                 <p><strong>Couleur musicale :</strong><br>{% include 'rec117/partials/genres.html' with artiste=interview.artiste %}</p>
                 <p><strong>Type de contenu :</strong> Extrait / Réponse spécifique</p>
                 <p><strong>Question :</strong> {{ extrait.question.texteQuestion }}</p>
-                <p><strong>Séquence :</strong> n°{{ extrait.ordreSequence }} (de {{ extrait.timecodeDebut }} s à {% if extrait.timecodeFin is None %}la fin{% else %}{{ extrait.timecodeFin }} s{% endif %})</p>
+                <p><strong>Séquence :</strong> n°{{ extrait.ordreSequence }} dans l'interview</p>
+                {% if extrait.duree %}<p><strong>Durée :</strong> {{ extrait.duree|duree }}</p>{% endif %}
             </div>
         </div>
     </div>

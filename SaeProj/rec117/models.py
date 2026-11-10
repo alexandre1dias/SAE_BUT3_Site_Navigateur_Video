@@ -44,10 +44,8 @@ class Interview(models.Model):
     titreInterview = models.CharField(max_length=200)
     dateTournage = models.DateField(null=True, blank=True)
     descriptionInterview = models.TextField(blank=True, null=True)
-    urlYoutube = models.URLField(blank=True, null=True)
-    urlVimeo = models.URLField(blank=True, null=True)
+    # Une interview complète n'a plus de vidéo : c'est la playlist de ses extraits (voir Extrait.interview)
     urlMiniature = models.URLField(max_length=500, blank=True, null=True, help_text="Image d'aperçu (récupérée automatiquement depuis YouTube ou Vimeo)")
-    duree = models.PositiveIntegerField(null=True, blank=True, help_text="En secondes")
 
     artiste = models.ForeignKey(Artiste, on_delete=models.CASCADE, related_name="interviews")
     lieu = models.ForeignKey(Lieu, on_delete=models.SET_NULL, null=True, blank=True, related_name="interviews")
@@ -55,13 +53,17 @@ class Interview(models.Model):
     def __str__(self):
         return f"{self.artiste.nomArtiste} - {self.titreInterview}"
 
+    @property
+    def duree_totale(self):
+        """Durée de la playlist : la somme des durées de ses extraits (en secondes)."""
+        return sum(extrait.duree or 0 for extrait in self.extraits.all()) or None
+
 
 class Extrait(models.Model):
     idExtrait = models.AutoField(primary_key=True)
     titreExtrait = models.CharField(max_length=200)
     ordreSequence = models.PositiveIntegerField(help_text="Ordre dans l'interview")
-    timecodeDebut = models.PositiveIntegerField(default=0, help_text="En secondes")
-    timecodeFin = models.PositiveIntegerField(null=True, blank=True, help_text="En secondes")
+    duree = models.PositiveIntegerField(null=True, blank=True, help_text="En secondes")
     urlYoutube = models.URLField(blank=True, null=True)
     urlVimeo = models.URLField(blank=True, null=True)
     urlMiniature = models.URLField(max_length=500, blank=True, null=True, help_text="Image d'aperçu (récupérée automatiquement depuis YouTube ou Vimeo)")

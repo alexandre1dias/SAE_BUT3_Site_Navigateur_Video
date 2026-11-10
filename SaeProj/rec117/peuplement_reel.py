@@ -70,8 +70,6 @@ def run():
         titreInterview="Interview Rivkah",
         dateTournage=datetime.date(2025, 1, 15),
         descriptionInterview="Interview complète de Rivkah décortiquée en 4 extraits.",
-        urlYoutube="https://youtu.be/1NYQ65FTEC8",
-        urlVimeo="https://vimeo.com/1128762950",
         artiste=rivkah,
         lieu=lieu,
     )
@@ -111,7 +109,6 @@ def run():
         Extrait.objects.create(
             titreExtrait=data["titre"],
             ordreSequence=data["ordre"],
-            timecodeDebut=0,
             urlVimeo=data["vimeo"],
             urlYoutube=data["youtube"],
             transcription=f"Transcription de l'extrait {data['ordre']} de Rivkah.",
@@ -124,8 +121,6 @@ def run():
         titreInterview="Interview Gontard",
         dateTournage=datetime.date(2025, 1, 15),
         descriptionInterview="Interview complète de Gontard décortiquée en 4 extraits.",
-        urlYoutube="https://youtu.be/9eLoUEBF6no",
-        urlVimeo="https://vimeo.com/1128786403",
         artiste=gontard,
         lieu=lieu,
     )
@@ -165,7 +160,6 @@ def run():
         Extrait.objects.create(
             titreExtrait=data["titre"],
             ordreSequence=data["ordre"],
-            timecodeDebut=0,
             urlVimeo=data["vimeo"],
             urlYoutube=data["youtube"],
             transcription=f"Transcription de l'extrait {data['ordre']} de Gontard.",
