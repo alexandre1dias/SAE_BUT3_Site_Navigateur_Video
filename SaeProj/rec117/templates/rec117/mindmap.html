@@ -5,67 +5,100 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'rec117/css/modal.css' %}">
-<link rel="stylesheet" href="{% static 'rec117/css/mindmap.css' %}">
+<link rel="stylesheet" href="{% static 'rec117/css/mindmap.css' %}?v=8">
 {% endblock %}
 
 {% block content %}
-    <div class="instructions">
-        <strong>Carte mentale interactive :</strong><br>
-        👆 <strong>Cliquer sur un élément</strong> pour afficher ou replier ce qui lui est relié.<br>
-        ▶ <strong>Interviews et extraits</strong> : le clic ouvre aussi la fiche de la vidéo.<br>
-        ◌ <strong>Bordure en pointillés</strong> : il reste des éléments à découvrir.
-    </div>
+<main class="mindmap-page">
+    <section class="mindmap-toolbar">
+        <div>
+            <p class="eyebrow">Navigation par métadonnées</p>
+            <h1>Carte mentale</h1>
+            <p class="mindmap-intro">Cliquez sur <strong>rec117</strong> pour ouvrir. Cliquez ensuite sur les éléments pour avancer.</p>
+        </div>
+        <div class="mindmap-search">
+            <label for="mindmap-keywords">Rechercher dans la carte</label>
+            <div class="mindmap-search-row">
+                <input id="mindmap-keywords" type="search" placeholder="Artiste, ville, genre, question..." autocomplete="off">
+                <input id="mindmap-date-from" type="date" aria-label="Date de début">
+                <input id="mindmap-date-to" type="date" aria-label="Date de fin">
+                <button id="mindmap-reset" type="button">Réinitialiser</button>
+            </div>
+            <p id="mindmap-result" class="mindmap-result" aria-live="polite"></p>
+        </div>
+    </section>
 
-    <!-- La carte est un arbre de listes imbriquées. Le CSS dessine les traits,
-         mindmap.js ouvre et ferme les branches -->
-    <div class="carte">
-        <ul class="arbre">
-            <li>
-                <button class="noeud noeud--racine">Base de données Vidéos</button>
-                <ul>
-                    {# Branche artiste → interview → extrait #}
-                    {% for artiste in artistes %}
-                    <li>
-                        <button class="noeud noeud--artiste" style="--couleur: {{ artiste.genres.first.codeCouleur|default:'#888888' }}">
-                            {{ artiste.nomArtiste }}
-                        </button>
-                        <ul>
-                            {% for interview in artiste.interviews.all %}
-                            <li>
-                                <button class="noeud noeud--interview" style="--couleur: {{ artiste.genres.first.codeCouleur|default:'#888888' }}" data-fiche="interview-{{ interview.idInterview }}">
-                                    ▶ {{ interview.titreInterview }}
-                                </button>
-                                <ul>
-                                    {% for extrait in interview.extraits.all %}
-                                    <li><button class="noeud noeud--extrait" data-fiche="extrait-{{ extrait.idExtrait }}">▶ {{ extrait.titreExtrait }}</button></li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% endfor %}
+    <section class="mindmap-workspace">
+        <div class="graph-panel">
+            <div class="graph-toolbar">
+                <div class="graph-filters" role="group" aria-label="Types de métadonnées">
+                    <button class="type-filter actif" data-type="all">Tout</button>
+                    <button class="type-filter" data-type="artiste">Artistes</button>
+                    <button class="type-filter" data-type="lieu">Lieux</button>
+                    <button class="type-filter" data-type="genre">Genres</button>
+                    <button class="type-filter" data-type="question">Questions</button>
+                </div>
+                <div class="graph-actions">
+                    <button id="graph-zoom-out" type="button" aria-label="Zoom arrière">−</button>
+                    <button id="graph-zoom-reset" type="button">100%</button>
+                    <button id="graph-zoom-in" type="button" aria-label="Zoom avant">+</button>
+                </div>
+            </div>
+            <div id="mindmap-graph" class="mindmap-graph">
+                <svg id="mindmap-lines" aria-hidden="true"></svg>
+                <div id="mindmap-nodes" class="mindmap-nodes"></div>
+                <div id="graph-empty" class="graph-empty" hidden>Aucun résultat pour cette recherche.</div>
+            </div>
+            <p class="graph-help"><strong>rec117</strong> : ouvrir / revenir en arrière / fermer · cliquez sur une vidéo pour l’ouvrir.</p>
+        </div>
+        <aside id="mindmap-details" class="mindmap-details">
+            <p class="eyebrow">Exploration</p>
+            <h2 id="details-title">Carte mentale fermée</h2>
+            <p id="details-description">Cliquez sur rec117 pour ouvrir la carte.</p>
+            <div id="details-relations" class="details-relations"></div>
+        </aside>
+        <aside class="mindmap-guide">
+            <p class="eyebrow">Mode d’emploi</p>
+            <h2>Comment ça marche ?</h2>
+            <ol>
+                <li><strong>Cliquez sur « rec117 »</strong> au centre pour afficher la carte.</li>
+                <li><strong>Cliquez sur une catégorie</strong> : artiste, lieu, genre ou question.</li>
+                <li><strong>Cliquez sur un résultat</strong> pour voir les choix liés.</li>
+                <li><strong>Cliquez sur une vidéo</strong> pour ouvrir sa fiche.</li>
+                <li><strong>Recliquez sur « rec117 »</strong> pour revenir en arrière.</li>
+                <li>À la racine, cliquez encore une fois pour fermer la carte.</li>
+            </ol>
+            <p class="guide-tip">💡 Vous ne pouvez pas casser la navigation : avancez avec les boutons et revenez avec « rec117 ».</p>
+        </aside>
+    </section>
+</main>
 
-                    {# Branche question → extrait #}
-                    {% for question in questions %}
-                    <li>
-                        <button class="noeud noeud--question">{{ question.texteQuestion }}</button>
-                        <ul>
-                            {% for extrait in question.extraits.all %}
-                            <li><button class="noeud noeud--extrait" data-fiche="extrait-{{ extrait.idExtrait }}">▶ {{ extrait.interview.artiste.nomArtiste }} : {{ extrait.titreExtrait }}</button></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        </ul>
-    </div>
+{# Données de la carte : le graphe est construit côté client, sans arbre HTML imbriqué. #}
+<div id="mindmap-data" hidden>
+    {% for artiste in artistes %}
+    <span class="map-data" data-id="artiste-{{ artiste.idArtiste }}" data-type="artiste" data-label="{{ artiste.nomArtiste }}" data-search="{{ artiste.nomArtiste }}{% for genre in artiste.genres.all %} {{ genre.nomGenre }}{% endfor %}" data-relations="{% for interview in artiste.interviews.all %}interview-{{ interview.idInterview }}{% if not forloop.last %},{% endif %}{% endfor %}"></span>
+    {% endfor %}
+    {% for lieu in lieux %}
+    <span class="map-data" data-id="lieu-{{ lieu.idLieu }}" data-type="lieu" data-label="{{ lieu.nomLieu }} ({{ lieu.villeLieu }})" data-search="{{ lieu.nomLieu }} {{ lieu.villeLieu }} {{ lieu.paysLieu }}" data-relations="{% for interview in lieu.interviews.all %}interview-{{ interview.idInterview }}{% if not forloop.last %},{% endif %}{% endfor %}"></span>
+    {% endfor %}
+    {% for genre in genres %}
+    <span class="map-data" data-id="genre-{{ genre.idGenre }}" data-type="genre" data-label="{{ genre.nomGenre }}" data-search="{{ genre.nomGenre }}" data-relations="{% for artiste in genre.artistes.all %}artiste-{{ artiste.idArtiste }}{% if not forloop.last %},{% endif %}{% endfor %}"></span>
+    {% endfor %}
+    {% for question in questions %}
+    <span class="map-data" data-id="question-{{ question.idQuestion }}" data-type="question" data-label="{{ question.texteQuestion }}" data-search="{{ question.texteQuestion }}" data-relations="{% for extrait in question.extraits.all %}extrait-{{ extrait.idExtrait }}{% if not forloop.last %},{% endif %}{% endfor %}"></span>
+    {% endfor %}
+    {% for interview in interviews %}
+    <span class="map-data map-video" data-id="interview-{{ interview.idInterview }}" data-type="interview" data-label="{{ interview.artiste.nomArtiste }} : {{ interview.titreInterview }}" data-search="{{ interview.titreInterview }} {{ interview.artiste.nomArtiste }} {{ interview.lieu.nomLieu|default:'' }} {{ interview.lieu.villeLieu|default:'' }}" data-date="{{ interview.dateTournage|date:'Y-m-d' }}" data-fiche="interview-{{ interview.idInterview }}" data-relations="artiste-{{ interview.artiste.idArtiste }}{% if interview.lieu %},lieu-{{ interview.lieu.idLieu }}{% endif %}{% for genre in interview.artiste.genres.all %},genre-{{ genre.idGenre }}{% endfor %}{% for extrait in interview.extraits.all %},extrait-{{ extrait.idExtrait }}{% endfor %}"></span>
+    {% endfor %}
+    {% for extrait in extraits %}
+    <span class="map-data map-video" data-id="extrait-{{ extrait.idExtrait }}" data-type="extrait" data-label="{{ extrait.titreExtrait }}" data-search="{{ extrait.titreExtrait }} {{ extrait.question.texteQuestion }} {{ extrait.transcription|default:'' }} {{ extrait.interview.artiste.nomArtiste }}" data-date="{{ extrait.interview.dateTournage|date:'Y-m-d' }}" data-fiche="extrait-{{ extrait.idExtrait }}" data-relations="question-{{ extrait.question.idQuestion }},interview-{{ extrait.interview.idInterview }},artiste-{{ extrait.interview.artiste.idArtiste }}"></span>
+    {% endfor %}
+</div>
 
-    {% include 'rec117/partials/video_modal.html' %}
+{% include 'rec117/partials/video_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
 <script src="{% static 'rec117/js/modal.js' %}"></script>
-<script src="{% static 'rec117/js/mindmap.js' %}"></script>
+<script src="{% static 'rec117/js/mindmap.js' %}?v=8"></script>
 {% endblock %}

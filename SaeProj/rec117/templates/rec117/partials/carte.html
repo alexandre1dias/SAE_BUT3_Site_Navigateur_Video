@@ -4,7 +4,9 @@
      data-fiche="{{ type_fiche }}-{{ id_fiche }}"
      data-artiste="{{ interview.artiste.idArtiste }}"
      data-lieu="{{ interview.lieu.idLieu|default:'' }}"
-     data-genres="{% for genre in interview.artiste.genres.all %}{{ genre.idGenre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+     data-genres="{% for genre in interview.artiste.genres.all %}{{ genre.idGenre }}{% if not forloop.last %},{% endif %}{% endfor %}"
+     data-date="{{ interview.dateTournage|date:'Y-m-d' }}"
+     data-search="{{ titre }} {{ interview.titreInterview }} {{ interview.artiste.nomArtiste }} {{ interview.lieu.nomLieu|default:'' }} {{ interview.lieu.villeLieu|default:'' }} {{ interview.lieu.paysLieu|default:'' }}{% if video.question %} {{ video.question.texteQuestion }} {{ video.transcription|default:'' }}{% endif %}">
     <img src="{{ video|miniature_de }}" alt="Miniature">
     <div class="card-info">
         <span class="card-title">{{ titre }}</span>

@@ -20,6 +20,8 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path("rec117/", include("rec117.urls")),
+    # URL courte pratique pour ouvrir directement la carte mentale.
+    path("mindmap/", RedirectView.as_view(url="/rec117/mindmap/")),
     path('admin/', admin.site.urls),
     path("", RedirectView.as_view(url="/rec117/")),
 ]

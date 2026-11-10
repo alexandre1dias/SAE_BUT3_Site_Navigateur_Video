@@ -70,6 +70,27 @@
         </select>
     </div>
 
+    <section class="advanced-search" aria-labelledby="advanced-search-title">
+        <h2 id="advanced-search-title">Recherche avancée</h2>
+        <div class="advanced-search-fields">
+            <label>
+                Mots-clés
+                <input id="search-keywords" type="search"
+                       placeholder="Artiste, ville, lieu, question..."
+                       autocomplete="off">
+            </label>
+            <label>
+                Du
+                <input id="search-date-from" type="date">
+            </label>
+            <label>
+                Au
+                <input id="search-date-to" type="date">
+            </label>
+            <button id="search-reset" type="button" class="search-reset">Réinitialiser</button>
+        </div>
+    </section>
+
     <!-- Rangées de vidéos -->
     <main class="content-section">
         <div class="theme-row">
