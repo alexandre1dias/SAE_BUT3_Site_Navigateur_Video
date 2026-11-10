@@ -2,8 +2,8 @@ import json
 from functools import lru_cache
 from urllib.parse import quote
 from urllib.request import urlopen
-
 from django import template
+from rec117.models import Interview
 
 register = template.Library()
 
@@ -40,17 +40,16 @@ def miniature(url_youtube, url_vimeo=''):
 
 @register.filter
 def miniature_de(video):
-    """Miniature d'une Interview ou d'un Extrait :
-    celle enregistrée en base (page d'administration), sinon celle de YouTube, sinon celle de Vimeo.
-    Un extrait sans vidéo propre prend la miniature de son interview."""
+    """Miniature d'une Interview ou d'un Extrait.
+    Extrait : celle enregistrée en base, sinon celle de YouTube, sinon celle de Vimeo.
+    Interview (playlist) : celle enregistrée en base, sinon celle de son premier extrait."""
     if not video:
         return ''
-    image = (video.urlMiniature
-             or miniature(video.urlYoutube, video.urlVimeo))
-    interview = getattr(video, 'interview', None)
-    if not image and interview and not (video.urlYoutube or video.urlVimeo):
-        return miniature_de(interview)
-    return image
+    if video.urlMiniature:
+        return video.urlMiniature
+    if isinstance(video, Interview):
+        return miniature_de(video.extraits.first())
+    return miniature(video.urlYoutube, video.urlVimeo)
 
 
 @register.filter

@@ -503,3 +503,53 @@ body {
     font-family: inherit;
     text-decoration: none;
 }
+
+/* --- Interviews dépliables : un clic affiche les extraits (administration/accueil.html) --- */
+.admin-interview {
+    cursor: pointer;
+}
+
+/* Petite flèche devant le titre : ▸ quand c'est fermé, ▾ quand c'est ouvert */
+.admin-fleche::before {
+    content: '▸';
+    color: var(--primary-accent);
+}
+
+.admin-interview.ouverte .admin-fleche::before {
+    content: '▾';
+}
+
+.admin-interview.ouverte td {
+    border-bottom-color: transparent;
+}
+
+/* Sur téléphone, la règle « td:first-child { display: none } » ne doit pas cacher cette cellule */
+.admin-tableau .admin-extraits > td {
+    display: table-cell;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 5px 12px 20px 30px;
+}
+
+.admin-tableau--extraits {
+    margin-bottom: 12px;
+}
+
+.admin-tableau--extraits .admin-miniature {
+    width: 80px;
+}
+
+.admin-ajout-extrait {
+    margin-left: 0;
+}
+
+
+/* --- Choix de la couleur d'un nouveau genre (formulaire d'interview) --- */
+.admin input[type="color"] {
+    width: 70px;
+    height: 42px;
+    padding: 4px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+}

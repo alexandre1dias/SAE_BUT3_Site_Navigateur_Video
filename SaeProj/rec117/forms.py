@@ -56,8 +56,8 @@ class DateFrancaise(forms.DateInput):
 class InterviewForm(forms.ModelForm):
     # Regroupement des champs en blocs sur la page
     groupes = [
-        ('🎬 La vidéo', ['titreInterview', 'urlYoutube', 'urlVimeo', 'urlMiniature', 'duree']),
-        ('🎤 Artiste', ['artiste', 'nouvel_artiste', 'genres_nouvel_artiste']),
+        ('🎬 La playlist', ['titreInterview', 'urlMiniature']),
+        ('🎤 Artiste', ['artiste', 'nouvel_artiste', 'genres_nouvel_artiste', 'nouveau_genre', 'couleur_nouveau_genre']),
         ('📍 Tournage', ['dateTournage', 'lieu', 'nouveau_lieu', 'ville_nouveau_lieu', 'pays_nouveau_lieu']),
         ('📝 Description', ['descriptionInterview']),
     ]
@@ -68,21 +68,25 @@ class InterviewForm(forms.ModelForm):
     genres_nouvel_artiste = forms.ModelMultipleChoiceField(
         label='Genres du nouvel artiste', required=False, queryset=GenreMusical.objects.all(),
         widget=forms.CheckboxSelectMultiple)
+    # Créer un genre musical directement depuis le formulaire (il est ajouté à l'artiste)
+    nouveau_genre = forms.CharField(
+        label='… ou nouveau genre', required=False, max_length=100,
+        help_text="Remplir seulement si le genre n'est pas dans la liste. Il sera ajouté à l'artiste.")
+    couleur_nouveau_genre = forms.CharField(
+        label='Couleur du nouveau genre', required=False, initial='#00E5FF',
+        widget=forms.TextInput(attrs={'type': 'color'}))
     nouveau_lieu = forms.CharField(label='… ou nouveau lieu (nom)', required=False, max_length=150)
     ville_nouveau_lieu = forms.CharField(label='Ville du nouveau lieu', required=False, max_length=100)
     pays_nouveau_lieu = forms.CharField(label='Pays du nouveau lieu', required=False, max_length=100, initial='France')
-    duree = DureeField(label='Durée', required=False)
 
     class Meta:
         model = Interview
-        fields = ['titreInterview', 'urlYoutube', 'urlVimeo', 'urlMiniature', 'duree',
-                  'artiste', 'nouvel_artiste', 'genres_nouvel_artiste',
+        fields = ['titreInterview', 'urlMiniature',
+                  'artiste', 'nouvel_artiste', 'genres_nouvel_artiste', 'nouveau_genre', 'couleur_nouveau_genre',
                   'dateTournage', 'lieu', 'nouveau_lieu', 'ville_nouveau_lieu', 'pays_nouveau_lieu',
                   'descriptionInterview']
         labels = {
             'titreInterview': 'Titre',
-            'urlYoutube': 'URL YouTube',
-            'urlVimeo': 'URL Vimeo',
             'urlMiniature': 'Miniature (URL de l\'image)',
             'artiste': 'Artiste',
             'dateTournage': 'Date de tournage',
@@ -104,10 +108,11 @@ class InterviewForm(forms.ModelForm):
         donnees = super().clean()
         if not donnees.get('artiste') and not donnees.get('nouvel_artiste'):
             self.add_error('artiste', 'Choisissez un artiste dans la liste ou indiquez un nouvel artiste.')
-        if not donnees.get('urlYoutube') and not donnees.get('urlVimeo'):
-            self.add_error('urlYoutube', 'Indiquez au moins une URL YouTube ou Vimeo.')
         if donnees.get('nouveau_lieu') and not donnees.get('ville_nouveau_lieu'):
             self.add_error('ville_nouveau_lieu', 'Indiquez la ville du nouveau lieu.')
+        couleur = donnees.get('couleur_nouveau_genre')
+        if couleur and not re.fullmatch(r'#[0-9A-Fa-f]{6}', couleur):
+            self.add_error('couleur_nouveau_genre', 'Format attendu : #RRGGBB, par exemple #1DB954.')
         return donnees
 
     def save(self, commit=True):
@@ -121,6 +126,13 @@ class InterviewForm(forms.ModelForm):
             if donnees.get('genres_nouvel_artiste'):
                 artiste.genres.add(*donnees['genres_nouvel_artiste'])
             interview.artiste = artiste
+        if donnees.get('nouveau_genre'):
+            nom = donnees['nouveau_genre'].strip()
+            genre = GenreMusical.objects.filter(nomGenre__iexact=nom).first()
+            if genre is None:
+                genre = GenreMusical.objects.create(
+                    nomGenre=nom, codeCouleur=donnees.get('couleur_nouveau_genre') or '#888888')
+            interview.artiste.genres.add(genre)
         if donnees.get('nouveau_lieu'):
             interview.lieu, _ = Lieu.objects.get_or_create(
                 nomLieu=donnees['nouveau_lieu'].strip(),
@@ -136,29 +148,27 @@ class InterviewForm(forms.ModelForm):
 
 class ExtraitForm(forms.ModelForm):
     groupes = [
-        ('🎬 La vidéo', ['titreExtrait', 'urlYoutube', 'urlVimeo', 'urlMiniature']),
-        ("🔗 Place dans l'interview", ['interview', 'ordreSequence', 'timecodeDebut', 'timecodeFin']),
+        ('🎬 La vidéo', ['titreExtrait', 'urlYoutube', 'urlVimeo', 'urlMiniature', 'duree']),
+        ("🔗 Place dans l'interview", ['interview', 'ordreSequence']),
         ('❓ Question', ['question', 'nouvelle_question']),
         ('📝 Transcription', ['transcription']),
     ]
     nouvelle_question = forms.CharField(
         label='… ou nouvelle question', required=False, widget=forms.Textarea(attrs={'rows': 2}),
         help_text="Remplir seulement si la question n'est pas dans la liste")
-    timecodeDebut = DureeField(label='Début dans l\'interview', required=False,
-                               help_text="Utilisé seulement si l'extrait n'a pas sa propre vidéo. 0 par défaut.")
-    timecodeFin = DureeField(label='Fin / durée', required=False)
+    duree = DureeField(label='Durée', required=False)
 
     class Meta:
         model = Extrait
-        fields = ['titreExtrait', 'urlYoutube', 'urlVimeo', 'urlMiniature',
+        fields = ['titreExtrait', 'urlYoutube', 'urlVimeo', 'urlMiniature', 'duree',
                   'interview', 'question', 'nouvelle_question', 'ordreSequence',
-                  'timecodeDebut', 'timecodeFin', 'transcription']
+                  'transcription']
         labels = {
             'titreExtrait': 'Titre',
             'urlYoutube': 'URL YouTube',
             'urlVimeo': 'URL Vimeo',
             'urlMiniature': 'Miniature (URL de l\'image)',
-            'interview': 'Interview complète',
+            'interview': 'Interview (playlist)',
             'question': 'Question',
             'ordreSequence': 'N° dans l\'interview',
             'transcription': 'Transcription / description',
@@ -179,15 +189,12 @@ class ExtraitForm(forms.ModelForm):
         donnees = super().clean()
         if not donnees.get('question') and not donnees.get('nouvelle_question'):
             self.add_error('question', 'Choisissez une question dans la liste ou écrivez-en une nouvelle.')
+        if not donnees.get('urlYoutube') and not donnees.get('urlVimeo'):
+            self.add_error('urlYoutube', 'Indiquez au moins une URL YouTube ou Vimeo.')
         interview = donnees.get('interview')
         if donnees.get('ordreSequence') is None and interview:
             autres = interview.extraits.exclude(pk=self.instance.pk)
             donnees['ordreSequence'] = (autres.aggregate(m=Max('ordreSequence'))['m'] or 0) + 1
-        if donnees.get('timecodeDebut') is None:
-            donnees['timecodeDebut'] = 0
-        fin = donnees.get('timecodeFin')
-        if fin is not None and fin <= donnees['timecodeDebut']:
-            self.add_error('timecodeFin', 'La fin doit être après le début.')
         return donnees
 
     def save(self, commit=True):

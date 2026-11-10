@@ -7,7 +7,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from . import infos_video
-from .models import Artiste, Extrait, Interview, Question
+from .models import Artiste, Extrait, GenreMusical, Interview, Question
 
 
 class AnalyseUrlTests(TestCase):
@@ -88,7 +88,7 @@ class PageAdministrationTests(TestCase):
     def test_acces_ouvert_a_tous(self, *_):
         self.assertEqual(self.client.get(reverse('admin_videos')).status_code, 200)
         self.client.post(reverse('admin_ajouter', args=['interview']), {
-            'titreInterview': 'Libre', 'urlYoutube': 'https://youtu.be/abc', 'artiste': self.rivkah.pk})
+            'titreInterview': 'Libre', 'artiste': self.rivkah.pk})
         self.assertTrue(Interview.objects.filter(titreInterview='Libre').exists())
 
     @override_settings(ADMINISTRATION_OUVERTE=False)
@@ -106,45 +106,49 @@ class PageAdministrationTests(TestCase):
 
     def test_formulaire_pre_rempli(self, *_):
         self.client.force_login(self.admin)
-        reponse = self.client.get(reverse('admin_ajouter', args=['interview']),
+        interview = Interview.objects.create(titreInterview='Interview Rivkah', artiste=self.rivkah)
+        reponse = self.client.get(reverse('admin_ajouter', args=['extrait']),
                                   {'url': 'https://www.youtube.com/watch?v=1NYQ65FTEC8'})
         form = reponse.context['form']
-        self.assertEqual(form.initial['titreInterview'], 'Interview Rivkah - rec117')
-        self.assertEqual(form.initial['artiste'], self.rivkah.pk)  # nom trouvé dans le titre
+        self.assertEqual(form.initial['titreExtrait'], 'Interview Rivkah - rec117')
+        self.assertEqual(form.initial['interview'], interview.pk)  # artiste trouvé dans le titre
         self.assertEqual(form.initial['urlYoutube'], 'https://youtu.be/1NYQ65FTEC8')
         self.assertEqual(form.initial['duree'], 253)
         self.assertContains(reponse, '4:13')
-        self.assertNotIn('lieu', reponse.context['auto'])
+        self.assertNotIn('question', reponse.context['auto'])
 
     def test_ajout_modification_suppression(self, *_):
         self.client.force_login(self.admin)
         reponse = self.client.post(reverse('admin_ajouter', args=['interview']), {
-            'titreInterview': 'Interview Zed', 'urlVimeo': 'https://vimeo.com/1', 'duree': '1:02:03',
+            'titreInterview': 'Interview Zed',
             'nouvel_artiste': 'Zed', 'nouveau_lieu': 'Salle', 'ville_nouveau_lieu': 'Tours',
             'pays_nouveau_lieu': 'France',
         })
         self.assertRedirects(reponse, reverse('admin_videos'))
         interview = Interview.objects.get(titreInterview='Interview Zed')
-        self.assertEqual(interview.duree, 3723)
         self.assertEqual(interview.artiste.nomArtiste, 'Zed')
         self.assertEqual(interview.lieu.villeLieu, 'Tours')
 
         # Extrait : numéro automatique et nouvelle question
         self.client.post(reverse('admin_ajouter', args=['extrait']), {
-            'titreExtrait': 'Zed 1', 'interview': interview.pk, 'nouvelle_question': 'Pourquoi ?',
+            'titreExtrait': 'Zed 1', 'urlVimeo': 'https://vimeo.com/1', 'interview': interview.pk,
+            'nouvelle_question': 'Pourquoi ?',
         })
         self.client.post(reverse('admin_ajouter', args=['extrait']), {
-            'titreExtrait': 'Zed 2', 'interview': interview.pk, 'question': self.question.pk,
+            'titreExtrait': 'Zed 2', 'urlYoutube': 'https://youtu.be/zed2', 'interview': interview.pk,
+            'question': self.question.pk,
         })
         self.assertEqual([e.ordreSequence for e in interview.extraits.all()], [1, 2])
 
         extrait = Extrait.objects.get(titreExtrait='Zed 2')
         self.client.post(reverse('admin_modifier', args=['extrait', extrait.pk]), {
-            'titreExtrait': 'Zed 2 bis', 'interview': interview.pk, 'question': self.question.pk,
-            'ordreSequence': 2, 'timecodeDebut': '0:30', 'timecodeFin': '1:00',
+            'titreExtrait': 'Zed 2 bis', 'urlYoutube': 'https://youtu.be/zed2', 'interview': interview.pk,
+            'question': self.question.pk,
+            'ordreSequence': 2, 'duree': '1:02:03',
         })
         extrait.refresh_from_db()
-        self.assertEqual((extrait.titreExtrait, extrait.timecodeDebut, extrait.timecodeFin), ('Zed 2 bis', 30, 60))
+        self.assertEqual((extrait.titreExtrait, extrait.duree), ('Zed 2 bis', 3723))
+        self.assertEqual(interview.duree_totale, 3723)  # somme des durées des extraits
 
         # Suppression : confirmation d'abord, puis suppression en cascade des extraits
         url = reverse('admin_supprimer', args=['interview', interview.pk])
@@ -154,10 +158,57 @@ class PageAdministrationTests(TestCase):
         self.assertFalse(Interview.objects.filter(pk=interview.pk).exists())
         self.assertFalse(Extrait.objects.exists())
 
+    def test_interviews_et_leurs_extraits(self, *_):
+        self.client.force_login(self.admin)
+        interview = Interview.objects.create(titreInterview='Interview Rivkah', artiste=self.rivkah)
+        Extrait.objects.create(titreExtrait='Rivkah 1', ordreSequence=1, urlYoutube='https://youtu.be/un',
+                               interview=interview, question=self.question)
+        page = self.client.get(reverse('admin_videos')).content.decode()
+        # L'extrait est dans la ligne cachée qui suit son interview
+        self.assertLess(page.index(f'id="extraits-{interview.pk}" hidden'), page.index('Rivkah 1'))
+        # « Ajouter un extrait à cette interview » pré-sélectionne l'interview
+        reponse = self.client.get(reverse('admin_ajouter', args=['extrait']), {'interview': interview.pk})
+        self.assertEqual(str(reponse.context['form'].initial['interview']), str(interview.pk))
+
+    def test_nouveau_genre(self, *_):
+        self.client.force_login(self.admin)
+        self.client.post(reverse('admin_ajouter', args=['interview']), {
+            'titreInterview': 'Interview Rivkah', 'artiste': self.rivkah.pk,
+            'nouveau_genre': 'Électro', 'couleur_nouveau_genre': '#1DB954',
+        })
+        genre = GenreMusical.objects.get(nomGenre='Électro')
+        self.assertEqual(genre.codeCouleur, '#1DB954')
+        self.assertIn(genre, self.rivkah.genres.all())  # ajouté à l'artiste choisi
+        # Couleur invalide : refusée
+        reponse = self.client.post(reverse('admin_ajouter', args=['interview']), {
+            'titreInterview': 'X', 'artiste': self.rivkah.pk, 'nouveau_genre': 'Jazz', 'couleur_nouveau_genre': 'rouge',
+        })
+        self.assertIn('couleur_nouveau_genre', reponse.context['form'].errors)
+
+
     def test_erreurs(self, *_):
         self.client.force_login(self.admin)
         reponse = self.client.post(reverse('admin_ajouter', args=['interview']), {'titreInterview': 'X'})
         self.assertEqual(reponse.status_code, 200)
         self.assertIn('artiste', reponse.context['form'].errors)
-        self.assertIn('urlYoutube', reponse.context['form'].errors)
         self.assertFalse(Interview.objects.exists())
+
+        # Un extrait doit avoir sa propre vidéo
+        reponse = self.client.post(reverse('admin_ajouter', args=['extrait']), {'titreExtrait': 'Y'})
+        self.assertIn('urlYoutube', reponse.context['form'].errors)
+        self.assertFalse(Extrait.objects.exists())
+
+
+@mock.patch('rec117.templatetags.videos.miniature_oembed', return_value='')
+class PlaylistTests(TestCase):
+    def test_interview_en_playlist(self, _):
+        artiste = Artiste.objects.create(nomArtiste='Rivkah')
+        question = Question.objects.create(texteQuestion='Présentation')
+        interview = Interview.objects.create(titreInterview='Interview Rivkah', artiste=artiste)
+        for ordre, video in [(2, 'https://youtu.be/deux'), (1, 'https://youtu.be/un')]:
+            Extrait.objects.create(titreExtrait=f'Extrait {ordre}', ordreSequence=ordre, urlYoutube=video,
+                                   interview=interview, question=question)
+        page = self.client.get(reverse('home')).content.decode()
+        self.assertIn('Lancer la playlist', page)
+        # Les extraits de la playlist sont dans l'ordre de l'interview
+        self.assertLess(page.index('data-youtube="https://youtu.be/un"'), page.index('data-youtube="https://youtu.be/deux"'))
