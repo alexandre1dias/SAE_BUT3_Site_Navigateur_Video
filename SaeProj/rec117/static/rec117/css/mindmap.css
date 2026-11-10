@@ -1,188 +1,234 @@
-/* === Page Carte Mentale === */
-/* La carte est un arbre de listes imbriquées (ul > li > button + ul), affiché de gauche à droite.
-   Les traits qui relient les éléments sont dessinés en CSS avec ::before et ::after. */
-
-:root {
-    --fond-carte: #111111;
-    --trait: #555555;
-    --couleur-racine: #ffffff;
-    --couleur-question: #f7d774;
-    --couleur-extrait: #666666;
-}
-
 body {
-    background-color: var(--fond-carte);
+    padding-top: 80px;
+    background: var(--bg-color);
 }
 
-/* Zone de la carte : on fait défiler dans les deux sens si l'arbre est grand */
-.carte {
-    min-height: 100vh;
-    padding: 100px 40px 200px;
-    box-sizing: border-box;
-    overflow-x: auto;
-}
+.mindmap-page { min-height: calc(100vh - 80px); }
 
-.arbre,
-.arbre ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-/* Les enfants d'un élément sont cachés tant qu'il n'est pas ouvert */
-.arbre ul {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.arbre li.ouvert > ul {
+.mindmap-toolbar {
     display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 42px 5% 25px;
 }
 
-/* Chaque élément : le bouton, puis la colonne de ses enfants à droite */
-.arbre li {
+.eyebrow {
+    margin: 0 0 7px;
+    color: var(--primary-accent);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+}
+
+.mindmap-toolbar h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.4rem); }
+.mindmap-intro { margin: 8px 0 0; color: var(--text-muted); }
+.mindmap-search { width: min(720px, 100%); }
+.mindmap-search label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    font-size: .8rem;
+    text-transform: uppercase;
+}
+
+.mindmap-search-row, .graph-actions, .graph-filters {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mindmap-search input, .mindmap-search button, .graph-actions button, .graph-filters button {
+    min-height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    font: inherit;
+}
+
+#mindmap-keywords { min-width: 230px; flex: 1 1 240px; padding: 0 13px; }
+.mindmap-search input[type="date"] { width: 140px; padding: 0 8px; }
+.mindmap-search button, .graph-actions button, .graph-filters button { padding: 0 13px; cursor: pointer; }
+.mindmap-search input:focus, .mindmap-search button:hover, .graph-actions button:hover, .graph-filters button:hover {
+    border-color: var(--primary-accent);
+    outline: none;
+}
+.mindmap-result { min-height: 1em; margin: 7px 0 0; color: var(--primary-accent); font-size: .85rem; }
+
+.mindmap-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px 250px;
+    gap: 18px;
+    margin: 0 3% 35px;
+}
+
+.graph-panel, .mindmap-details {
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: var(--surface-color);
+}
+
+.graph-panel { overflow: hidden; }
+.graph-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-color);
+}
+.graph-filters button { min-height: 32px; padding: 0 11px; font-size: .8rem; }
+.graph-filters button.actif { border-color: var(--primary-accent); color: var(--primary-accent); }
+.graph-actions button { min-width: 34px; min-height: 32px; padding: 0 8px; }
+
+.mindmap-graph {
     position: relative;
-    padding: 6px 0 6px 40px;
-    animation: apparition 0.3s ease-out;
+    height: min(680px, 72vh);
+    min-height: 500px;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+        #101012;
+    background-size: 32px 32px;
 }
 
-.arbre > li {
-    padding-left: 0;
-}
-
-@keyframes apparition {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* --- Traits --- */
-
-/* Trait horizontal qui arrive sur l'élément */
-.arbre ul > li::before {
-    content: '';
+.mindmap-graph::before {
     position: absolute;
-    left: 0;
-    top: 50%;
-    width: 40px;
-    border-top: 2px solid var(--trait);
-}
-
-/* Trait vertical qui relie les frères entre eux */
-.arbre ul > li::after {
+    inset: 20% 20%;
+    border: 1px dashed #303035;
+    border-radius: 50%;
     content: '';
+}
+
+#mindmap-lines, .mindmap-nodes {
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    border-left: 2px solid var(--trait);
+    inset: 0;
+    transform: scale(var(--graph-zoom, 1));
+    transform-origin: center;
+    transition: transform .2s ease;
 }
+#mindmap-lines { width: 100%; height: 100%; }
+#mindmap-lines line { stroke: #414148; stroke-width: 1.2; opacity: .7; }
+#mindmap-lines line.highlight { stroke: var(--primary-accent); stroke-width: 2.4; opacity: 1; }
 
-.arbre ul > li:first-child::after { top: 50%; }
-.arbre ul > li:last-child::after { bottom: 50%; }
-.arbre ul > li:only-child::after { display: none; }
-
-/* Trait qui sort d'un élément ouvert vers ses enfants */
-.arbre li.ouvert > .noeud {
-    margin-right: 40px;
-    position: relative;
-}
-
-.arbre li.ouvert > .noeud::after {
-    content: '';
+.graph-node {
     position: absolute;
-    left: calc(100% + 3px); /* juste après la bordure du bouton */
-    top: 50%;
-    width: 40px;
-    border-top: 2px solid var(--trait);
-}
-
-/* --- Éléments --- */
-/* Chaque type a sa couleur ; artistes et interviews reçoivent celle de leur genre (attribut style) */
-
-.noeud--racine { --couleur: var(--couleur-racine); }
-.noeud--question { --couleur: var(--couleur-question); }
-.noeud--extrait { --couleur: var(--couleur-extrait); }
-
-.noeud {
-    background-color: #1e1e1e;
-    color: #ffffff;
-    border: 3px solid var(--couleur, #888888);
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 15px;
-    max-width: 260px;
-    text-align: left;
-    white-space: normal;
+    z-index: 2;
+    max-width: 180px;
+    padding: 9px 13px;
+    transform: translate(-50%, -50%);
+    border: 1px solid var(--node-color, #777);
+    border-radius: 12px;
+    background: #222225;
+    box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    color: var(--text-color);
     cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color 0.15s;
+    font: inherit;
+    font-size: .78rem;
+    line-height: 1.25;
+    text-align: center;
+    transition: transform .2s, box-shadow .2s, background .2s;
+}
+.graph-node:hover, .graph-node.selected {
+    background: #303035;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-color) 20%, transparent), 0 8px 20px rgba(0,0,0,.45);
+    transform: translate(-50%, -50%) scale(1.05);
+}
+.graph-root { --node-color: var(--primary-accent); min-width: 90px; background: #252b2d; font-weight: 700; }
+.graph-artiste { --node-color: #00e5ff; }
+.graph-lieu { --node-color: #7dd3fc; }
+.graph-genre { --node-color: #c4b5fd; }
+.graph-question { --node-color: #f7d774; max-width: 210px; }
+.graph-interview { --node-color: #7be8d5; }
+.graph-extrait { --node-color: #a4b4d1; }
+
+.graph-empty {
+    position: absolute;
+    inset: 45% 0 auto;
+    color: var(--text-muted);
+    text-align: center;
+}
+.graph-help { margin: 0; padding: 10px 18px 14px; color: var(--text-muted); font-size: .8rem; }
+
+.mindmap-details {
+    align-self: start;
+    min-height: 220px;
+    padding: 22px;
+}
+.mindmap-guide {
+    align-self: start;
+    padding: 22px;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: var(--surface-color);
+}
+.mindmap-guide h2 {
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+}
+.mindmap-guide ol {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding-left: 22px;
+    color: var(--text-muted);
+    font-size: .88rem;
+    line-height: 1.4;
+}
+.mindmap-guide li::marker {
+    color: var(--primary-accent);
+    font-weight: 700;
+}
+.mindmap-guide strong { color: var(--text-color); }
+.guide-tip {
+    margin: 20px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: .8rem;
+    line-height: 1.4;
+}
+.mindmap-details h2 { margin: 0 0 8px; font-size: 1.15rem; overflow-wrap: anywhere; }
+.mindmap-details > p:not(.eyebrow) { margin: 0 0 20px; color: var(--text-muted); font-size: .9rem; }
+.details-relations { display: flex; flex-direction: column; gap: 8px; }
+.relation {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+}
+.relation:hover { border-color: var(--primary-accent); color: var(--primary-accent); }
+.relation--open {
+    border-color: var(--primary-accent);
+    background: var(--primary-accent);
+    color: #071014;
+    font-weight: 700;
+}
+.relation--open:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
 }
 
-.noeud:hover {
-    background-color: color-mix(in srgb, var(--couleur, #888888) 35%, #1e1e1e);
+#mindmap-data { display: none; }
+
+@media (max-width: 900px) {
+    body { padding-top: 115px; }
+    .mindmap-page { min-height: calc(100vh - 115px); }
+    .mindmap-toolbar { display: block; padding: 30px 5% 20px; }
+    .mindmap-search { margin-top: 24px; }
+    .mindmap-workspace { grid-template-columns: 1fr; margin: 0 3% 25px; }
+    .mindmap-details, .mindmap-guide { order: -1; }
 }
 
-.noeud--racine {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.noeud--extrait {
-    font-size: 13px;
-}
-
-/* Bordure en pointillés : l'élément a des enfants encore cachés */
-.arbre li:has(> ul > li):not(.ouvert) > .noeud {
-    border-style: dashed;
-}
-
-/* --- Encadré d'instructions --- */
-
-.instructions {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #ffffff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    z-index: 10;
-    border: 1px solid #333;
-    pointer-events: none;
-    font-size: 14px;
-}
-
-/* --- Carte mentale sur téléphone --- */
-@media (max-width: 700px) {
-    .carte {
-        padding: 20px 12px 60px;
-    }
-
-    /* Branches de 20 px au lieu de 40 */
-    .arbre li { padding-left: 20px; }
-
-    .arbre ul > li::before,
-    .arbre li.ouvert > .noeud::after {
-        width: 20px;
-    }
-
-    .arbre li.ouvert > .noeud { margin-right: 20px; }
-
-    /* Bulles plus étroites, mais assez hautes pour le doigt */
-    .noeud {
-        max-width: 170px;
-        font-size: 13px;
-        padding: 8px 12px;
-        min-height: 44px;
-    }
-
-    /* L'encadré passe au-dessus de la carte au lieu de la recouvrir */
-    .instructions {
-        position: static;
-        margin: 12px;
-        font-size: 13px;
-    }
+@media (max-width: 600px) {
+    .graph-toolbar { display: block; }
+    .graph-actions { margin-top: 10px; }
+    .mindmap-graph { min-height: 430px; height: 58vh; }
+    .graph-node { max-width: 125px; padding: 8px 9px; font-size: .7rem; }
 }

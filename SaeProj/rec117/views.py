@@ -32,6 +32,8 @@ class MindMapView(TemplateView):
         # Données pour les branches de la carte
         context['artistes'] = Artiste.objects.all()
         context['questions'] = Question.objects.all()
+        context['genres'] = GenreMusical.objects.all()
+        context['lieux'] = Lieu.objects.all()
 
         # Données pour les fiches de la modale
         context['interviews'] = Interview.objects.order_by('idInterview')
