@@ -10,6 +10,25 @@ body {
     margin: 0 auto;
 }
 
+.admin--auth {
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin--auth .admin-entete {
+    justify-content: center;
+    text-align: center;
+}
+
+.admin--auth .admin-connexion {
+    width: min(100%, 420px);
+    box-sizing: border-box;
+}
+
 .admin-entete {
     display: flex;
     justify-content: space-between;
@@ -431,7 +450,7 @@ body {
     margin: 0;
 }
 
-/* --- Suppression / connexion --- */
+/* --- Suppression / authentification --- */
 .admin-confirmation {
     display: flex;
     gap: 25px;
@@ -459,6 +478,10 @@ body {
 
 /* --- Téléphone --- */
 @media (max-width: 700px) {
+    .admin--auth {
+        min-height: calc(100vh - 115px);
+    }
+
     .admin-carte {
         padding: 18px;
     }

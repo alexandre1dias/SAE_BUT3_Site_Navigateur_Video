@@ -2,9 +2,33 @@
 import re
 
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.db.models import Max
 
 from .models import Artiste, Extrait, GenreMusical, Interview, Lieu, Question
+
+
+class InscriptionForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].help_text = (
+            'Votre mot de passe doit contenir au moins 8 caractères, ne pas être trop courant, '
+            'ne pas être entièrement numérique et ne pas être trop proche de vos informations personnelles.'
+        )
+        self.fields['password2'].help_text = 'Saisissez à nouveau le même mot de passe pour le confirmer.'
+
+    def save(self, commit=True):
+        utilisateur = super().save(commit=False)
+        utilisateur.is_staff = False
+        utilisateur.is_superuser = False
+        if commit:
+            utilisateur.save()
+        return utilisateur
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ('username',)
 
 
 # --- Champ « durée » : accepte 253, 4:13 ou 1:04:13 ---------------------------

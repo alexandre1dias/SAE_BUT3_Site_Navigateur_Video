@@ -1,0 +1,27 @@
+{% extends 'rec117/administration/base_admin.html' %}
+
+{% block title %}Créer un compte{% endblock %}
+{% block titre_admin %}Créer un compte utilisateur{% endblock %}
+
+{% block admin_contenu %}
+    <section class="admin-carte admin-connexion">
+        <p class="admin-aide">L'inscription crée un compte utilisateur standard. Les droits d'administration sont attribués séparément par l'équipe.</p>
+        <form method="post" class="admin-formulaire">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="admin-champ{% if field.errors %} admin-champ--erreur{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<div class="admin-aide-champ">{{ field.help_text|safe }}</div>{% endif %}
+                    {% for error in field.errors %}<div class="admin-erreur">{{ error }}</div>{% endfor %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <div class="admin-message admin-message--error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="admin-boutons">
+                <button type="submit" class="btn btn-play">Créer mon compte</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}

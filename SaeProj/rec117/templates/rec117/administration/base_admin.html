@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<main class="admin">
+<main class="admin{% if request.resolver_match.url_name == 'admin_connexion' or request.resolver_match.url_name == 'connexion' or request.resolver_match.url_name == 'inscription' %} admin--auth{% endif %}">
     <div class="admin-entete">
         <h1 class="row-title">{% block titre_admin %}{% endblock %}</h1>
     </div>

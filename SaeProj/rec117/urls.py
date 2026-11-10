@@ -6,6 +6,9 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
     path("home/", views.HomeView.as_view(), name="home_base"),  
     path("mindmap/", views.MindMapView.as_view(), name="mind_map"),
+    path("connexion/", views.ConnexionUtilisateurView.as_view(), name="connexion"),
+    path("deconnexion/", LogoutView.as_view(next_page="home"), name="deconnexion"),
+    path("inscription/", views.inscription, name="inscription"),
 
     # Administration des vidéos (réservée aux comptes staff)
     path("administration/", views_admin.accueil, name="admin_videos"),

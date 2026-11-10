@@ -15,7 +15,18 @@
             {% with page=request.resolver_match.url_name %}
             <a href="{% url 'home' %}" {% if page == 'home' or page == 'home_base' %}class="active"{% endif %}>Mode Lecture</a>
             <a href="{% url 'mind_map' %}" {% if page == 'mind_map' %}class="active"{% endif %}>Mode Carte Mentale</a>
-            <a href="{% url 'admin_videos' %}" class="nav-admin{% if 'admin_' in page %} active{% endif %}">⚙ Administration</a>
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'admin_videos' %}" class="nav-admin{% if 'admin_' in page %} active{% endif %}">⚙ Administration</a>
+                {% endif %}
+                <form method="post" action="{% url 'deconnexion' %}" class="nav-session">
+                    {% csrf_token %}
+                    <button type="submit">Déconnexion</button>
+                </form>
+            {% else %}
+                <a href="{% url 'connexion' %}" {% if page == 'connexion' %}class="active"{% endif %}>Connexion</a>
+                <a href="{% url 'inscription' %}" {% if page == 'inscription' %}class="active"{% endif %}>Créer un compte</a>
+            {% endif %}
             {% endwith %}
         </nav>
     </header>

@@ -103,6 +103,27 @@ header {
     border: 1px solid var(--primary-accent);
 }
 
+.nav-session {
+    display: inline;
+    margin-left: 30px;
+}
+
+.nav-session button {
+    background: none;
+    border: 0;
+    color: var(--text-color);
+    cursor: pointer;
+    font: inherit;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 5px 0;
+    text-transform: uppercase;
+}
+
+.nav-session button:hover {
+    color: var(--primary-accent);
+}
+
 /* --- Pastille de couleur musicale --- */
 .color-badge {
     display: inline-block;
@@ -136,6 +157,14 @@ header {
 
     .nav-links a {
         margin-left: 0;
+        font-size: 0.8rem;
+    }
+
+    .nav-session {
+        margin-left: 0;
+    }
+
+    .nav-session button {
         font-size: 0.8rem;
     }
 

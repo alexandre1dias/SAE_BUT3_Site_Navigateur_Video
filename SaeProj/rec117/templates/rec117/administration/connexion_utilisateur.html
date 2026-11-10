@@ -1,0 +1,29 @@
+{% extends 'rec117/administration/base_admin.html' %}
+
+{% block title %}Connexion{% endblock %}
+{% block titre_admin %}Connexion à rec117{% endblock %}
+
+{% block admin_contenu %}
+    <section class="admin-carte admin-connexion">
+        <p class="admin-aide">Connectez-vous pour retrouver votre compte et regarder les vidéos.</p>
+        <form method="post" class="admin-formulaire">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="admin-message admin-message--error">Nom d'utilisateur ou mot de passe incorrect.</div>
+            {% endif %}
+            <div class="admin-champ">
+                <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+                {{ form.username }}
+            </div>
+            <div class="admin-champ">
+                <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+                {{ form.password }}
+            </div>
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="admin-boutons">
+                <button type="submit" class="btn btn-play">Se connecter</button>
+                <a href="{% url 'inscription' %}" class="btn">Créer un compte</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

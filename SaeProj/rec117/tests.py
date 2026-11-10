@@ -3,7 +3,7 @@ import json
 from unittest import mock
 
 from django.contrib.auth.models import User
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
 from . import infos_video
@@ -84,14 +84,6 @@ class PageAdministrationTests(TestCase):
         self.question = Question.objects.create(texteQuestion='Présentation')
         self.admin = User.objects.create_user('chef', password='x', is_staff=True)
 
-    @override_settings(ADMINISTRATION_OUVERTE=True)
-    def test_acces_ouvert_a_tous(self, *_):
-        self.assertEqual(self.client.get(reverse('admin_videos')).status_code, 200)
-        self.client.post(reverse('admin_ajouter', args=['interview']), {
-            'titreInterview': 'Libre', 'urlYoutube': 'https://youtu.be/abc', 'artiste': self.rivkah.pk})
-        self.assertTrue(Interview.objects.filter(titreInterview='Libre').exists())
-
-    @override_settings(ADMINISTRATION_OUVERTE=False)
     def test_acces_reserve_au_staff(self, *_):
         url = reverse('admin_videos')
         self.assertRedirects(self.client.get(url), reverse('admin_connexion') + '?next=' + url)
@@ -101,8 +93,43 @@ class PageAdministrationTests(TestCase):
         self.client.login(username='chef', password='x')
         self.assertEqual(self.client.get(url).status_code, 200)
 
-    def test_bouton_dans_la_barre(self, *_):
-        self.assertContains(self.client.get(reverse('mind_map')), reverse('admin_videos'))
+    def test_bouton_admin_visible_uniquement_au_staff(self, *_):
+        url = reverse('admin_videos')
+        self.assertNotContains(self.client.get(reverse('mind_map')), url)
+        self.client.force_login(User.objects.create_user('visiteur', password='x'))
+        self.assertNotContains(self.client.get(reverse('mind_map')), url)
+        self.client.force_login(self.admin)
+        self.assertContains(self.client.get(reverse('mind_map')), url)
+
+    def test_inscription_cree_un_compte_non_staff(self, *_):
+        from .forms import InscriptionForm
+
+        self.assertEqual(set(InscriptionForm().fields), {'username', 'password1', 'password2'})
+        response = self.client.post(reverse('inscription'), {
+            'username': 'nouveau',
+            'password1': 'MotDePasse-solide-123',
+            'password2': 'MotDePasse-solide-123',
+            'is_staff': 'on',
+            'is_superuser': 'on',
+        })
+        self.assertRedirects(response, reverse('home'))
+        utilisateur = User.objects.get(username='nouveau')
+        self.assertFalse(utilisateur.is_staff)
+        self.assertFalse(utilisateur.is_superuser)
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_compte_standard_peut_se_connecter_et_se_deconnecter(self, *_):
+        User.objects.create_user('visiteur', password='MotDePasse-solide-123')
+        reponse = self.client.post(reverse('connexion'), {
+            'username': 'visiteur',
+            'password': 'MotDePasse-solide-123',
+        })
+        self.assertRedirects(reponse, reverse('home'))
+        self.assertTrue(self.client.get(reverse('home')).wsgi_request.user.is_authenticated)
+
+        reponse = self.client.post(reverse('deconnexion'))
+        self.assertRedirects(reponse, reverse('home'))
+        self.assertFalse(self.client.get(reverse('home')).wsgi_request.user.is_authenticated)
 
     def test_formulaire_pre_rempli(self, *_):
         self.client.force_login(self.admin)

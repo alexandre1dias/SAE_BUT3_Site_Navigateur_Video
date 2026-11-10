@@ -9,7 +9,7 @@
             <p class="admin-message admin-message--warning">Le compte « {{ user.username }} » n'a pas accès à l'administration.
                 Connectez-vous avec un compte de l'équipe (staff).</p>
         {% else %}
-            <p class="admin-aide">Cette page est réservée à l'équipe du site.</p>
+            <p class="admin-aide">Cette page est réservée à l'équipe du site. Les comptes utilisateur ne peuvent pas accéder à l'administration.</p>
         {% endif %}
 
         <form method="post" class="admin-formulaire">

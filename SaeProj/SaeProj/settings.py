@@ -118,10 +118,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
-# Page d'administration des vidéos
-# True  : la page est accessible à tous, sans connexion (choix actuel du projet)
-# False : la page est réservée aux comptes staff (connexion avec admin / rec117 par exemple)
-ADMINISTRATION_OUVERTE = True
+# L'administration des vidéos est toujours réservée aux comptes staff.
 LOGIN_URL = 'admin_connexion'
 LOGIN_REDIRECT_URL = 'admin_videos'
 

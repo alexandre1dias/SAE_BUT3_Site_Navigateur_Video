@@ -44,6 +44,12 @@ Le script, à lancer depuis la racine du dépôt :
 Le script peut être relancé autant de fois que voulu : il réutilise le venv et ne touche pas à une base déjà remplie.
 Pour arrêter le site : `Ctrl+C` dans la fenêtre du terminal (ou fermer la fenêtre sous Windows).
 Pour repartir d'une base neuve : supprimer `SaeProj/db.sqlite3` puis relancer le script.
+
+## Comptes utilisateur et administration
+
+Le lien **Créer un compte** permet de créer un compte utilisateur standard ; **Connexion** permet ensuite de se connecter. Ces comptes peuvent regarder les vidéos et n'ont aucun droit d'administration. L'accès à la page d'administration des vidéos et son bouton sont réservés aux comptes staff.
+
+Le lancement crée le compte administrateur initial `admin` (mot de passe initial `rec117`). Changez ce mot de passe avant toute mise en ligne. Pour gérer les utilisateurs ou attribuer les droits staff, connectez-vous à `/admin/` avec un compte administrateur.
  
 Problèmes fréquents :
 - *« Python introuvable »* : installer Python 3.12+ (et sous Windows, cocher « Add to PATH »), puis relancer.
